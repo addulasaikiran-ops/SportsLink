@@ -16,7 +16,6 @@ public class MeController {
     public Map<String, Object> me(@AuthenticationPrincipal Jwt jwt) {
         return Map.of(
             "id", jwt.getSubject(),
-            "issuer", jwt.getIssuer().toString(),
             "authenticated", true
         );
     }
