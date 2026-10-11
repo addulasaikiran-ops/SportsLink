@@ -3,7 +3,7 @@
  * This repository currently has no frontend unit-test runner installed; these
  * checks run under Node's built-in test runner without adding dependencies.
  */
-import test from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
