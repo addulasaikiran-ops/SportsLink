@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Activity, Compass, Search, Sparkles, UserPlus, Users } from "lucide-react";
+import { Activity, Search, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
 import { Heading, SearchBox } from "./shared";
