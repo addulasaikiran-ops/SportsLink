@@ -3,12 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Activity, ArrowRight, ArrowUpRight, Users, Trophy, BriefcaseBusiness, ShieldCheck, Globe2, HeartHandshake, Menu, X, CheckCircle2, Eye, EyeOff } from "lucide-react";
 
 function PublicHeader() {
   const [menuOpen,setMenuOpen] = useState(false);
   return <header className="public-header"><div className="public-header-inner">
     <Link href="/" className="public-brand"><span className="public-brand-mark"><Activity size={23}/></span><span>SPORTS<span>LINK</span></span></Link>
+    <ThemeToggle compact />
     <button className="public-menu-toggle" aria-label={menuOpen?"Close menu":"Open menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(!menuOpen)}>{menuOpen?<X/>:<Menu/>}</button>
     <nav className={`public-nav ${menuOpen?"public-nav-open":""}`} aria-label="Main navigation">
       <Link href="/about" onClick={()=>setMenuOpen(false)}>About</Link>
