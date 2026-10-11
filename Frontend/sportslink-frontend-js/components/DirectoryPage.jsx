@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { Activity, Search, UserPlus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { backendRequest } from "@/lib/api/backend";
 import { Heading, SearchBox } from "./shared";
+
+const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
 const PROFILE_COLUMNS = "id,username,full_name,headline,avatar_url,sport,role,created_at";
 
@@ -33,15 +36,21 @@ export function DirectoryPage({ section, initialQuery = "" }) {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError) throw authError;
 
-      let request = supabase
-        .from("profiles")
-        .select(PROFILE_COLUMNS)
-        .order("created_at", { ascending: false })
-        .limit(100);
-      if (user) request = request.neq("id", user.id);
+      let data;
+      if (USE_SPRING_API) {
+        data = await backendRequest("/api/profiles");
+      } else {
+        let request = supabase
+          .from("profiles")
+          .select(PROFILE_COLUMNS)
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (user) request = request.neq("id", user.id);
 
-      const { data, error: profileError } = await request;
-      if (profileError) throw profileError;
+        const { data: profileData, error: profileError } = await request;
+        if (profileError) throw profileError;
+        data = profileData;
+      }
       setProfiles(data || []);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Unable to load public profiles.");
