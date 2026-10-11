@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 const nav = [
   ["/home","Home",Home],["/network","My Network",Users],["/discover","Discover",Compass],
@@ -19,8 +19,14 @@ export function AppShell({children}) {
   const router = useRouter();
   const isPublic = path === "/" || path === "/login" || path === "/signup" || path === "/about";
   const [currentUser, setCurrentUser] = useState(null);
+  const logoutInProgress = useRef(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   useEffect(() => {
-    if (isPublic) return;
+    if (isPublic) {
+      logoutInProgress.current = false;
+      setIsLoggingOut(false);
+      return;
+    }
     const supabase = createClient();
     if (!supabase) {
       router.replace(`/login?setup=supabase&next=${encodeURIComponent(path || "/home")}`);
@@ -55,7 +61,7 @@ export function AppShell({children}) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session?.user) {
         setCurrentUser(null);
-        if (!isPublic) router.replace(`/login?next=${encodeURIComponent(path || "/home")}`);
+        if (!isPublic && !logoutInProgress.current) router.replace(`/login?next=${encodeURIComponent(path || "/home")}`);
       } else {
         setCurrentUser({
           id: session.user.id,
@@ -74,6 +80,28 @@ export function AppShell({children}) {
   const displayName = currentUser?.name || "SPORTSLINK Member";
   const displayRole = currentUser?.role ? currentUser.role.replaceAll("_", " ").replace(/\b\w/g, letter => letter.toUpperCase()) : "";
   function submitSearch(event) { if (event.key === "Enter" && search.trim()) router.push(`/discover?search=${encodeURIComponent(search.trim())}`); }
+
+  async function handleLogout() {
+    if (logoutInProgress.current) return;
+    logoutInProgress.current = true;
+    setIsLoggingOut(true);
+    setCurrentUser(null);
+
+    const supabase = createClient();
+    try {
+      if (supabase) {
+        // Clear only this browser's session; avoid waiting for remote-wide revocation.
+        await supabase.auth.signOut({ scope: "local" });
+      }
+    } catch (error) {
+      // Always leave the protected workspace if auth cleanup reports a transient error.
+      console.error("Unable to complete local sign-out cleanly.", error);
+    } finally {
+      router.replace("/");
+      router.refresh();
+    }
+  }
+
   if (isPublic) return children;
   return <div className="app-root">
     <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -81,7 +109,7 @@ export function AppShell({children}) {
       <button className="icon-button mobile-menu" onClick={()=>setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation">{open?<X/>:<Menu/>}</button>
       <Link href="/home" className="brand"><span className="brand-mark"><Activity size={22}/></span><span>SPORTS<span className="brand-accent">LINK</span></span></Link>
       <label className="global-search" aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
-      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label="Notifications"><Bell size={20}/></Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={async()=>{const supabase=createClient();if(supabase) await supabase.auth.signOut();router.replace("/");router.refresh();}} title="Log out">Log out</button></div>
+      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label="Notifications"><Bell size={20}/></Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
     </div></header>
     <div className="app-layout">
       <aside className={`sidebar ${open?"sidebar-open":""}`}>
