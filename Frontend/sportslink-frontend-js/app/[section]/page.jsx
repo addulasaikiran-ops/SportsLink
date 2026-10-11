@@ -1,9 +1,9 @@
 import { SectionPage } from "@/components/SectionPage";
 import { DirectoryPage } from "@/components/DirectoryPage";
-import { MessagesPage, NotificationsPage, OpportunitiesPage, ProfilePage } from "@/components/WorkspacePages";
+import { BookmarksPage, MessagesPage, NotificationsPage, OpportunitiesPage, ProfilePage } from "@/components/WorkspacePages";
 import { notFound } from "next/navigation";
 
-const allowed = ["network","discover","opportunities","messages","notifications","profile","organizations","settings","events"];
+const allowed = ["network","discover","opportunities","messages","notifications","profile","bookmarks","organizations","settings","events"];
 export function generateStaticParams() { return allowed.map((section) => ({section})); }
 
 export default async function Page({ params, searchParams }) {
@@ -19,6 +19,7 @@ export default async function Page({ params, searchParams }) {
     case "messages": return <MessagesPage key={section} />;
     case "notifications": return <NotificationsPage key={section} />;
     case "profile": return <ProfilePage key={section} />;
+    case "bookmarks": return <BookmarksPage key={section} />;
     default: return <SectionPage key={section} section={section} />;
   }
 }
