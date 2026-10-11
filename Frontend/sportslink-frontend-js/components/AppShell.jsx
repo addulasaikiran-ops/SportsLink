@@ -124,7 +124,7 @@ export function AppShell({children}) {
   }
 
   if (isPublic) return children;
-  return <div className="app-root">
+  return <div className={`app-root ${path === "/messages" ? "app-root-messages" : ""}`}>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className="topbar"><div className="topbar-inner">
       <button className="icon-button mobile-menu" onClick={()=>setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation">{open?<X/>:<Menu/>}</button>
