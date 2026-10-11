@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test components/FeedInteractions.test.jsx"
+    "test": "node --test components/FeedInteractions.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
