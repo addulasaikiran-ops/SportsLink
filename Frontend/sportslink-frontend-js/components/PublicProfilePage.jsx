@@ -6,7 +6,7 @@ import { Activity, ArrowLeft, CalendarDays, Globe, MapPin, UserRound } from "luc
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,website_url,created_at";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,website_url,created_at";
 
 function initials(name) {
   return name.trim().split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -130,7 +130,8 @@ export function PublicProfilePage({ profileId }) {
   const memberSince = formatMemberSince(profile.created_at);
 
   return <div className="page-stack public-member-profile">
-    <div className="profile-cover-large">
+    <div className={`profile-cover-large ${profile.cover_url ? "profile-cover-with-image" : ""}`}>
+      {profile.cover_url && <img className="profile-cover-image" src={profile.cover_url} alt="" />}
       <span className="cover-label"><UserRound size={15}/> MEMBER PROFILE</span>
     </div>
 
