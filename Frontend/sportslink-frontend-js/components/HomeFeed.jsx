@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Activity, ArrowUpRight, Bookmark, CalendarDays, Image as ImageIcon, MessageCircle, MoreHorizontal, Repeat2, Send, Sparkles, ThumbsUp, Trophy, Users, Video } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
+import { FeedInteractions } from "@/components/FeedInteractions";
 
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
@@ -200,7 +201,7 @@ export function HomeFeed() {
       const author = post.author || {};
       const authorName = author.full_name || author.username || "SPORTSLINK Member";
       const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
-      return <article className="post-card card" key={post.id}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div><div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div><div className="post-reaction-summary"><span>Reactions and comments are not connected yet</span></div><div className="post-actions"><button type="button" disabled><ThumbsUp/>Like</button><button type="button" disabled><MessageCircle/>Comment</button><button type="button" disabled><Repeat2/>Repost</button><button type="button" disabled><Send/>Send</button><button type="button" disabled aria-label="Save post"><Bookmark/></button></div></article>;
+      return <article className="post-card card" key={post.id}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div><div className="post-copy">{post.content.split("\\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div><FeedInteractions postId={post.id} currentUserId={currentUser?.id}/><div className="post-actions"><button type="button" disabled><ThumbsUp/>Like</button><button type="button" disabled><MessageCircle/>Comment</button><button type="button" disabled><Repeat2/>Repost</button><button type="button" disabled><Send/>Send</button><button type="button" disabled aria-label="Save post"><Bookmark/></button></div></article>;
     })}</div>}
   </div>;
 }
