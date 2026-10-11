@@ -18,6 +18,18 @@ public class SupabaseProfileService {
         this.supabaseRestClient = supabaseRestClient;
     }
 
+    public JsonNode getProfiles(Jwt jwt) {
+        return supabaseRestClient.get(
+                "/rest/v1/profiles",
+                jwt,
+                Map.of(
+                        "id", "neq." + jwt.getSubject(),
+                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at",
+                        "order", "created_at.desc",
+                        "limit", "100"
+                ));
+    }
+
     public JsonNode getMyProfile(Jwt jwt) {
         JsonNode rows = supabaseRestClient.get(
                 "/rest/v1/profiles",
