@@ -26,6 +26,7 @@ function countReactions(rows) {
 
 export function FeedInteractions({ postId, currentUserId }) {
   const [reactionRows, setReactionRows] = useState([]);
+  const [reactionRefreshKey, setReactionRefreshKey] = useState(0);
   const [reactionsLoading, setReactionsLoading] = useState(true);
   const [reactionBusy, setReactionBusy] = useState(false);
   const [reactionError, setReactionError] = useState("");
@@ -71,6 +72,7 @@ export function FeedInteractions({ postId, currentUserId }) {
   useEffect(() => {
     let active = true;
     (async () => {
+      setReactionsLoading(true);
       try {
         const rows = await backendRequest(`/api/posts/${postId}/reactions`);
         if (!Array.isArray(rows)) throw new Error("The reactions API returned an unexpected response.");
@@ -85,7 +87,7 @@ export function FeedInteractions({ postId, currentUserId }) {
       }
     })();
     return () => { active = false; };
-  }, [postId]);
+  }, [postId, reactionRefreshKey]);
 
   const ownReaction = reactionRows.find((row) => row.user_id === currentUserId)?.reaction || null;
   const counts = countReactions(reactionRows);
@@ -117,7 +119,7 @@ export function FeedInteractions({ postId, currentUserId }) {
     } catch (error) {
       setReactionError(messageFor(error, "Unable to update your reaction."));
       // A write may have succeeded even if the response could not be read; refresh before retrying.
-      await loadReactions();
+      setReactionRefreshKey((key) => key + 1);
     } finally {
       setReactionBusy(false);
     }
