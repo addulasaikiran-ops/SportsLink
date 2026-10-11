@@ -19,7 +19,7 @@ function formatDate(value) {
 const inputClass = "settings-field";
 
 function EmptyOrganizationPage() {
-  return <div className="page-stack">
+  return <div className="page-stack organizations-page">
     <Heading eyebrow="ORGANIZATIONS" title="Organizations" subtitle="Clubs and organizations in the SPORTSLINK community." />
     <div className="empty-state card"><UserRound/><h2>No organizations available</h2><p>Organization management is not connected yet. No sample records are shown.</p></div>
   </div>;
