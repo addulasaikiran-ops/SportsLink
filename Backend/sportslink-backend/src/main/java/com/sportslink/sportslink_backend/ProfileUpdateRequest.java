@@ -1,11 +1,13 @@
 package com.sportslink.sportslink_backend;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record ProfileUpdateRequest(
         @JsonProperty("full_name") @Size(max = 120) String fullName,
         @JsonProperty("headline") @Size(max = 180) String headline,
