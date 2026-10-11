@@ -3,8 +3,21 @@ import { NextResponse } from 'next/server';
 
 const protectedRoots = new Set([
   '/home', '/network', '/discover', '/opportunities', '/messages',
-  '/notifications', '/profile', '/organizations', '/settings', '/events',
+  '/notifications', '/profile', '/organizations', '/settings', '/events', '/onboarding',
 ]);
+
+function safeDestination(raw) {
+  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/home';
+  const path = raw.split(/[?#]/)[0];
+  if (path === '/onboarding' || path === '/login' || path === '/signup' || path.startsWith('/auth/')) return '/home';
+  return raw;
+}
+
+function redirectTo(url, response) {
+  const redirect = NextResponse.redirect(url);
+  response.cookies.getAll().forEach(({ name, value }) => redirect.cookies.set(name, value));
+  return redirect;
+}
 
 function isProtectedPath(pathname) {
   for (const root of protectedRoots) {
@@ -50,17 +63,38 @@ export async function middleware(request) {
   if (!user && isProtectedPath(pathname)) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/login';
-    loginUrl.searchParams.set('next', pathname);
-    return NextResponse.redirect(loginUrl);
+    loginUrl.search = '';
+    loginUrl.searchParams.set('next', pathname + request.nextUrl.search);
+    return redirectTo(loginUrl, response);
   }
 
-  if (user && (pathname === '/login' || pathname === '/signup')) {
-    const next = request.nextUrl.searchParams.get('next');
-    const destination = next && next.startsWith('/') && !next.startsWith('//') ? next : '/home';
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = destination;
-    redirectUrl.search = '';
-    return NextResponse.redirect(redirectUrl);
+  if (user && pathname !== '/auth/callback') {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('onboarding_completed_at')
+      .eq('id', user.id)
+      .maybeSingle();
+    const onboardingComplete = Boolean(profile?.onboarding_completed_at);
+
+    if (!onboardingComplete && pathname !== '/onboarding') {
+      const onboardingUrl = request.nextUrl.clone();
+      onboardingUrl.pathname = '/onboarding';
+      onboardingUrl.search = '';
+      const requestedPath = pathname + request.nextUrl.search;
+      const destination = ['/','/about','/login','/signup'].includes(pathname) ? '/home' : requestedPath;
+      onboardingUrl.searchParams.set('next', safeDestination(destination));
+      return redirectTo(onboardingUrl, response);
+    }
+
+    if (onboardingComplete && pathname === '/onboarding') {
+      const next = safeDestination(request.nextUrl.searchParams.get('next'));
+      return redirectTo(new URL(next, request.url), response);
+    }
+
+    if (pathname === '/login' || pathname === '/signup') {
+      const next = safeDestination(request.nextUrl.searchParams.get('next'));
+      return redirectTo(new URL(next, request.url), response);
+    }
   }
 
   return response;

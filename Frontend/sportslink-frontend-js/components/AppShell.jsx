@@ -18,7 +18,7 @@ function MemberAvatar({ url, name, className }) {
 export function AppShell({children}) {
   const path = usePathname();
   const router = useRouter();
-  const isPublic = path === "/" || path === "/login" || path === "/signup" || path === "/about";
+  const isPublic = path === "/" || path === "/login" || path === "/signup" || path === "/about" || path === "/onboarding";
   const [currentUser, setCurrentUser] = useState(null);
   const logoutInProgress = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);

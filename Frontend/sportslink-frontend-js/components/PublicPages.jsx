@@ -73,8 +73,8 @@ export function LoginPage() {
   const {error:authError}=await supabase.auth.signInWithPassword({email:email.trim(),password});
   setLoading(false);
   if(authError){setError(authError.message==="Invalid login credentials"?"Email or password is incorrect. If you are new here, create an account first.":authError.message);return;}
-  const params=new URLSearchParams(window.location.search);const next=params.get("next");
-  router.replace(next&&next.startsWith("/")&&!next.startsWith("//")?next:"/home");router.refresh();
+  const params=new URLSearchParams(window.location.search);const next=params.get("next");const target=next&&next.startsWith("/")&&!next.startsWith("//")&&!["/login","/signup","/onboarding"].includes(next.split("?")[0])?next:"/home";
+  router.replace(`/onboarding?next=${encodeURIComponent(target)}`);router.refresh();
  }
  return <AuthLayout mode="login"><div className="login-brand-row"><span className="login-brand-mark"><Activity size={18}/></span><span className="login-brand-copy"><b>SPORTSLINK</b><small>YOUR SPORTING NETWORK</small></span><span className="login-brand-online"><i/> MEMBER ACCESS</span></div><div className="auth-form-heading"><span className="auth-kicker">WELCOME BACK</span><h2>Log in to SPORTSLINK</h2><p>Good things happen when sport connects.</p></div><form className="auth-form" onSubmit={submit} noValidate><label htmlFor="login-email">Email address</label><input id="login-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/><div className="auth-label-row"><label htmlFor="login-password">Password</label><span>At least 6 characters</span></div><div className="password-field"><input id="login-password" type={show?"text":"password"} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button></div>{notice&&<p className="auth-success" role="status">{notice}</p>}{error&&<p className="auth-error" role="alert">{error}</p>}<button className="button auth-submit" type="submit" disabled={loading}>{loading?"Logging in…":"Log in"} {!loading&&<ArrowRight size={17}/>}</button><p className="auth-demo-note"><ShieldCheck size={15}/> Secure sign-in powered by Supabase. Your password is verified by the authentication service.</p></form><div className="auth-switch">New to SPORTSLINK? <Link href="/signup">Create an account</Link></div></AuthLayout>;
 }
@@ -93,10 +93,10 @@ export function SignupPage() {
   try{
    const {data,error:authError}=await supabase.auth.signUp({
     email:email.trim(),password,
-    options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/home`,data:{full_name:name.trim(),role}}
+    options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/onboarding`,data:{full_name:name.trim(),role}}
    });
    if(authError){setError(authError.message.includes("already registered")?"An account with this email already exists. Try logging in.":authError.message);return;}
-   if(data.session){router.replace("/home");router.refresh();return;}
+   if(data.session){router.replace("/onboarding");router.refresh();return;}
    setNotice("Your account request was received. Check your email for the confirmation link, then return here to log in.");
   }catch{
    setError("We couldn't create your account right now. Please try again.");
