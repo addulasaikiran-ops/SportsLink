@@ -940,3 +940,186 @@ input,textarea,select{max-width:100%;min-width:0}
 @media (min-width:621px){
   .organization-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* Signup refresh: centered glass panel, tighter form rhythm, and a clear Google OAuth path. */
+.auth-main-signup{
+  grid-template-columns:minmax(0,1fr) minmax(0,510px);
+  gap:clamp(28px,4vw,60px);
+  max-width:1160px;
+  padding:clamp(24px,4vw,48px) clamp(18px,3vw,30px);
+  align-items:center;
+}
+.auth-main-signup .auth-side{min-height:500px}
+.auth-form-wrap-signup{
+  max-width:none;
+  width:100%;
+  margin:auto;
+  padding:clamp(22px,3vw,32px);
+  border:1px solid var(--glass-hairline);
+  border-radius:24px;
+  background:var(--surface);
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  box-shadow:var(--glass-highlight),0 22px 65px rgba(22,39,69,.14);
+}
+.signup-content{width:100%;min-width:0}
+.auth-form-wrap-signup .signup-heading{margin-bottom:20px}
+.auth-form-wrap-signup .auth-kicker{font-size:10px;letter-spacing:2px}
+.auth-form-wrap-signup .auth-form-heading h2{
+  margin:10px 0 8px;
+  font-size:clamp(27px,3vw,34px);
+  line-height:1.12;
+  letter-spacing:-1.3px;
+}
+.auth-form-wrap-signup .auth-form-heading p{font-size:13px;line-height:1.65}
+.auth-form-wrap-signup .signup-consent{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:12px 13px;
+  margin:0 0 14px!important;
+  border:1px solid var(--glass-hairline);
+  border-radius:13px;
+  background:rgba(131,157,201,.07);
+  color:var(--muted)!important;
+  font-size:11px!important;
+  line-height:1.55;
+}
+.auth-form-wrap-signup .signup-consent input{
+  flex:0 0 16px;
+  width:16px;
+  height:16px;
+  margin:2px 0 0;
+  accent-color:var(--blue);
+}
+.google-signup-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  width:100%;
+  height:49px;
+  min-height:49px;
+  padding:0 16px;
+  border:1px solid var(--glass-hairline)!important;
+  border-radius:13px!important;
+  background:var(--glass-control)!important;
+  color:var(--ink)!important;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:var(--glass-highlight),0 4px 14px rgba(24,42,72,.06)!important;
+}
+.google-signup-button:hover:not(:disabled){
+  background:rgba(122,151,199,.13)!important;
+  border-color:rgba(112,147,209,.48)!important;
+  box-shadow:var(--glass-highlight),0 8px 22px rgba(24,42,72,.1)!important;
+}
+.google-signup-button:disabled{opacity:.7;cursor:wait}
+.google-mark{width:19px;height:19px;display:block;flex:0 0 19px}
+.signup-divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:19px 0 13px;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.25px;
+  white-space:nowrap;
+}
+.signup-divider:before,.signup-divider:after{
+  content:"";
+  display:block;
+  height:1px;
+  flex:1;
+  background:var(--glass-hairline);
+}
+.auth-form-wrap-signup .signup-form{gap:7px}
+.auth-form-wrap-signup .signup-form>label{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.4;
+  color:var(--ink);
+}
+.auth-form-wrap-signup .signup-form>input,
+.auth-form-wrap-signup .signup-form>select,
+.auth-form-wrap-signup .signup-form .password-field{
+  width:100%;
+  height:48px!important;
+  min-height:48px;
+  padding:0 14px;
+  border:1px solid var(--glass-hairline);
+  border-radius:13px;
+  background:var(--glass-control);
+  color:var(--ink);
+  font-size:13px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+}
+.auth-form-wrap-signup .signup-form>input:focus,
+.auth-form-wrap-signup .signup-form>select:focus,
+.auth-form-wrap-signup .signup-form .password-field:focus-within{
+  border-color:rgba(94,139,226,.8);
+  box-shadow:0 0 0 3px rgba(70,120,219,.13);
+}
+.auth-form-wrap-signup .signup-form .password-field{padding-right:7px}
+.auth-form-wrap-signup .signup-form .password-field input{
+  height:100%;
+  padding:0;
+  font-size:13px;
+  color:var(--ink);
+}
+.auth-form-wrap-signup .signup-form .password-field button{
+  flex:0 0 35px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:9px;
+  box-shadow:none;
+}
+.auth-form-wrap-signup .signup-form .password-field button:hover{background:rgba(125,153,199,.13)}
+.auth-form-wrap-signup .signup-form .auth-submit{
+  height:49px;
+  min-height:49px;
+  margin-top:8px;
+  border-radius:13px;
+  font-size:13px;
+}
+.auth-form-wrap-signup .auth-demo-note{margin:11px 0 0;font-size:10px}
+.auth-form-wrap-signup .signup-switch{margin-top:18px;padding-top:15px;border-top:1px solid var(--glass-hairline)}
+.auth-form-wrap-signup .auth-error,.auth-form-wrap-signup .auth-success{font-size:12px;line-height:1.55}
+
+/* A single focused signup card reads better than a squeezed two-column form on tablets. */
+@media(max-width:960px){
+  .auth-main-signup{
+    display:grid;
+    grid-template-columns:minmax(0,520px);
+    justify-content:center;
+    gap:0;
+    max-width:700px;
+    min-height:calc(100vh - 78px);
+    padding:30px 24px 48px;
+  }
+  .auth-main-signup>.auth-side{display:none}
+  .auth-form-wrap-signup{padding:clamp(22px,4vw,34px)}
+}
+@media(max-width:620px){
+  .auth-main-signup{min-height:auto;padding:23px 14px 34px}
+  .auth-form-wrap-signup{padding:22px 18px;border-radius:21px}
+  .auth-form-wrap-signup .auth-form-heading h2{font-size:28px}
+  .auth-form-wrap-signup .signup-form>input,
+  .auth-form-wrap-signup .signup-form>select,
+  .auth-form-wrap-signup .signup-form .password-field{height:47px!important;min-height:47px}
+  .auth-form-wrap-signup .auth-demo-note{font-size:9px}
+}
+@media(max-width:380px){
+  .auth-main-signup{padding-inline:10px}
+  .auth-form-wrap-signup{padding:20px 14px}
+  .auth-form-wrap-signup .signup-heading{margin-bottom:17px}
+  .signup-divider{gap:8px;font-size:8px;letter-spacing:1px}
+}
+:root[data-theme="dark"] .auth-form-wrap-signup{background:rgba(13,24,40,.86)}
+:root[data-theme="dark"] .auth-form-wrap-signup .signup-consent{background:rgba(132,159,202,.08)}
+:root[data-theme="dark"] .auth-form-wrap-signup .signup-form>label{color:#d5e0f1}
+:root[data-theme="dark"] .auth-form-wrap-signup .google-signup-button{background:rgba(24,39,60,.78)!important;color:#e9f0fb!important}
