@@ -1,0 +1,18 @@
+{
+  "name": "sportslink-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.117.1"
+  }
+}

@@ -1,0 +1,192 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Activity, ArrowUpRight, Bookmark, CalendarDays, Image as ImageIcon, MessageCircle, MoreHorizontal, Repeat2, Send, Sparkles, ThumbsUp, Trophy, Users, Video } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+
+const POST_SELECT = "id,author_id,content,visibility,created_at,author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role)";
+
+function Avatar({ url, name }) {
+  if (url) return <img className="avatar avatar-md" src={url} alt=""/>;
+  const initials = name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
+  return <span className="avatar avatar-md avatar-initials" aria-hidden="true">{initials}</span>;
+}
+
+function queryFeed(client) {
+  return client
+    .from("posts")
+    .select(POST_SELECT)
+    .order("created_at", { ascending: false })
+    .limit(100);
+}
+
+function formatPostTime(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "";
+
+  const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+  if (minutes < 1) return "now";
+  if (minutes < 60) return `${minutes}m`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d`;
+
+  return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(timestamp);
+}
+
+function getErrorMessage(error, fallback) {
+  return error instanceof Error && error.message ? error.message : fallback;
+}
+
+export function HomeFeed() {
+  const [supabase, setSupabase] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [draft, setDraft] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [feedError, setFeedError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    const client = createClient();
+    setSupabase(client);
+    let active = true;
+
+    if (!client) {
+      setFeedError("Supabase is not configured. Check the local environment configuration.");
+      setLoading(false);
+      return () => { active = false; };
+    }
+
+    async function loadFeed() {
+      try {
+        const { data, error } = await queryFeed(client);
+        if (error) throw error;
+        if (active) {
+          setPosts(data || []);
+          setFeedError("");
+        }
+      } catch (error) {
+        if (active) setFeedError(getErrorMessage(error, "Unable to load the community feed."));
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    async function loadCurrentUser() {
+      const { data, error } = await client.auth.getUser();
+      if (error || !data.user || !active) return;
+
+      const user = data.user;
+      const { data: profile, error: profileError } = await client
+        .from("profiles")
+        .select("username, full_name, avatar_url, sport")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!active) return;
+      setCurrentUser({
+        name: profileError
+          ? user.user_metadata?.full_name || user.email?.split("@")[0] || "SPORTSLINK Member"
+          : profile?.full_name || profile?.username || user.user_metadata?.full_name || user.email?.split("@")[0] || "SPORTSLINK Member",
+        avatar: profile?.avatar_url || null,
+        id: user.id,
+        sport: profile?.sport || "",
+      });
+    }
+
+    loadFeed();
+    loadCurrentUser();
+    return () => { active = false; };
+  }, []);
+
+  async function createPost() {
+    const content = draft.trim();
+    setSubmitError("");
+    setNotice("");
+
+    if (!content) {
+      setSubmitError("Write something before posting.");
+      return;
+    }
+    if (content.length > 5000) {
+      setSubmitError("Posts can be up to 5,000 characters.");
+      return;
+    }
+    if (!supabase) {
+      setSubmitError("Supabase is not available. Reload the page and try again.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) throw authError;
+      if (!user) {
+        setSubmitError("Sign in to create a post.");
+        return;
+      }
+
+      const { error: insertError } = await supabase.from("posts").insert({
+        author_id: user.id,
+        content,
+        visibility: "public",
+      });
+      if (insertError) throw insertError;
+
+      setDraft("");
+      const { data, error: refreshError } = await queryFeed(supabase);
+      if (refreshError) {
+        setFeedError(getErrorMessage(refreshError, "Your post was created, but the feed could not refresh."));
+        setNotice("Your post was created, but the feed could not refresh. Retry the feed load.");
+        return;
+      }
+
+      const refreshedPosts = data || [];
+      setPosts(refreshedPosts);
+      setFeedError("");
+      setNotice(refreshedPosts.some(post => post.author_id === user.id && post.content === content)
+        ? "Your post was shared."
+        : "Your post was saved, but your current RLS read policy does not show it in this feed.");
+    } catch (error) {
+      setSubmitError(getErrorMessage(error, "Unable to create your post."));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function retryFeed() {
+    if (!supabase) return;
+    setLoading(true);
+    setFeedError("");
+    try {
+      const { data, error } = await queryFeed(supabase);
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error) {
+      setFeedError(getErrorMessage(error, "Unable to load the community feed."));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return <div className="feed-page">
+    <div className="welcome-row"><div><p className="eyebrow"><Sparkles size={14}/> YOUR SPORTS COMMUNITY</p><h1>Your world of sport, <span>connected.</span></h1><p className="welcome-subtitle">Ideas, opportunities, and people moving sport forward.</p></div><div className="welcome-date"><Activity size={13}/> COMMUNITY FEED<small>Good to see you, {currentUser?.name || "SPORTSLINK Member"}</small></div></div>
+    <div className="quick-stats"><div className="quick-stat"><span className="stat-icon blue"><Users/></span><span><small>Posts in this feed</small><b>{posts.length}<em>Visible under your RLS access</em></b></span></div><div className="quick-stat"><span className="stat-icon orange"><Trophy/></span><span><small>Your posts</small><b>{posts.filter(post => post.author_id === currentUser?.id).length}<em>Authored by your account</em></b></span></div><div className="quick-stat"><span className="stat-icon green"><ArrowUpRight/></span><span><small>Your sport</small><b>{currentUser?.sport || "—"}<em>From your profile</em></b></span></div></div>
+    <section className="composer card"><div className="composer-top"><Avatar url={currentUser?.avatar} name={currentUser?.name || "SPORTSLINK Member"}/><textarea value={draft} onChange={event => { setDraft(event.target.value); setSubmitError(""); setNotice(""); }} placeholder="Share an update with your sports community…" aria-label="Write a community post" maxLength={5000} rows={2}/></div>{submitError&&<p className="auth-error" role="alert">{submitError}</p>}{notice&&<p className="inline-notice" role="status" aria-live="polite">{notice}</p>}<div className="composer-bottom"><span className="character-count" aria-live="polite">{draft.length}/5000</span><div className="composer-tools"><button type="button" onClick={()=>setNotice("Photo uploads are not connected yet.")}><ImageIcon/>Photo</button><button type="button" onClick={()=>setNotice("Video uploads are not connected yet.")}><Video/>Video</button><button type="button" onClick={()=>setNotice("Event creation is not connected yet.")}><CalendarDays/>Event</button></div><button className="button button-primary" type="button" onClick={createPost} disabled={submitting}>{submitting?"Posting…":<>＋ Create post</>}</button></div></section>
+    <div className="feed-toolbar"><div><h2>Community feed</h2><p>What’s happening across your network</p></div><div className="feed-filters"><button className="filter-active" type="button">For you</button><button type="button" disabled title="Following posts are not connected yet">Following</button><button type="button" disabled title="Trending is not connected yet">Trending</button></div></div>
+    {feedError&&<div className="inline-notice" role="alert"><p>{feedError}</p><button className="button button-secondary" type="button" onClick={retryFeed} disabled={loading}>{loading?"Loading…":"Retry"}</button></div>}
+    {loading?<div className="empty-state card" role="status"><Activity/><h3>Loading the community feed…</h3></div>:feedError?null:posts.length===0?<div className="empty-state card"><Users/><h3>No posts yet</h3><p>Be the first to share an update with your sports community.</p></div>:<div className="posts-list">{posts.map(post=>{
+      const author = post.author || {};
+      const authorName = author.full_name || author.username || "SPORTSLINK Member";
+      const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
+      return <article className="post-card card" key={post.id}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div><div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div><div className="post-reaction-summary"><span>Reactions and comments are not connected yet</span></div><div className="post-actions"><button type="button" disabled><ThumbsUp/>Like</button><button type="button" disabled><MessageCircle/>Comment</button><button type="button" disabled><Repeat2/>Repost</button><button type="button" disabled><Send/>Send</button><button type="button" disabled aria-label="Save post"><Bookmark/></button></div></article>;
+    })}</div>}
+  </div>;
+}
