@@ -2733,3 +2733,120 @@ input,textarea,select{max-width:100%;min-width:0}
   .events-page .event-live-preview > div[style*="linear-gradient"]{padding:14px!important}
   .events-page .event-live-preview h2{font-size:20px!important}
 }
+
+
+/* Neat, subtle border around the existing section heading only.
+   No new content, cards, or hero panels. */
+.directory-page > .page-heading,
+.notifications-page > .page-heading,
+.organizations-page > .page-heading,
+.events-page > .page-heading,
+.settings-page > .page-heading,
+.opportunities-page > .page-heading{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  min-height:108px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin:0 0 2px;
+  padding:14px 16px;
+  border:1px solid #d8e2f2;
+  border-radius:8px;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 4px 14px rgba(34,58,99,.035);
+}
+.directory-page > .page-heading > div,
+.notifications-page > .page-heading > div,
+.organizations-page > .page-heading > div,
+.events-page > .page-heading > div,
+.settings-page > .page-heading > div,
+.opportunities-page > .page-heading > div{
+  flex:1;
+  min-width:0;
+}
+.directory-page > .page-heading .eyebrow,
+.notifications-page > .page-heading .eyebrow,
+.organizations-page > .page-heading .eyebrow,
+.events-page > .page-heading .eyebrow,
+.settings-page > .page-heading .eyebrow,
+.opportunities-page > .page-heading .eyebrow{
+  margin:0 0 7px;
+  line-height:1.35;
+}
+.directory-page > .page-heading h1,
+.notifications-page > .page-heading h1,
+.organizations-page > .page-heading h1,
+.events-page > .page-heading h1,
+.settings-page > .page-heading h1,
+.opportunities-page > .page-heading h1{
+  margin:0;
+  font-size:clamp(23px,2.15vw,28px);
+  line-height:1.22;
+  letter-spacing:-.75px;
+  overflow-wrap:anywhere;
+}
+.directory-page > .page-heading > div > p:last-child,
+.notifications-page > .page-heading > div > p:last-child,
+.organizations-page > .page-heading > div > p:last-child,
+.events-page > .page-heading > div > p:last-child,
+.settings-page > .page-heading > div > p:last-child,
+.opportunities-page > .page-heading > div > p:last-child{
+  margin:7px 0 0;
+  max-width:760px;
+  font-size:11px;
+  line-height:1.65;
+  overflow-wrap:anywhere;
+}
+.directory-page > .page-heading > .button,
+.notifications-page > .page-heading > .button,
+.organizations-page > .page-heading > .button,
+.events-page > .page-heading > .button,
+.settings-page > .page-heading > .button,
+.opportunities-page > .page-heading > .button{
+  flex-shrink:0;
+}
+:root[data-theme="dark"] .directory-page > .page-heading,
+:root[data-theme="dark"] .notifications-page > .page-heading,
+:root[data-theme="dark"] .organizations-page > .page-heading,
+:root[data-theme="dark"] .events-page > .page-heading,
+:root[data-theme="dark"] .settings-page > .page-heading,
+:root[data-theme="dark"] .opportunities-page > .page-heading{
+  border-color:rgba(156,178,218,.24);
+  background:rgba(15,28,47,.68);
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+@media(max-width:760px){
+  .directory-page > .page-heading,
+  .notifications-page > .page-heading,
+  .organizations-page > .page-heading,
+  .events-page > .page-heading,
+  .settings-page > .page-heading,
+  .opportunities-page > .page-heading{
+    min-height:0;
+    align-items:flex-start;
+    flex-direction:column;
+    gap:10px;
+    padding:12px 13px 13px;
+    border-radius:7px;
+  }
+  .directory-page > .page-heading h1,
+  .notifications-page > .page-heading h1,
+  .organizations-page > .page-heading h1,
+  .events-page > .page-heading h1,
+  .settings-page > .page-heading h1,
+  .opportunities-page > .page-heading h1{
+    font-size:23px;
+    letter-spacing:-.5px;
+  }
+  .directory-page > .page-heading > .button,
+  .notifications-page > .page-heading > .button,
+  .organizations-page > .page-heading > .button,
+  .events-page > .page-heading > .button,
+  .settings-page > .page-heading > .button,
+  .opportunities-page > .page-heading > .button{
+    align-self:flex-start;
+  }
+}
