@@ -62,6 +62,8 @@ const currentUser = await backendRequest("/api/me");
 
 Automated tests cover the public health endpoint, rejection without authentication, the protected identity endpoint, and profile controller behavior. These tests mock the profile service; they do not verify the live Supabase profile table or its deployed RLS policies.
 
+The GitHub Actions workflow runs `bash ./gradlew build` on Linux so the build does not depend on the Gradle wrapper file's executable bit.
+
 Before enabling the backend profile UI, verify that a row exists in `profiles`, that the relevant SELECT and UPDATE RLS policies work, and that the backend can call Supabase REST with the publishable key and user's access token. The repository contains no database migrations or trigger definitions; the signup profile trigger and RLS configuration must be verified in the Supabase project.
 
 Post creation/feed, connections, messaging, notifications, opportunities/applications, events, organizations, reactions, and comments remain future backend work.
