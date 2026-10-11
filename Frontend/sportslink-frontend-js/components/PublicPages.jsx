@@ -53,7 +53,7 @@ export function LandingPage() {
 }
 
 function AuthLayout({mode,children}) {
- return <PublicLayout><main className="auth-main"><div className="auth-side"><div className="auth-side-content"><div className="public-eyebrow"><span className="eyebrow-pulse"/> A NETWORK THAT GETS YOUR GAME</div><h1>{mode==="login"?"Good to have\nyou back.":"Your next chapter\nstarts with a hello."}</h1><p>{mode==="login"?"Pick up where your sporting journey left off. Your community is right here.":"Create your place in a community built for everyone moving sport forward."}</p><div className="auth-benefits"><span><CheckCircle2 size={17}/> Your professional sports profile</span><span><CheckCircle2 size={17}/> Career opportunities and connections</span><span><CheckCircle2 size={17}/> One community, every side of sport</span></div><div className="auth-side-stamp"><Activity size={18}/> CONNECT <span>·</span> GROW <span>·</span> ACHIEVE</div></div></div><div className="auth-form-wrap">{children}</div></main></PublicLayout>;
+ return <PublicLayout><main className={`auth-main auth-main-${mode}`}><div className="auth-side"><div className="auth-side-content"><div className="public-eyebrow"><span className="eyebrow-pulse"/> A NETWORK THAT GETS YOUR GAME</div><h1>{mode==="login"?"Good to have\nyou back.":"Your next chapter\nstarts with a hello."}</h1><p>{mode==="login"?"Pick up where your sporting journey left off. Your community is right here.":"Create your place in a community built for everyone moving sport forward."}</p><div className="auth-benefits"><span><CheckCircle2 size={17}/> Your professional sports profile</span><span><CheckCircle2 size={17}/> Career opportunities and connections</span><span><CheckCircle2 size={17}/> One community, every side of sport</span></div><div className="auth-side-stamp"><Activity size={18}/> CONNECT <span>·</span> GROW <span>·</span> ACHIEVE</div></div></div><div className={`auth-form-wrap auth-form-wrap-${mode}`}>{children}</div></main></PublicLayout>;
 }
 export function LoginPage() {
  const router=useRouter();
@@ -78,28 +78,97 @@ export function LoginPage() {
  }
  return <AuthLayout mode="login"><div className="auth-form-heading"><span className="auth-kicker">WELCOME BACK</span><h2>Log in to SPORTSLINK</h2><p>Good things happen when sport connects.</p></div><form className="auth-form" onSubmit={submit} noValidate><label htmlFor="login-email">Email address</label><input id="login-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/><div className="auth-label-row"><label htmlFor="login-password">Password</label><span>At least 6 characters</span></div><div className="password-field"><input id="login-password" type={show?"text":"password"} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button></div>{notice&&<p className="auth-success" role="status">{notice}</p>}{error&&<p className="auth-error" role="alert">{error}</p>}<button className="button auth-submit" type="submit" disabled={loading}>{loading?"Logging in…":"Log in"} {!loading&&<ArrowRight size={17}/>}</button><p className="auth-demo-note"><ShieldCheck size={15}/> Secure sign-in powered by Supabase. Your password is verified by the authentication service.</p></form><div className="auth-switch">New to SPORTSLINK? <Link href="/signup">Create an account</Link></div></AuthLayout>;
 }
+function GoogleMark() {
+ return <svg className="google-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+  <path fill="#4285F4" d="M43.611 20.083H42V20H24v8h11.303C33.651 32.657 29.22 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917Z"/>
+  <path fill="#34A853" d="M6.306 14.691 12.88 19.51A11.99 11.99 0 0 0 12 24c0 1.57.301 3.07.84 4.45l-6.56 5.064A19.9 19.9 0 0 1 4 24c0-3.39.844-6.583 2.306-9.309Z"/>
+  <path fill="#FBBC05" d="M24 44c5.19 0 9.944-1.985 13.5-5.223l-6.23-5.27C29.32 35.24 26.82 36 24 36c-5.2 0-9.62-3.32-11.28-7.96l-6.56 5.064C9.42 39.39 16.22 44 24 44Z"/>
+  <path fill="#EA4335" d="M37.5 38.777C41.49 35.14 44 29.89 44 24c0-1.341-.138-2.65-.389-3.917H24v8h11.303a12.02 12.02 0 0 1-4.033 5.424l6.23 5.27Z"/>
+ </svg>;
+}
 export function SignupPage() {
  const router=useRouter();
- const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false);
+ const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false),[googleLoading,setGoogleLoading]=useState(false);
+ async function signupWithGoogle(){
+  setError("");setNotice("");
+  if(!terms){setError("Please confirm your agreement before continuing with Google.");return;}
+  const supabase=createClient();
+  if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key, then try again.");return;}
+  setGoogleLoading(true);
+  try{
+   const {error:oauthError}=await supabase.auth.signInWithOAuth({
+    provider:"google",
+    options:{redirectTo:`${window.location.origin}/auth/callback?next=/home`,queryParams:{prompt:"select_account"}}
+   });
+   if(oauthError){
+    setGoogleLoading(false);
+    setError("Google sign-up couldn't start. Enable Google in Supabase Authentication → Sign In / Providers, then try again.");
+   }
+  }catch{
+   setGoogleLoading(false);
+   setError("We couldn't connect to Google right now. Please try again.");
+  }
+ }
  async function submit(e){
   e.preventDefault();setError("");setNotice("");
   if(name.trim().length<2){setError("Please enter your full name.");return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setError("Enter a valid email address.");return;}
   if(password.length<8){setError("Use a password with at least 8 characters.");return;}
-  if(!terms){setError("Please confirm that you agree to continue.");return;}
+  if(!terms){setError("Please confirm your agreement before creating an account.");return;}
   const supabase=createClient();
-  if(!supabase){setError("Supabase is not configured yet. Add your project URL and publishable key to .env.local, then restart npm run dev.");return;}
+  if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key, then try again.");return;}
   setLoading(true);
-  const {data,error:authError}=await supabase.auth.signUp({
-   email:email.trim(),password,
-   options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/home`,data:{full_name:name.trim(),role}}
-  });
-  setLoading(false);
-  if(authError){setError(authError.message.includes("already registered")?"An account with this email already exists. Try logging in.":authError.message);return;}
-  if(data.session){router.replace("/home");router.refresh();return;}
-  setNotice("Your account request was received. Check your email for the confirmation link, then return here to log in.");
+  try{
+   const {data,error:authError}=await supabase.auth.signUp({
+    email:email.trim(),password,
+    options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/home`,data:{full_name:name.trim(),role}}
+   });
+   if(authError){setError(authError.message.includes("already registered")?"An account with this email already exists. Try logging in.":authError.message);return;}
+   if(data.session){router.replace("/home");router.refresh();return;}
+   setNotice("Your account request was received. Check your email for the confirmation link, then return here to log in.");
+  }catch{
+   setError("We couldn't create your account right now. Please try again.");
+  }finally{
+   setLoading(false);
+  }
  }
- return <AuthLayout mode="signup"><div className="auth-form-heading"><span className="auth-kicker">START YOUR JOURNEY</span><h2>Create your account</h2><p>Your world of sport, connected.</p></div><form className="auth-form" onSubmit={submit} noValidate><label htmlFor="signup-name">Full name</label><input id="signup-name" autoComplete="name" placeholder="Your full name" value={name} onChange={e=>setName(e.target.value)} required/><label htmlFor="signup-email">Email address</label><input id="signup-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/><label htmlFor="signup-role">I’m joining as</label><select id="signup-role" value={role} onChange={e=>setRole(e.target.value)}><option value="athlete">Athlete</option><option value="coach">Coach</option><option value="scout">Scout / Recruiter</option><option value="other">Sports professional</option><option value="club">Club / Organization</option><option value="trainer">Trainer / Analyst</option></select><label htmlFor="signup-password">Create password</label><div className="password-field"><input id="signup-password" type={show?"text":"password"} autoComplete="new-password" placeholder="At least 8 characters" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button></div><label className="auth-terms"><input type="checkbox" checked={terms} onChange={e=>setTerms(e.target.checked)}/><span>I confirm this is my email address and agree to create a SPORTSLINK account.</span></label>{notice&&<p className="auth-success" role="status">{notice}</p>}{error&&<p className="auth-error" role="alert">{error}</p>}<button className="button auth-submit" type="submit" disabled={loading}>{loading?"Creating account…":"Create account"} {!loading&&<ArrowRight size={17}/>}</button><p className="auth-demo-note"><ShieldCheck size={15}/> Account credentials are handled by Supabase Auth. Never share your password.</p></form><div className="auth-switch">Already a member? <Link href="/login">Log in</Link></div></AuthLayout>;
+ return <AuthLayout mode="signup">
+  <section className="signup-content" aria-labelledby="signup-title">
+   <div className="auth-form-heading signup-heading">
+    <span className="auth-kicker">START YOUR JOURNEY</span>
+    <h2 id="signup-title">Create your account</h2>
+    <p>Your world of sport, connected.</p>
+   </div>
+   <label className="auth-terms signup-consent">
+    <input type="checkbox" checked={terms} onChange={e=>setTerms(e.target.checked)} />
+    <span>I agree to create a SPORTSLINK account and confirm my information is accurate.</span>
+   </label>
+   {notice&&<p className="auth-success" role="status">{notice}</p>}
+   {error&&<p className="auth-error" role="alert">{error}</p>}
+   <button className="button google-signup-button" type="button" onClick={signupWithGoogle} disabled={loading||googleLoading} aria-busy={googleLoading}>
+    <GoogleMark/>{googleLoading?"Connecting to Google…":"Continue with Google"}
+   </button>
+   <div className="signup-divider" aria-hidden="true"><span>OR SIGN UP WITH EMAIL</span></div>
+   <form className="auth-form signup-form" onSubmit={submit} noValidate>
+    <label htmlFor="signup-name">Full name</label>
+    <input id="signup-name" autoComplete="name" placeholder="Your full name" value={name} onChange={e=>setName(e.target.value)} required/>
+    <label htmlFor="signup-email">Email address</label>
+    <input id="signup-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/>
+    <label htmlFor="signup-role">I’m joining as</label>
+    <select id="signup-role" value={role} onChange={e=>setRole(e.target.value)}>
+     <option value="athlete">Athlete</option><option value="coach">Coach</option><option value="scout">Scout / Recruiter</option><option value="other">Sports professional</option><option value="club">Club / Organization</option><option value="trainer">Trainer / Analyst</option>
+    </select>
+    <label htmlFor="signup-password">Create password</label>
+    <div className="password-field">
+     <input id="signup-password" type={show?"text":"password"} autoComplete="new-password" placeholder="At least 8 characters" value={password} onChange={e=>setPassword(e.target.value)} required/>
+     <button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button>
+    </div>
+    <button className="button auth-submit" type="submit" disabled={loading||googleLoading} aria-busy={loading}>{loading?"Creating account…":"Create account"} {!loading&&<ArrowRight size={17}/>}</button>
+    <p className="auth-demo-note"><ShieldCheck size={15}/> Your account is secured by Supabase Auth. Never share your password.</p>
+   </form>
+   <div className="auth-switch signup-switch">Already a member? <Link href="/login">Log in</Link></div>
+  </section>
+ </AuthLayout>;
 }
 export function AboutPage() {
  return <PublicLayout><main className="about-page"><section className="about-hero"><p className="public-eyebrow">ABOUT SPORTSLINK</p><h1>Sport is bigger<br/>when we <span>connect.</span></h1><p>SPORTSLINK is being built to bring the people behind sport into one professional community — from the field to the front office.</p><Link href="/signup" className="button landing-primary">Be part of the journey <ArrowRight size={17}/></Link><div className="about-orb"><Globe2 size={68}/><span>ONE SPORTING COMMUNITY</span></div></section><section className="about-values"><article><span>01</span><h2>People first.</h2><p>Every sporting journey is shaped by people. We want to make it easier to find your peers, mentors, collaborators, and next opportunity.</p></article><article><span>02</span><h2>Every role matters.</h2><p>Sport is powered by athletes, coaches, medical teams, analysts, scouts, organizers, creators, and many more.</p></article><article><span>03</span><h2>Progress together.</h2><p>Our aim is to help the sports community share knowledge, open doors, and build meaningful professional relationships.</p></article></section><div className="about-note"><ShieldCheck size={20}/><p><b>We’re building in the open.</b><br/>Authentication is now being connected to Supabase. Some profile, feed, messaging, and opportunity interactions are still prototype-only while the backend integration continues.</p></div></main></PublicLayout>;
