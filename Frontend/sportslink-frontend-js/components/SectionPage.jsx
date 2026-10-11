@@ -265,6 +265,7 @@ export function SectionPage({ section }) {
       <Heading eyebrow="SPORTS EVENTS" title="Events" subtitle="Publish competitions, training sessions, tryouts, and community meetups." />
       {error && <p className="auth-error" role="alert">{error}</p>}
       {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
+      <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
       <section className="content-card card">
         <h2><PlusCircle size={19} style={{ verticalAlign: "middle", marginRight: 8 }}/>Create an event</h2>
         <p>Published events appear in the community list. You can cancel events you created.</p>
@@ -280,6 +281,21 @@ export function SectionPage({ section }) {
           </div>
           <div><button className="button button-primary" type="submit" disabled={saving}>{saving ? "Publishing…" : "Publish event"}</button></div>
         </form>
+      </section>
+      <aside className="content-card card" aria-label="Live event preview" style={{ position: "sticky", top: 16, overflow: "hidden" }}>
+        <div className="eyebrow"><CalendarDays size={14} style={{ verticalAlign: "middle", marginRight: 6 }}/>LIVE PREVIEW</div>
+        <div style={{margin:"12px 0 16px",borderRadius:14,background:"linear-gradient(135deg,#172554,#1d4ed8 58%,#0f766e)",minHeight:130,padding:18,color:"#fff",display:"flex",flexDirection:"column",justifyContent:"space-between",gap:16}}>
+          <span style={{fontSize:11,letterSpacing:1.2,fontWeight:700}}>SPORTSLINK · COMMUNITY EVENT</span>
+          <div><div style={{fontSize:12,opacity:.85,textTransform:"uppercase"}}>{eventDraft.event_type.replaceAll("_"," ") || "EVENT"}{eventDraft.sport.trim() ? " · " + eventDraft.sport.trim() : ""}</div><h2 style={{fontSize:24,lineHeight:1.15,margin:"6px 0 0",overflowWrap:"anywhere"}}>{eventDraft.title.trim() || "Your event title"}</h2></div>
+        </div>
+        <p style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere",minHeight:42}}>{eventDraft.description.trim() || "Add a description to help people understand what this event is about."}</p>
+        <div style={{display:"grid",gap:10,marginTop:14}}>
+          <div style={{display:"flex",gap:10,alignItems:"flex-start"}}><CalendarDays size={17}/><span><strong style={{display:"block",fontSize:13}}>Date and time</strong><span>{eventDraft.starts_at ? formatDate(new Date(eventDraft.starts_at).toISOString()) : "Choose a start date and time"}{eventDraft.ends_at ? " – " + formatDate(new Date(eventDraft.ends_at).toISOString()) : ""}</span></span></div>
+          <div style={{display:"flex",gap:10,alignItems:"flex-start"}}><MapPin size={17}/><span><strong style={{display:"block",fontSize:13}}>Location</strong><span>{eventDraft.location.trim() || "Add an event location"}</span></span></div>
+          <div style={{display:"flex",gap:10,alignItems:"flex-start"}}><Users size={17}/><span><strong style={{display:"block",fontSize:13}}>Organized by</strong><span>{user?.user_metadata?.full_name || user?.email?.split("@")[0] || "You"}</span></span></div>
+        </div>
+        <p style={{marginTop:18,fontSize:12,color:"var(--muted-foreground,#64748b)"}}>This preview updates as you fill in the event form. Publishing saves the event to Supabase.</p>
+      </aside>
       </section>
       <section className="page-stack">
         <div className="page-heading"><div><h2>Community events</h2><p>Live records from the SPORTSLINK database.</p></div><button className="button button-secondary" type="button" onClick={() => loadEvents(client, user)} disabled={saving}><RefreshCw size={15}/> Refresh</button></div>
