@@ -2155,3 +2155,82 @@ input,textarea,select{max-width:100%;min-width:0}
   .notifications-hero .section-hero-art{display:none}
   .event-create-card>h2{font-size:14px}
 }
+
+
+/* Keep the approved rounded hero-box treatment, without extra dashboard modules. */
+.directory-hero{
+  min-height:205px;
+  border:1px solid rgba(103,143,219,.17);
+  border-radius:20px;
+  color:var(--ink,#172033);
+  background:
+    radial-gradient(circle at 90% 18%,rgba(90,146,255,.16),transparent 30%),
+    linear-gradient(115deg,rgba(243,247,255,.98),rgba(255,255,255,.97) 58%,rgba(237,244,255,.94));
+  box-shadow:0 11px 32px rgba(25,48,88,.045);
+}
+.directory-hero-kicker{color:var(--blue,#2563eb)}
+.directory-hero h1{color:var(--ink,#172033);font-size:clamp(28px,3vw,36px);letter-spacing:-1.3px}
+.directory-hero h1 span{color:var(--blue,#2563eb)}
+.directory-hero-copy>p:not(.directory-hero-kicker){color:var(--muted,#778196);font-size:12px;line-height:1.8}
+.directory-hero-art{flex-basis:150px;width:150px;height:144px}
+.directory-orbit{border-color:rgba(58,109,221,.21)}
+.directory-orbit-two{border-color:rgba(58,109,221,.12)}
+.directory-hero-icon{
+  width:73px;height:73px;border:1px solid rgba(255,255,255,.9);border-radius:23px;
+  color:#fff;background:linear-gradient(145deg,#4a85f6,#2559d1);
+  box-shadow:0 17px 35px rgba(42,95,211,.24),inset 0 1px 0 rgba(255,255,255,.28);backdrop-filter:none;
+}
+.directory-art-dot{background:#a4c7ff;box-shadow:0 0 0 5px rgba(164,199,255,.12)}
+:root[data-theme="dark"] .directory-hero{
+  border-color:var(--glass-hairline,rgba(160,185,230,.15));
+  color:#edf4ff;
+  background:radial-gradient(circle at 90% 18%,rgba(65,117,222,.16),transparent 32%),linear-gradient(115deg,rgba(17,31,51,.98),rgba(12,24,41,.97) 62%,rgba(17,34,58,.95));
+  box-shadow:0 14px 35px rgba(0,0,0,.13);
+}
+:root[data-theme="dark"] .directory-hero h1{color:#edf4ff}
+:root[data-theme="dark"] .directory-hero-copy>p:not(.directory-hero-kicker){color:#a9bad3}
+:root[data-theme="dark"] .directory-hero-kicker{color:#91b5ff}
+.notifications-saved-note{display:block;margin-top:12px;color:var(--muted,#778196);font-size:10px;line-height:1.5}
+@media(max-width:760px){
+  .directory-hero{min-height:0;padding:23px 19px;border-radius:17px;gap:10px}
+  .directory-hero h1{font-size:28px;letter-spacing:-1px}
+  .directory-hero-copy>p:not(.directory-hero-kicker){font-size:11px;line-height:1.75}
+  .directory-hero-art{flex-basis:88px;width:88px;height:96px}
+  .directory-orbit{width:83px;height:55px}
+  .directory-orbit-two{width:56px;height:82px}
+  .directory-hero-icon{width:51px;height:51px;border-radius:16px}
+  .directory-hero-icon svg{width:26px;height:26px}
+}
+@media(max-width:420px){
+  .directory-hero{padding:19px 15px}
+  .directory-hero h1{font-size:25px}
+  .directory-hero-art{flex-basis:64px;width:64px;height:80px}
+  .directory-hero-icon{width:42px;height:42px;border-radius:13px}
+}
+
+
+/* Keep section headers compact and unboxed; improve rhythm without adding new modules. */
+.directory-page,.notifications-page,.organizations-page,.events-page,.settings-page{gap:16px}
+.directory-page>.page-heading,
+.notifications-page>.page-heading,
+.organizations-page>.page-heading,
+.events-page>.page-heading,
+.settings-page>.page-heading{margin:0 0 2px}
+.notifications-meta-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:-6px;color:var(--muted,#778196);font-size:11px;line-height:1.5;
+}
+.notifications-meta-row .badge{font-size:10px}
+.directory-page .toolbar-row{align-items:center;gap:10px}
+.directory-page .toolbar-row .search-field{min-width:0;flex:1}
+.directory-page .chip-row{gap:8px;flex-wrap:wrap}
+.directory-people-grid{margin-top:2px}
+.directory-person-card{min-width:0}
+:root[data-theme="dark"] .notifications-meta-row{color:var(--muted,#9eacc3)}
+@media(max-width:760px){
+  .directory-page,.notifications-page,.organizations-page,.events-page,.settings-page{gap:13px}
+  .directory-page>.page-heading .page-heading,
+  .notifications-page>.page-heading .page-heading{gap:10px}
+  .directory-page .toolbar-row{align-items:stretch}
+  .notifications-meta-row{margin-top:-2px;font-size:10px}
+}

@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Activity, ArrowUpRight, Building2, CalendarDays, Compass, Settings, PlusCircle, Trophy, RefreshCw, Save, ShieldCheck, Sparkles, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
+import { CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 
@@ -20,31 +19,9 @@ function formatDate(value) {
 const inputClass = "settings-field";
 
 function EmptyOrganizationPage() {
-  return <div className="page-stack organizations-page">
-    <section className="section-page-hero organizations-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Building2 size={14}/> THE SPORTSLINK DIRECTORY</p>
-        <h1>Where sports <span>communities connect.</span></h1>
-        <p>Discover clubs, academies, teams and organizations shaping the next generation of sport.</p>
-        <div className="section-hero-note"><ShieldCheck size={15}/><span>Only verified, available organization records will be displayed.</span></div>
-      </div>
-      <div className="section-hero-art organizations-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><Building2 size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
-    </section>
-    <section className="organization-directory-empty card">
-      <div className="organization-empty-icon"><Building2 size={27}/></div>
-      <span className="section-hero-kicker">ORGANIZATION DIRECTORY</span>
-      <h2>Organization profiles are coming soon</h2>
-      <p>The organization directory is not connected to live organization records yet. We’re keeping it clear of sample clubs and fictional listings.</p>
-      <div className="organization-next-actions">
-        <Link href="/discover" className="button button-primary"><Compass size={16}/>Discover members <ArrowUpRight size={15}/></Link>
-        <Link href="/events" className="button button-secondary"><CalendarDays size={16}/>Explore sports events</Link>
-      </div>
-    </section>
-    <div className="organization-feature-row">
-      <article className="organization-feature-card"><span><Users size={18}/></span><div><strong>Clubs & teams</strong><p>Find organizations and local sporting communities.</p></div></article>
-      <article className="organization-feature-card"><span><Trophy size={18}/></span><div><strong>Academies & development</strong><p>Explore pathways for training, trials and growth.</p></div></article>
-      <article className="organization-feature-card"><span><UserRound size={18}/></span><div><strong>People behind the sport</strong><p>Meet players, coaches, scouts and sports professionals.</p></div></article>
-    </div>
+  return <div className="page-stack">
+    <Heading eyebrow="ORGANIZATIONS" title="Organizations" subtitle="Clubs and organizations in the SPORTSLINK community." />
+    <div className="empty-state card"><UserRound/><h2>No organizations available</h2><p>Organization management is not connected yet. No sample records are shown.</p></div>
   </div>;
 }
 
@@ -284,24 +261,8 @@ export function SectionPage({ section }) {
   }
 
   if (section === "events") {
-    const publishedCount = events.filter((item) => item.status === "published").length;
-    const upcomingCount = events.filter((item) => item.status === "published" && Date.parse(item.starts_at) >= Date.now()).length;
-    const yourEventsCount = events.filter((item) => item.created_by === user?.id).length;
     return <div className="page-stack events-page">
-      <section className="section-page-hero events-hero">
-        <div className="section-hero-copy">
-          <p className="section-hero-kicker"><CalendarDays size={14}/> SPORTS EVENTS</p>
-          <h1>Bring your next <span>event to life.</span></h1>
-          <p>Publish competitions, training sessions, tryouts and community meetups. Share the details athletes need to show up.</p>
-          <div className="section-hero-note"><ShieldCheck size={15}/><span>Events you publish are saved to SPORTSLINK and listed below.</span></div>
-        </div>
-        <div className="section-hero-art events-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><CalendarDays size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
-      </section>
-      <div className="section-stat-grid events-stats">
-        <article className="section-stat-card card"><span className="section-stat-icon blue"><CalendarDays size={18}/></span><div><small>Published events</small><strong>{publishedCount}</strong><span>Live community listings</span></div></article>
-        <article className="section-stat-card card"><span className="section-stat-icon green"><Activity size={18}/></span><div><small>Upcoming</small><strong>{upcomingCount}</strong><span>Still to take place</span></div></article>
-        <article className="section-stat-card card"><span className="section-stat-icon orange"><UserRound size={18}/></span><div><small>Created by you</small><strong>{yourEventsCount}</strong><span>Your event history</span></div></article>
-      </div>
+      <Heading eyebrow="SPORTS EVENTS" title="Events" subtitle="Publish competitions, training sessions, tryouts, and community meetups." />
       {error && <p className="auth-error" role="alert">{error}</p>}
       {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
       <section className="event-management-grid">
@@ -355,15 +316,7 @@ export function SectionPage({ section }) {
   }
 
   return <div className="page-stack settings-page">
-    <section className="section-page-hero settings-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Settings size={14}/> ACCOUNT CONTROL</p>
-        <h1>Settings & <span>security.</span></h1>
-        <p>Keep your profile current and manage the security details that protect your SPORTSLINK account.</p>
-        <div className="section-hero-note"><ShieldCheck size={15}/><span>Your account settings are visible only to you.</span></div>
-      </div>
-      <div className="section-hero-art settings-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><ShieldCheck size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
-    </section>
+    <Heading eyebrow="ACCOUNT SETTINGS" title="Settings" subtitle="Update the details connected to your SPORTSLINK account." />
     {error && <p className="auth-error" role="alert">{error}</p>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
     <div className="settings-content-grid">
