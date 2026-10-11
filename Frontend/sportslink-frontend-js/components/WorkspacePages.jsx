@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Activity, Award, Bell, BriefcaseBusiness, Camera, CheckCheck, GraduationCap, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, Trophy, UserPlus, UserRound } from "lucide-react";
+import { Activity, Award, Bell, Bookmark, BriefcaseBusiness, Camera, CheckCheck, GraduationCap, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, Trophy, UserPlus, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -30,6 +30,62 @@ function chatTime(value) {
     return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(timestamp);
   }
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(timestamp);
+}
+
+
+export function BookmarksPage() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      try {
+        const client = createClient();
+        if (!client) throw new Error("Supabase is not configured.");
+        const { data: auth, error: authError } = await client.auth.getUser();
+        if (authError) throw authError;
+        if (!auth.user) throw new Error("Sign in to view your bookmarks.");
+        const { data, error: queryError } = await client.from("post_bookmarks")
+          .select("post_id,created_at,post:posts(id,content,created_at,author:profiles!posts_author_id_fkey(id,full_name,username,avatar_url,role,sport))")
+          .eq("user_id", auth.user.id)
+          .order("created_at", { ascending: false });
+        if (queryError) throw queryError;
+        if (active) setItems((data || []).filter((item) => item.post));
+      } catch (e) {
+        if (active) setError(e instanceof Error ? e.message : "Unable to load bookmarks.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    load();
+    return () => { active = false; };
+  }, []);
+  return <div className="page-stack">
+    <Heading eyebrow="YOUR SAVED POSTS" title="Bookmarks" subtitle="Posts you saved to come back to later."/>
+    {error && <Notice tone="error">{error}</Notice>}
+    {loading ? <div className="card empty-state"><Activity className="spin"/><p>Loading bookmarks…</p></div>
+      : !items.length ? <div className="empty-state card"><Bookmark/><h2>No bookmarks yet</h2><p>Save a post from your community feed and it will appear here.</p></div>
+      : <div className="page-stack">{items.map((item) => {
+        const post = item.post;
+        const author = post.author || {};
+        const name = author.full_name || author.username || "SPORTSLINK member";
+        return <article className="card post-card" key={post.id}>
+          <div className="post-header"><div className="post-author"><div className="post-author-copy"><strong>{name}</strong><small>{author.role || "Member"}{author.sport ? " · " + author.sport : ""}</small><small>{formatWorkspaceTime(post.created_at)}</small></div></div><Bookmark size={18}/></div>
+          <p className="post-content">{post.content || "Shared a photo or video."}</p>
+          <button className="button button-secondary" type="button" onClick={async () => {
+            try {
+              const client = createClient();
+              const { data: auth } = await client.auth.getUser();
+              if (!auth.user) throw new Error("Sign in to manage bookmarks.");
+              const { error: deleteError } = await client.from("post_bookmarks").delete().eq("post_id", post.id).eq("user_id", auth.user.id);
+              if (deleteError) throw deleteError;
+              setItems((current) => current.filter((saved) => saved.post_id !== post.id));
+            } catch (e) { setError(e instanceof Error ? e.message : "Unable to remove bookmark."); }
+          }}>Remove bookmark</button>
+        </article>;
+      })}</div>}
+  </div>;
 }
 
 export function MessagesPage() {
