@@ -29,8 +29,8 @@ test("supports only like, celebrate, and support; enforces the comment limit", (
 });
 
 test("prevents repeated submits while in flight and handles helper authentication errors", () => {
-  assert.match(component, /if \(reactionBusy\) return/);
-  assert.match(component, /if \(commentBusy\) return/);
+  assert.match(component, /if \(reactionInFlight\.current\) return/);
+  assert.match(component, /if \(commentInFlight\.current\) return/);
   assert.match(component, /backendRequest/);
   assert.match(component, /Your session is invalid or expired/);
   assert.match(component, /Sign in to comment/);
