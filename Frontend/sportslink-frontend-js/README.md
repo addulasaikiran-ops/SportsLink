@@ -42,7 +42,7 @@ The app uses the Supabase project configured in `.env.local`. See [`docs/supabas
 
 Only a publishable key is used in browser-facing code. Never add a Supabase `service_role` or secret key to this project or any `NEXT_PUBLIC_` variable. Database tables have row-level security; keep RLS enabled and verify policies before adding client-side database features.
 
-The profile page can optionally use the Spring Boot API by setting `NEXT_PUBLIC_USE_SPRING_API=true` in `.env.local`. Before enabling it, configure the backend's `SUPABASE_PUBLISHABLE_KEY` environment variable and verify the backend profile endpoint against the live Supabase profile row and RLS policies. The default is `false`, which preserves the current direct-Supabase profile behavior.
+The profile, Discover/My Network directory, and Home feed can optionally use the Spring Boot API by setting `NEXT_PUBLIC_USE_SPRING_API=true` in `.env.local`. Before enabling it, configure `SUPABASE_PUBLISHABLE_KEY` in the backend process environment and verify the profile/posts endpoints against live Supabase rows and RLS policies. The default is `false`, which preserves the current direct-Supabase behavior.
 
 ## UI/UX standards
 
@@ -53,7 +53,7 @@ The profile page can optionally use the Spring Boot API by setting `NEXT_PUBLIC_
 
 ## Integration status
 
-**Implemented:** Supabase email/password signup and login, confirmation callback, cookie-backed session refresh, protected routes, RLS-filtered profile discovery, signed-in profile reads/updates, and a Supabase-backed home feed with authenticated post creation.
+**Implemented:** Supabase email/password signup and login, confirmation callback, cookie-backed session refresh, protected routes, RLS-filtered profile discovery, signed-in profile reads/updates, and a community feed with post creation. Those data screens can use direct Supabase access by default or the new optional Spring Boot API integration.
 
 **Not connected yet:** connections, messaging, notifications, opportunities/applications, events, organizations, reactions, and comments. These routes show empty or unavailable states and do not display sample records or persist demo data.
 
