@@ -17,9 +17,9 @@ function EmptyWorkspacePage({ title, eyebrow, subtitle, icon: Icon, message }) {
 }
 
 function ConversationAvatar({ profile, name, size = "avatar-md" }) {
-  if (profile?.avatar_url) return <img className={\`avatar \${size}\`} src={profile.avatar_url} alt="" />;
+  if (profile?.avatar_url) return <img className={`avatar ${size}`} src={profile.avatar_url} alt="" />;
   const letters = (name || "SPORTSLINK Member").trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
-  return <span className={\`avatar \${size} avatar-initials\`} aria-hidden="true">{letters}</span>;
+  return <span className={`avatar ${size} avatar-initials`} aria-hidden="true">{letters}</span>;
 }
 
 function chatTime(value) {
@@ -113,7 +113,7 @@ export function MessagesPage() {
     setMessagesLoading(true);
     const refreshMessages = async () => {
       try {
-        const rows = await backendRequest(\`/api/conversations/\${encodeURIComponent(activeConversationId)}/messages\`);
+        const rows = await backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/messages`);
         if (disposed) return;
         const nextRows = Array.isArray(rows) ? rows : [];
         const hasNewIncoming = !firstLoad && nextRows.some((item) =>
@@ -122,7 +122,7 @@ export function MessagesPage() {
         knownMessageIds = new Set(nextRows.map((item) => item.id));
         setMessages(nextRows);
         if (firstLoad || hasNewIncoming) {
-          backendRequest(\`/api/conversations/\${encodeURIComponent(activeConversationId)}/read\`, { method: "PATCH" }).catch(() => {});
+          backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/read`, { method: "PATCH" }).catch(() => {});
         }
         firstLoad = false;
         setMessagesLoading(false);
@@ -185,7 +185,7 @@ export function MessagesPage() {
       }
       setShowPeople(false);
       setPeopleQuery("");
-      setNotice(\`Conversation ready with \${profile.full_name || profile.username || "this member"}.\`);
+      setNotice(`Conversation ready with ${profile.full_name || profile.username || "this member"}.`);
     } catch (startError) {
       setError(startError instanceof Error ? startError.message : "Unable to start this conversation.");
     } finally {
@@ -206,7 +206,7 @@ export function MessagesPage() {
     setNotice("");
     try {
       const created = await backendRequest(
-        \`/api/conversations/\${encodeURIComponent(activeConversationId)}/messages\`,
+        `/api/conversations/${encodeURIComponent(activeConversationId)}/messages`,
         { method: "POST", body: JSON.stringify({ content }) }
       );
       if (!created?.id) throw new Error("SPORTSLINK did not confirm that your message was saved.");
@@ -214,7 +214,7 @@ export function MessagesPage() {
         ? current
         : [...current, created].sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at)));
       setDraft("");
-      backendRequest(\`/api/conversations/\${encodeURIComponent(activeConversationId)}/read\`, { method: "PATCH" }).catch(() => {});
+      backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/read`, { method: "PATCH" }).catch(() => {});
       setNotice("Message sent. The recipient will see it in this conversation and their notifications.");
     } catch (sendError) {
       setError(sendError instanceof Error ? sendError.message : "Unable to send your message. Please retry.");
@@ -251,7 +251,7 @@ export function MessagesPage() {
           const memberText=conversation.is_group
             ? (conversation.title||"Group conversation")
             : contact.name;
-          return <button type="button" key={conversation.id} className={\`conversation-item \${activeConversationId===conversation.id?"conversation-active":""}\`} onClick={()=>{setActiveConversationId(conversation.id);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
+          return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
             <span className="conversation-copy"><b>{memberText}</b><small>{conversation.is_group?"Group conversation":"Tap to open messages"}</small></span>
           </button>;
@@ -273,7 +273,7 @@ export function MessagesPage() {
                 : messages.map((message)=> {
                   const isOwn=message.sender_id===user?.id;
                   const senderName=message.sender?.full_name||message.sender?.username||(isOwn?"You":activeContact.name);
-                  return <article key={message.id} className={\`message-bubble \${isOwn?"message-own":""}\`}>
+                  return <article key={message.id} className={`message-bubble ${isOwn?"message-own":""}`}>
                     {!isOwn&&<strong style={{display:"block",fontSize:9,marginBottom:3}}>{senderName}</strong>}
                     <div style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{message.content}</div>
                     <small>{chatTime(message.created_at)}{isOwn?" · You":""}</small>
