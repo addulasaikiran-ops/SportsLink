@@ -89,6 +89,17 @@ function GoogleMark() {
 export function SignupPage() {
  const router=useRouter();
  const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false),[googleLoading,setGoogleLoading]=useState(false);
+ useEffect(()=>{
+  const url=new URL(window.location.href);
+  const errorCode=url.searchParams.get("error");
+  if(errorCode==="google_existing_account") setError("This Google account is already registered. Google is available for new signups only; please log in using your email and password.");
+  else if(errorCode==="google_signup_session") setError("We couldn't verify that this was a new Google signup. Please try again or create your account with email.");
+  else if(errorCode==="google_signup_failed") setError("Google signup couldn't be completed. Please try again.");
+  if(errorCode){
+   url.searchParams.delete("error");
+   window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+ },[]);
  async function signupWithGoogle(){
   setError("");setNotice("");
   if(!terms){setError("Please confirm your agreement before continuing with Google.");return;}
@@ -96,15 +107,25 @@ export function SignupPage() {
   if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key, then try again.");return;}
   setGoogleLoading(true);
   try{
+   const intentResponse=await fetch("/auth/google-signup/intent",{method:"POST",credentials:"same-origin"});
+   if(!intentResponse.ok){
+    setGoogleLoading(false);
+    setError("We couldn't start a signup-only Google session. Please try again.");
+    return;
+   }
    const {error:oauthError}=await supabase.auth.signInWithOAuth({
     provider:"google",
-    options:{redirectTo:`${window.location.origin}/auth/callback?next=/home`,queryParams:{prompt:"select_account"}}
+    options:{redirectTo:`${window.location.origin}/auth/callback?next=/home&flow=google-signup`,queryParams:{prompt:"select_account"}}
    });
    if(oauthError){
+    await fetch("/auth/google-signup/intent",{method:"DELETE",credentials:"same-origin"});
     setGoogleLoading(false);
-    setError("Google sign-up couldn't start. Enable Google in Supabase Authentication → Sign In / Providers, then try again.");
+    setError(oauthError.message.includes("provider is not enabled")
+      ? "Google signup is not enabled yet. Ask the project administrator to enable Google in Supabase Authentication → Sign In / Providers."
+      : "Google sign-up couldn't start. Check the Supabase Google provider configuration and try again.");
    }
   }catch{
+   await fetch("/auth/google-signup/intent",{method:"DELETE",credentials:"same-origin"}).catch(()=>{});
    setGoogleLoading(false);
    setError("We couldn't connect to Google right now. Please try again.");
   }
