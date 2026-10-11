@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, Bell, BriefcaseBusiness, MapPin, Pencil, Save, UserRound, Users } from "lucide-react";
+import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Trash2, UserPlus, UserRound, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
 import { Heading, Notice } from "./shared";
@@ -19,8 +20,182 @@ export function MessagesPage() {
   return <EmptyWorkspacePage title="Messaging" eyebrow="MESSAGING" subtitle="Conversations with real SPORTSLINK members." icon={Users} message="No conversations available"/>;
 }
 
+function notificationTime(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "";
+  const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return minutes + "m ago";
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + "h ago";
+  const days = Math.floor(hours / 24);
+  if (days < 7) return days + "d ago";
+  return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(timestamp);
+}
+
+function NotificationTypeIcon({ type }) {
+  if (type === "comment") return <MessageCircle size={18}/>;
+  if (type === "reaction") return <Heart size={18}/>;
+  if (type === "follow") return <UserPlus size={18}/>;
+  return <Bell size={18}/>;
+}
+
 export function NotificationsPage() {
-  return <EmptyWorkspacePage title="Notifications" eyebrow="NOTIFICATIONS" subtitle="Updates from your SPORTSLINK activity." icon={Bell} message="No notifications available"/>;
+  const [client, setClient] = useState(null);
+  const [user, setUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState("");
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const router = useRouter();
+
+  async function refresh(supabase, userId) {
+    const { data, error: queryError } = await supabase
+      .from("notifications")
+      .select("id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url)")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (queryError) throw queryError;
+    setNotifications(data || []);
+  }
+
+  useEffect(() => {
+    let active = true;
+    const supabase = createClient();
+    setClient(supabase);
+
+    async function initialize() {
+      try {
+        if (!supabase) throw new Error("Supabase is not configured.");
+        const { data, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+        if (!data.user) throw new Error("Sign in to see your notifications.");
+        if (active) setUser(data.user);
+        const { data: rows, error: queryError } = await supabase
+          .from("notifications")
+          .select("id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url)")
+          .eq("user_id", data.user.id)
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (queryError) throw queryError;
+        if (active) {
+          setNotifications(rows || []);
+          setError("");
+        }
+      } catch (loadError) {
+        if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load notifications.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    initialize();
+    return () => { active = false; };
+  }, []);
+
+  async function markRead(notificationId) {
+    if (!client || !user) return;
+    setBusyId(notificationId);
+    setError("");
+    try {
+      const { error: updateError } = await client.from("notifications")
+        .update({ is_read: true })
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
+      if (updateError) throw updateError;
+      setNotifications((current) => current.map((item) => item.id === notificationId ? { ...item, is_read: true } : item));
+    } catch (updateError) {
+      setError(updateError instanceof Error ? updateError.message : "Unable to mark notification as read.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  async function markAllRead() {
+    if (!client || !user) return;
+    setBusyId("all");
+    setError("");
+    setNotice("");
+    try {
+      const { error: updateError } = await client.from("notifications")
+        .update({ is_read: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      if (updateError) throw updateError;
+      setNotifications((current) => current.map((item) => ({ ...item, is_read: true })));
+      setNotice("All notifications marked as read.");
+    } catch (updateError) {
+      setError(updateError instanceof Error ? updateError.message : "Unable to mark notifications as read.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  async function deleteNotification(notificationId) {
+    if (!client || !user) return;
+    setBusyId(notificationId);
+    setError("");
+    try {
+      const { error: deleteError } = await client.from("notifications")
+        .delete()
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
+      if (deleteError) throw deleteError;
+      setNotifications((current) => current.filter((item) => item.id !== notificationId));
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Unable to delete notification.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  async function openNotification(item) {
+    if (!item.is_read) await markRead(item.id);
+    if (item.entity_type === "post" && item.entity_id) {
+      router.push("/home#post-" + item.entity_id);
+    } else if (item.type === "follow" || item.entity_type === "profile") {
+      router.push("/network");
+    } else if (item.entity_type === "event") {
+      router.push("/events");
+    } else {
+      router.push("/home");
+    }
+  }
+
+  const unreadCount = notifications.filter((item) => !item.is_read).length;
+
+  if (loading) return <div className="page-stack"><Heading eyebrow="NOTIFICATIONS" title="Notifications" subtitle="Updates from your SPORTSLINK activity."/><div className="empty-state card" role="status"><Activity/><h2>Loading your notifications…</h2></div></div>;
+
+  return <div className="page-stack">
+    <Heading eyebrow="NOTIFICATIONS" title="Notifications" subtitle="Reactions, comments, and new followers from your SPORTSLINK community." action={unreadCount>0?<button className="button button-secondary" type="button" onClick={markAllRead} disabled={busyId==="all"}><CheckCheck size={16}/>{busyId==="all"?"Saving…":"Mark all read"}</button>:null}/>
+    <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
+      <span className="badge">{unreadCount} unread</span>
+      <span style={{fontSize:13,color:"var(--muted-foreground,#64748b)"}}>Notifications are saved to your account.</span>
+    </div>
+    {error&&<p className="auth-error" role="alert">{error}</p>}
+    {notice&&<p className="inline-notice" role="status">{notice}</p>}
+    {!notifications.length
+      ? <div className="empty-state card"><Bell/><h2>You're all caught up</h2><p>New likes, comments, and followers will show up here.</p></div>
+      : <div style={{display:"grid",gap:10}}>{notifications.map((item)=>{
+        const actor=item.actor||{};
+        const actorName=actor.full_name||actor.username||"A SPORTSLINK member";
+        return <article key={item.id} className="content-card card" style={{display:"flex",gap:12,alignItems:"flex-start",padding:16,borderLeft:item.is_read?undefined:"3px solid #2563eb",background:item.is_read?undefined:"var(--surface-muted,#f8fafc)"}}>
+          <div style={{width:42,height:42,flex:"0 0 42px",borderRadius:12,display:"grid",placeItems:"center",background:"var(--surface,#fff)",border:"1px solid var(--border,#e2e8f0)"}}><NotificationTypeIcon type={item.type}/></div>
+          <div style={{flex:1,minWidth:0}}>
+            <button type="button" onClick={()=>openNotification(item)} style={{display:"block",width:"100%",textAlign:"left",padding:0,border:0,background:"transparent",color:"inherit",cursor:"pointer"}}>
+              <strong>{actorName}</strong>
+              <p style={{margin:"4px 0",overflowWrap:"anywhere"}}>{item.message || (item.type==="follow"?"started following you":item.type==="comment"?"commented on your post":item.type==="reaction"?"reacted to your post":"sent you a notification")}</p>
+              <small style={{color:"var(--muted-foreground,#64748b)"}}>{notificationTime(item.created_at)}</small>
+            </button>
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"flex-end"}}>
+            {!item.is_read&&<button type="button" className="button button-secondary" style={{padding:"6px 9px",fontSize:12}} onClick={()=>markRead(item.id)} disabled={busyId===item.id}><CheckCheck size={14}/>Read</button>}
+            <button type="button" className="button button-secondary" style={{padding:"6px 9px",fontSize:12}} aria-label="Delete notification" title="Delete notification" onClick={()=>deleteNotification(item.id)} disabled={busyId===item.id}><Trash2 size={14}/></button>
+          </div>
+        </article>;
+      })}</div>}
+  </div>;
 }
 
 export function OpportunitiesPage() {

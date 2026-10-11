@@ -59,4 +59,6 @@ If the confirmation email doesn't arrive, check spam and the project's Auth emai
 - Photo and video attachments (up to five per post and 50 MB per file) are uploaded to the private `post-media` Storage bucket. Only a post's author or viewers allowed by the post visibility policy can request a signed media URL.
 - Event creation, listing, and cancellation are backed by `public.events`; the creator is recorded from the authenticated user, and RLS restricts edits/cancellations to that creator.
 - Search/discovery and feed visibility continue to rely on deployed Supabase row-level security policies.
-- Reactions, comments, messaging, notifications, opportunities, and organizations are still not fully connected to interactive database-backed pages. Do not treat the UI as production-ready for those workflows until they are implemented and tested.
+- Reactions and comments are interactive in the home feed and persist to `public.post_reactions` and `public.comments` under RLS. New comments, reactions, and follows generate account-scoped notifications that can be read, marked read, opened, or deleted from the notifications page.
+- Photo/video attachments include local previews before publishing and signed media previews in feed cards. The Events page provides a live draft preview; event records are persisted to `public.events`.
+- Messaging, opportunities, and organization management remain incomplete. Do not treat those workflows as production-ready until their interactive database-backed pages are implemented and tested.

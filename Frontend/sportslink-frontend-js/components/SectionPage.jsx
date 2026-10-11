@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, UserRound } from "lucide-react";
+import { CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 

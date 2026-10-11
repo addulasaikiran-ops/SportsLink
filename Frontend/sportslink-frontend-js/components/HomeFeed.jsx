@@ -17,6 +17,44 @@ function Avatar({ url, name }) {
   return <span className="avatar avatar-md avatar-initials" aria-hidden="true">{initials}</span>;
 }
 
+async function loadPostInteractions(client, postIds) {
+  const ids = [...new Set(postIds)].filter(Boolean);
+  if (!ids.length) return { reactionsByPost: new Map(), commentsByPost: new Map() };
+
+  const [reactionResult, commentResult] = await Promise.all([
+    client.from("post_reactions")
+      .select("post_id,user_id,reaction,created_at")
+      .in("post_id", ids)
+      .order("created_at", { ascending: true }),
+    client.from("comments")
+      .select("id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url)")
+      .in("post_id", ids)
+      .order("created_at", { ascending: true })
+      .limit(1000),
+  ]);
+
+  if (reactionResult.error) throw reactionResult.error;
+  if (commentResult.error) throw commentResult.error;
+
+  const reactionsByPost = new Map(ids.map((id) => [id, []]));
+  const commentsByPost = new Map(ids.map((id) => [id, []]));
+  for (const row of reactionResult.data || []) {
+    if (reactionsByPost.has(row.post_id)) reactionsByPost.get(row.post_id).push(row);
+  }
+  for (const row of commentResult.data || []) {
+    if (commentsByPost.has(row.post_id)) commentsByPost.get(row.post_id).push(row);
+  }
+  return { reactionsByPost, commentsByPost };
+}
+
+function attachPostInteractions(posts, interactionData) {
+  return posts.map((post) => ({
+    ...post,
+    reactions: interactionData.reactionsByPost.get(post.id) || [],
+    comments: interactionData.commentsByPost.get(post.id) || [],
+  }));
+}
+
 async function queryFeed(client) {
   let result;
   if (USE_SPRING_API) {
@@ -34,15 +72,18 @@ async function queryFeed(client) {
   }
   if (result.error) return result;
 
-  const mediaPaths = [...new Set((result.data || []).flatMap((post) =>
+  const basePosts = result.data || [];
+  const interactionData = await loadPostInteractions(client, basePosts.map((post) => post.id));
+  const enrichedPosts = attachPostInteractions(basePosts, interactionData);
+  const mediaPaths = [...new Set(enrichedPosts.flatMap((post) =>
     (post.media || []).map((media) => media.media_url).filter(Boolean)
   ))];
   let signedByPath = new Map();
   if (mediaPaths.length) {
     const { data: signedFiles } = await client.storage.from("post-media").createSignedUrls(mediaPaths, 3600);
-    signedByPath = new Map((signedFiles || []).map((item) => [item.path, item.signedUrl]));
+    signedByPath = new Map((signedFiles || []).filter((item) => item.signedUrl).map((item) => [item.path, item.signedUrl]));
   }
-  const data = (result.data || []).map((post) => ({
+  const data = enrichedPosts.map((post) => ({
     ...post,
     media: (post.media || []).map((item) => ({ ...item, signed_url: signedByPath.get(item.media_url) || null })),
   }));
@@ -81,9 +122,24 @@ export function HomeFeed() {
   const [submitError, setSubmitError] = useState("");
   const [notice, setNotice] = useState("");
   const [selectedMedia, setSelectedMedia] = useState([]);
+  const [mediaPreviews, setMediaPreviews] = useState([]);
+  const [commentDrafts, setCommentDrafts] = useState({});
+  const [commentSubmitting, setCommentSubmitting] = useState({});
+  const [reactionSubmitting, setReactionSubmitting] = useState({});
+  const [interactionErrors, setInteractionErrors] = useState({});
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
+  const commentInputRefs = useRef({});
   const router = useRouter();
+
+  useEffect(() => {
+    const previews = selectedMedia.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+    setMediaPreviews(previews);
+    return () => previews.forEach((preview) => URL.revokeObjectURL(preview.url));
+  }, [selectedMedia]);
 
   function handleMediaSelection(event) {
     const incoming = Array.from(event.target.files || []);
@@ -257,6 +313,75 @@ export function HomeFeed() {
     }
   }
 
+  async function refreshPostInteractions(postId) {
+    if (!supabase) return;
+    const interactionData = await loadPostInteractions(supabase, [postId]);
+    setPosts((current) => current.map((post) => post.id === postId
+      ? attachPostInteractions([post], interactionData)[0]
+      : post));
+  }
+
+  async function toggleLike(post) {
+    if (!supabase || !currentUser) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "Sign in to react to posts." }));
+      return;
+    }
+    setInteractionErrors((current) => ({ ...current, [post.id]: "" }));
+    setReactionSubmitting((current) => ({ ...current, [post.id]: true }));
+    try {
+      const existingLike = (post.reactions || []).find((reaction) => reaction.user_id === currentUser.id);
+      if (existingLike?.reaction === "like") {
+        const { error } = await supabase.from("post_reactions")
+          .delete()
+          .eq("post_id", post.id)
+          .eq("user_id", currentUser.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("post_reactions")
+          .upsert({ post_id: post.id, user_id: currentUser.id, reaction: "like" }, { onConflict: "post_id,user_id" });
+        if (error) throw error;
+      }
+      await refreshPostInteractions(post.id);
+    } catch (error) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: getErrorMessage(error, "Unable to save your reaction.") }));
+    } finally {
+      setReactionSubmitting((current) => ({ ...current, [post.id]: false }));
+    }
+  }
+
+  async function submitComment(post, event) {
+    event.preventDefault();
+    if (!supabase || !currentUser) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "Sign in to comment." }));
+      return;
+    }
+    const content = (commentDrafts[post.id] || "").trim();
+    if (!content) return;
+    if (content.length > 2000) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "Comments can be up to 2,000 characters." }));
+      return;
+    }
+
+    setInteractionErrors((current) => ({ ...current, [post.id]: "" }));
+    setCommentSubmitting((current) => ({ ...current, [post.id]: true }));
+    try {
+      const { data, error } = await supabase.from("comments").insert({
+        post_id: post.id,
+        author_id: currentUser.id,
+        content,
+      }).select("id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url)").single();
+      if (error) throw error;
+      setPosts((current) => current.map((item) => item.id === post.id
+        ? { ...item, comments: [...(item.comments || []), data] }
+        : item));
+      setCommentDrafts((current) => ({ ...current, [post.id]: "" }));
+    } catch (error) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: getErrorMessage(error, "Unable to add your comment.") }));
+    } finally {
+      setCommentSubmitting((current) => ({ ...current, [post.id]: false }));
+    }
+  }
+
   async function retryFeed() {
     if (!supabase) return;
     setLoading(true);
@@ -275,14 +400,14 @@ export function HomeFeed() {
   return <div className="feed-page">
     <div className="welcome-row"><div><p className="eyebrow"><Sparkles size={14}/> YOUR SPORTS COMMUNITY</p><h1>Your world of sport, <span>connected.</span></h1><p className="welcome-subtitle">Ideas, opportunities, and people moving sport forward.</p></div><div className="welcome-date"><Activity size={13}/> COMMUNITY FEED<small>Good to see you, {currentUser?.name || "SPORTSLINK Member"}</small></div></div>
     <div className="quick-stats"><div className="quick-stat"><span className="stat-icon blue"><Users/></span><span><small>Posts in this feed</small><b>{posts.length}<em>Visible under your RLS access</em></b></span></div><div className="quick-stat"><span className="stat-icon orange"><Trophy/></span><span><small>Your posts</small><b>{posts.filter(post => post.author_id === currentUser?.id).length}<em>Authored by your account</em></b></span></div><div className="quick-stat"><span className="stat-icon green"><ArrowUpRight/></span><span><small>Your sport</small><b>{currentUser?.sport || "—"}<em>From your profile</em></b></span></div></div>
-    <section className="composer card"><input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose photos"/><input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose videos"/><div className="composer-top"><Avatar url={currentUser?.avatar} name={currentUser?.name || "SPORTSLINK Member"}/><textarea value={draft} onChange={event => { setDraft(event.target.value); setSubmitError(""); setNotice(""); }} placeholder="Share an update with your sports community…" aria-label="Write a community post" maxLength={5000} rows={2}/></div>{selectedMedia.length>0&&<div style={{display:"grid",gap:8,padding:"0 16px 12px"}}><strong>Attachments ({selectedMedia.length}/5)</strong>{selectedMedia.map((file,index)=><div key={`${file.name}-${file.lastModified}-${index}`} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap"}}><span>{file.type.startsWith("video/")?"Video":"Photo"} · {file.name}</span><button className="button button-secondary" style={{padding:"5px 10px"}} type="button" onClick={()=>setSelectedMedia(current=>current.filter((_,i)=>i!==index))}>Remove</button></div>)}<small>Private uploads · up to 50 MB each</small></div>}{submitError&&<p className="auth-error" role="alert">{submitError}</p>}{notice&&<p className="inline-notice" role="status" aria-live="polite">{notice}</p>}<div className="composer-bottom"><span className="character-count" aria-live="polite">{draft.length}/5000</span><div className="composer-tools"><button type="button" onClick={()=>photoInputRef.current?.click()}><ImageIcon/>Photo</button><button type="button" onClick={()=>videoInputRef.current?.click()}><Video/>Video</button><button type="button" onClick={()=>router.push("/events")}><CalendarDays/>Event</button></div><button className="button button-primary" type="button" onClick={createPost} disabled={submitting}>{submitting?"Posting…":<>＋ Create post</>}</button></div></section>
+    <section className="composer card"><input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose photos"/><input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose videos"/><div className="composer-top"><Avatar url={currentUser?.avatar} name={currentUser?.name || "SPORTSLINK Member"}/><textarea value={draft} onChange={event => { setDraft(event.target.value); setSubmitError(""); setNotice(""); }} placeholder="Share an update with your sports community…" aria-label="Write a community post" maxLength={5000} rows={2}/></div>{selectedMedia.length>0&&<div style={{display:"grid",gap:10,padding:"0 16px 14px"}}><strong>Preview attachments ({selectedMedia.length}/5)</strong><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10}}>{mediaPreviews.map((preview,index)=><div key={preview.url} style={{position:"relative",minWidth:0,border:"1px solid var(--border,#e2e8f0)",borderRadius:12,overflow:"hidden",background:"var(--surface-muted,#f8fafc)"}}>{preview.file.type.startsWith("video/")?<video src={preview.url} controls preload="metadata" style={{width:"100%",height:150,objectFit:"contain",display:"block",background:"#0b1220"}}/>:<img src={preview.url} alt={preview.file.name} style={{width:"100%",height:150,objectFit:"cover",display:"block"}}/>}<div style={{padding:8,display:"flex",gap:8,alignItems:"center",justifyContent:"space-between"}}><span style={{fontSize:12,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{preview.file.name}</span><button className="button button-secondary" style={{padding:"4px 8px",fontSize:12}} type="button" onClick={()=>setSelectedMedia(current=>current.filter((_,i)=>i!==index))}>Remove</button></div></div>)}</div><small>Private uploads · up to 50 MB each. Previews are local until you publish.</small></div>}{submitError&&<p className="auth-error" role="alert">{submitError}</p>}{notice&&<p className="inline-notice" role="status" aria-live="polite">{notice}</p>}<div className="composer-bottom"><span className="character-count" aria-live="polite">{draft.length}/5000</span><div className="composer-tools"><button type="button" onClick={()=>photoInputRef.current?.click()}><ImageIcon/>Photo</button><button type="button" onClick={()=>videoInputRef.current?.click()}><Video/>Video</button><button type="button" onClick={()=>router.push("/events")}><CalendarDays/>Event</button></div><button className="button button-primary" type="button" onClick={createPost} disabled={submitting}>{submitting?"Posting…":<>＋ Create post</>}</button></div></section>
     <div className="feed-toolbar"><div><h2>Community feed</h2><p>What’s happening across your network</p></div><div className="feed-filters"><button className="filter-active" type="button">For you</button><button type="button" disabled title="Following posts are not connected yet">Following</button><button type="button" disabled title="Trending is not connected yet">Trending</button></div></div>
     {feedError&&<div className="inline-notice" role="alert"><p>{feedError}</p><button className="button button-secondary" type="button" onClick={retryFeed} disabled={loading}>{loading?"Loading…":"Retry"}</button></div>}
     {loading?<div className="empty-state card" role="status"><Activity/><h3>Loading the community feed…</h3></div>:feedError?null:posts.length===0?<div className="empty-state card"><Users/><h3>No posts yet</h3><p>Be the first to share an update with your sports community.</p></div>:<div className="posts-list">{posts.map(post=>{
       const author = post.author || {};
       const authorName = author.full_name || author.username || "SPORTSLINK Member";
       const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
-      return <article className="post-card card" key={post.id}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div><div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>Reactions and comments are not connected yet</span></div><div className="post-actions"><button type="button" disabled><ThumbsUp/>Like</button><button type="button" disabled><MessageCircle/>Comment</button><button type="button" disabled><Repeat2/>Repost</button><button type="button" disabled><Send/>Send</button><button type="button" disabled aria-label="Save post"><Bookmark/></button></div></article>;
+      return <article className="post-card card" key={post.id} id={`post-${post.id}`}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div>{post.content&&<div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div>}<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>{(post.reactions||[]).length} {(post.reactions||[]).length===1?"reaction":"reactions"} · {(post.comments||[]).length} {(post.comments||[]).length===1?"comment":"comments"}</span></div><div className="post-actions"><button type="button" onClick={()=>toggleLike(post)} disabled={!!reactionSubmitting[post.id]} aria-pressed={(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")} style={{color:(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"#2563eb":undefined}}><ThumbsUp/>{reactionSubmitting[post.id]?"Saving…":(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"Liked":"Like"}</button><button type="button" onClick={()=>commentInputRefs.current[post.id]?.focus()}><MessageCircle/>Comment</button><button type="button" disabled title="Reposting is not connected yet"><Repeat2/>Repost</button><button type="button" disabled title="Sharing is not connected yet"><Send/>Send</button><button type="button" disabled aria-label="Save post" title="Bookmarks are not connected yet"><Bookmark/></button></div>{interactionErrors[post.id]&&<p className="auth-error" role="alert" style={{margin:"8px 0"}}>{interactionErrors[post.id]}</p>}<section className="post-comments" aria-label="Comments" style={{marginTop:12,borderTop:"1px solid var(--border,#e2e8f0)",paddingTop:12}}>{(post.comments||[]).slice(-10).map(comment=>{const author=comment.author||{};const name=author.full_name||author.username||(comment.author_id===currentUser?.id?currentUser?.name:"SPORTSLINK member");return <div key={comment.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"8px 0"}}><Avatar url={author.avatar_url} name={name}/><div style={{flex:1,minWidth:0,borderRadius:12,padding:"9px 12px",background:"var(--surface-muted,#f8fafc)"}}><div style={{display:"flex",gap:8,alignItems:"baseline",flexWrap:"wrap"}}><strong style={{fontSize:13}}>{name}</strong><small style={{color:"var(--muted-foreground,#64748b)"}}>{formatPostTime(comment.created_at)}</small></div><p style={{margin:"4px 0 0",whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{comment.content}</p></div></div>})}{!(post.comments||[]).length&&<p style={{fontSize:13,color:"var(--muted-foreground,#64748b)",margin:"4px 0 10px"}}>No comments yet. Start the conversation.</p>}<form onSubmit={(event)=>submitComment(post,event)} style={{display:"flex",gap:8,alignItems:"center",marginTop:8}}><input ref={element=>{commentInputRefs.current[post.id]=element;}} value={commentDrafts[post.id]||""} onChange={event=>setCommentDrafts(current=>({...current,[post.id]:event.target.value}))} maxLength={2000} placeholder="Write a comment…" aria-label="Write a comment" style={{flex:1,minWidth:0,border:"1px solid var(--border,#cbd5e1)",borderRadius:10,padding:"10px 12px",background:"var(--surface,#fff)",color:"inherit"}}/><button className="button button-primary" type="submit" disabled={!!commentSubmitting[post.id]||!(commentDrafts[post.id]||"").trim()}>{commentSubmitting[post.id]?"Sending…":"Comment"}</button></form></section></article>;
     })}</div>}
   </div>;
 }
