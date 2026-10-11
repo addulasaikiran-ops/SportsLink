@@ -42,6 +42,8 @@ The app uses the Supabase project configured in `.env.local`. See [`docs/supabas
 
 Only a publishable key is used in browser-facing code. Never add a Supabase `service_role` or secret key to this project or any `NEXT_PUBLIC_` variable. Database tables have row-level security; keep RLS enabled and verify policies before adding client-side database features.
 
+The profile page can optionally use the Spring Boot API by setting `NEXT_PUBLIC_USE_SPRING_API=true` in `.env.local`. Before enabling it, configure the backend's `SUPABASE_PUBLISHABLE_KEY` environment variable and verify the backend profile endpoint against the live Supabase profile row and RLS policies. The default is `false`, which preserves the current direct-Supabase profile behavior.
+
 ## UI/UX standards
 
 - Shared design system and page-specific guidance in `design-system/`.
