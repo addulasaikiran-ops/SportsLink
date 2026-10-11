@@ -313,9 +313,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   padding:78px max(30px,calc((100vw - 1180px)/2)) 64px;
   color:#f7faff;
   background:
-    radial-gradient(ellipse at 77% 43%,rgba(43,103,226,.34) 0%,transparent 43%),
-    radial-gradient(ellipse at 9% 0%,rgba(38,92,198,.24) 0%,transparent 37%),
-    linear-gradient(115deg,#09152b 0%,#10264c 52%,#0a1730 100%);
+    linear-gradient(90deg,rgba(4,11,25,.96) 0%,rgba(5,17,35,.88) 31%,rgba(5,18,37,.56) 58%,rgba(5,14,31,.28) 100%),
+    linear-gradient(0deg,rgba(2,8,20,.62) 0%,rgba(3,10,24,.12) 58%,rgba(3,10,24,.22) 100%),
+    url("/sportslink-stadium.webp") center 54% / cover no-repeat;
 }
 .landing-hero::before{
   content:"";
@@ -323,7 +323,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   inset:0;
   z-index:0;
   pointer-events:none;
-  opacity:.64;
+  opacity:.18;
   background:
     linear-gradient(90deg,transparent 49.85%,#ffffff0d 49.95%,#ffffff0d 50.05%,transparent 50.15%),
     linear-gradient(0deg,transparent 49.85%,#ffffff08 49.95%,#ffffff08 50.05%,transparent 50.15%);
@@ -380,3 +380,5 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .profile-post-item small{display:block;margin-top:7px;color:var(--text-muted,#6b778c);font-size:11px}
 .public-member-profile .profile-overview-actions{max-width:100%}
 .public-member-profile .profile-overview-copy{overflow-wrap:anywhere}
+
+/* Background asset is served from the frontend public directory for efficient caching. */
