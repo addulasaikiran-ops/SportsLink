@@ -42,7 +42,7 @@ The app uses the Supabase project configured in `.env.local`. See [`docs/supabas
 
 Only a publishable key is used in browser-facing code. Never add a Supabase `service_role` or secret key to this project or any `NEXT_PUBLIC_` variable. Database tables have row-level security; keep RLS enabled and verify policies before adding client-side database features.
 
-The profile, Discover/My Network directory, and Home feed can optionally use the Spring Boot API by setting `NEXT_PUBLIC_USE_SPRING_API=true` in `.env.local`. Before enabling it, configure `SUPABASE_PUBLISHABLE_KEY` in the backend process environment and verify the profile/posts endpoints against live Supabase rows and RLS policies. The default is `false`, which preserves the current direct-Supabase behavior.
+The profile, Discover/My Network directory, Home feed and profile Follow buttons can optionally use the Spring Boot API by setting `NEXT_PUBLIC_USE_SPRING_API=true` in `.env.local`. Before enabling it, configure `SUPABASE_PUBLISHABLE_KEY` in the backend process environment and verify the profile/posts/follows endpoints against live Supabase rows and RLS policies. The default is `false`, which preserves the current direct-Supabase behavior.
 
 ## UI/UX standards
 
