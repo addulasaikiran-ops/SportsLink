@@ -4194,3 +4194,34 @@ input,textarea,select{max-width:100%;min-width:0}
     justify-content:flex-start;
   }
 }
+
+
+/* Compact icon-only theme switch across desktop and Android/mobile layouts. */
+.theme-toggle{
+  width:40px;
+  min-width:40px;
+  height:40px;
+  min-height:40px;
+  padding:0!important;
+  gap:0;
+  border-radius:12px!important;
+  flex:0 0 40px;
+}
+.theme-toggle-symbol svg{width:19px;height:19px}
+.theme-toggle-label{display:none!important}
+.topbar-inner .theme-toggle{margin-left:-10px}
+@media(max-width:800px){
+  .topbar-inner .theme-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:38px;
+    min-width:38px;
+    height:38px;
+    min-height:38px;
+    margin-left:0;
+    padding:0!important;
+    flex:0 0 38px;
+  }
+  .topbar-inner .theme-toggle-symbol svg{width:19px;height:19px}
+}
