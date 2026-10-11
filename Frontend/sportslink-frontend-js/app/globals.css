@@ -919,3 +919,19 @@ input,textarea,select{max-width:100%;min-width:0}
   html{scroll-behavior:auto}
   .app-root *,.public-site *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+
+
+/* Preserve the original two-column workspace breakpoint after the shared grid reset. */
+@media (min-width:851px) and (max-width:1200px){
+  .app-layout{grid-template-columns:225px minmax(0,1fr);max-width:1080px}
+  .right-rail{display:none}
+}
+/* Toolbar and segmented controls use clean surfaces rather than individual glass cards. */
+.post-actions button:not(:disabled),.composer-tools button:not(:disabled),
+.feed-filters button:not(:disabled),.tabs-row button:not(:disabled),
+.settings-nav button:not(:disabled),.password-field button:not(:disabled),
+.chat-composer button:not(.send-message):not(:disabled),.save-job:not(:disabled){
+  background-color:transparent;
+}
+.feed-filters button.filter-active{background:var(--surface);color:var(--blue)}
+.settings-nav button.settings-active{background:rgba(76,126,224,.13);color:var(--blue)}
