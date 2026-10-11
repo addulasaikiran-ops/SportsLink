@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Activity, ArrowUpRight, Compass, Search, Sparkles, UserPlus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
-import { Heading, SearchBox } from "./shared";
+import { SearchBox } from "./shared";
 
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
