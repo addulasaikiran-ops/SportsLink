@@ -261,4 +261,45 @@ class SportslinkBackendApplicationTests {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void profileDirectoryRejectsRequestsWithoutToken() throws Exception {
+        mockMvc.perform(get("/api/profiles"))
+                .andExpect(result -> assertTrue(
+                        result.getResponse().getStatus() == 401
+                                || result.getResponse().getStatus() == 403,
+                        "Expected an unauthenticated profile directory request to be rejected"));
+    }
+
+    @Test
+    void profileDirectoryReturnsProfilesVisibleUnderSupabaseRls() throws Exception {
+        JsonNode rows = objectMapper.readTree("""
+                [
+                  {
+                    "id": "another-user",
+                    "username": "coach-one",
+                    "full_name": "Coach One",
+                    "sport": "Football"
+                  }
+                ]
+                """);
+        when(supabaseRestClient.get(eq("/rest/v1/profiles"), any(Jwt.class), anyMap()))
+                .thenReturn(rows);
+
+        mockMvc.perform(get("/api/profiles").with(jwt()
+                        .jwt(jwt -> jwt.subject("user-123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("another-user"))
+                .andExpect(jsonPath("$[0].full_name").value("Coach One"));
+
+        verify(supabaseRestClient).get(
+                eq("/rest/v1/profiles"),
+                any(Jwt.class),
+                eq(Map.of(
+                        "id", "neq.user-123",
+                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at",
+                        "order", "created_at.desc",
+                        "limit", "100"
+                )));
+    }
+
 }
