@@ -36,10 +36,7 @@ class SportslinkBackendApplicationTests {
     private JsonMapper objectMapper;
 
     @MockitoBean
-    private SupabaseProfileService profileService;
-
-    @MockitoBean
-    private SupabasePostService postService;
+    private SupabaseRestClient supabaseRestClient;
 
     @Test
     void contextLoads() {
@@ -86,33 +83,45 @@ class SportslinkBackendApplicationTests {
     }
 
     @Test
-    void profileEndpointReturnsOnlyTheAuthenticatedUsersProfile() throws Exception {
-        JsonNode profile = objectMapper.readTree("""
-                {
-                  "id": "user-123",
-                  "username": "sporty-user",
-                  "full_name": "SPORTSLINK Member"
-                }
+    void profileEndpointReturnsCurrentUsersProfile() throws Exception {
+        JsonNode rows = objectMapper.readTree("""
+                [
+                  {
+                    "id": "user-123",
+                    "username": "sporty-user",
+                    "full_name": "SPORTSLINK Member"
+                  }
+                ]
                 """);
-        when(profileService.getMyProfile(any(Jwt.class))).thenReturn(profile);
+        when(supabaseRestClient.get(eq("/rest/v1/profiles"), any(Jwt.class), anyMap()))
+                .thenReturn(rows);
 
         mockMvc.perform(get("/api/profiles/me").with(jwt()
                         .jwt(jwt -> jwt.subject("user-123"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("user-123"))
                 .andExpect(jsonPath("$.full_name").value("SPORTSLINK Member"));
+
+        verify(supabaseRestClient).get(eq("/rest/v1/profiles"), any(Jwt.class),
+                eq(Map.of(
+                        "id", "eq.user-123",
+                        "select", "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at"
+                )));
     }
 
     @Test
-    void profileUpdateAcceptsOnlyEditableProfileFields() throws Exception {
-        JsonNode profile = objectMapper.readTree("""
-                {
-                  "id": "user-123",
-                  "full_name": "Updated Member",
-                  "headline": "Coach"
-                }
+    void profileUpdateCannotChangeRoleOrIdentityFields() throws Exception {
+        JsonNode rows = objectMapper.readTree("""
+                [
+                  {
+                    "id": "user-123",
+                    "full_name": "Updated Member",
+                    "headline": "Coach"
+                  }
+                ]
                 """);
-        when(profileService.updateMyProfile(any(Jwt.class), anyMap())).thenReturn(profile);
+        when(supabaseRestClient.patch(eq("/rest/v1/profiles"), any(Jwt.class), anyMap(), anyMap()))
+                .thenReturn(rows);
 
         mockMvc.perform(patch("/api/profiles/me")
                         .with(jwt().jwt(jwt -> jwt.subject("user-123")))
@@ -121,15 +130,26 @@ class SportslinkBackendApplicationTests {
                                 {
                                   "full_name": "Updated Member",
                                   "headline": "Coach",
-                                  "role": "admin"
+                                  "role": "admin",
+                                  "id": "another-user",
+                                  "username": "hacked"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("user-123"))
                 .andExpect(jsonPath("$.full_name").value("Updated Member"));
-        verify(profileService).updateMyProfile(any(Jwt.class), eq(java.util.Map.of(
-                "full_name", "Updated Member",
-                "headline", "Coach")));
+
+        verify(supabaseRestClient).patch(
+                eq("/rest/v1/profiles"),
+                any(Jwt.class),
+                eq(Map.of(
+                        "id", "eq.user-123",
+                        "select", "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at"
+                )),
+                eq(Map.of(
+                        "full_name", "Updated Member",
+                        "headline", "Coach"
+                )));
     }
 
     @Test
@@ -140,6 +160,7 @@ class SportslinkBackendApplicationTests {
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void postsFeedRejectsRequestsWithoutToken() throws Exception {
         mockMvc.perform(get("/api/posts"))
@@ -151,7 +172,7 @@ class SportslinkBackendApplicationTests {
 
     @Test
     void postsFeedReturnsPostsForAuthenticatedUser() throws Exception {
-        JsonNode posts = objectMapper.readTree("""
+        JsonNode rows = objectMapper.readTree("""
                 [
                   {
                     "id": "post-1",
@@ -161,7 +182,8 @@ class SportslinkBackendApplicationTests {
                   }
                 ]
                 """);
-        when(postService.getFeed(any(Jwt.class))).thenReturn(posts);
+        when(supabaseRestClient.get(eq("/rest/v1/posts"), any(Jwt.class), anyMap()))
+                .thenReturn(rows);
 
         mockMvc.perform(get("/api/posts").with(jwt()
                         .jwt(jwt -> jwt.subject("user-123"))))
@@ -171,23 +193,26 @@ class SportslinkBackendApplicationTests {
     }
 
     @Test
-    void creatingPostReturnsCreatedAndUsesAuthenticatedRequest() throws Exception {
-        JsonNode createdPost = objectMapper.readTree("""
-                {
-                  "id": "post-2",
-                  "author_id": "user-123",
-                  "content": "My first post",
-                  "visibility": "public"
-                }
+    void creatingPostUsesAuthenticatedUserRatherThanSubmittedAuthorId() throws Exception {
+        JsonNode rows = objectMapper.readTree("""
+                [
+                  {
+                    "id": "post-2",
+                    "author_id": "user-123",
+                    "content": "My first post",
+                    "visibility": "public"
+                  }
+                ]
                 """);
-        when(postService.createPost(any(Jwt.class), any(CreatePostRequest.class))).thenReturn(createdPost);
+        when(supabaseRestClient.post(eq("/rest/v1/posts"), any(Jwt.class), anyMap(), anyMap()))
+                .thenReturn(rows);
 
         mockMvc.perform(post("/api/posts")
                         .with(jwt().jwt(jwt -> jwt.subject("user-123")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "content": "My first post",
+                                  "content": "  My first post  ",
                                   "visibility": "public",
                                   "author_id": "another-user"
                                 }
@@ -195,6 +220,16 @@ class SportslinkBackendApplicationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("post-2"))
                 .andExpect(jsonPath("$.author_id").value("user-123"));
+
+        verify(supabaseRestClient).post(
+                eq("/rest/v1/posts"),
+                any(Jwt.class),
+                eq(Map.of("select", "id,author_id,content,visibility,created_at,author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role)")),
+                eq(Map.of(
+                        "author_id", "user-123",
+                        "content", "My first post",
+                        "visibility", "public"
+                )));
     }
 
     @Test
@@ -224,5 +259,4 @@ class SportslinkBackendApplicationTests {
                                 """))
                 .andExpect(status().isBadRequest());
     }
-
 }
