@@ -54,13 +54,9 @@ If the confirmation email doesn't arrive, check spam and the project's Auth emai
 
 ## Current integration scope
 
-- Real Supabase email/password signup and login.
-- PKCE confirmation callback exchange and cookie-backed SSR session handling.
-- Protected workspace routes via Next.js middleware.
-- Logout through Supabase Auth.
-- The workspace shell and profile page read the signed-in user's profile.
-- The home feed reads `posts` with the related author profile; RLS controls visible rows.
-- Authenticated users can create public text posts; the author ID comes from the current Supabase user.
-- Search and discovery show only profile rows returned under the current RLS policies.
-
-Connections, comments, reactions, messaging, notifications, opportunities, events, organizations, and settings are not connected to database tables yet. Those pages show empty or unavailable states rather than sample records. Profile and post visibility still depends on the project's deployed RLS policies; verify those policies in the Dashboard before production use.
+- Real Supabase email/password signup and login, PKCE confirmation callback, cookie-backed SSR sessions, protected routes, and logout.
+- Profiles and public posts are stored in Supabase; profile edits and password changes save through Supabase Auth/Postgres.
+- Photo and video attachments (up to five per post and 50 MB per file) are uploaded to the private `post-media` Storage bucket. Only a post's author or viewers allowed by the post visibility policy can request a signed media URL.
+- Event creation, listing, and cancellation are backed by `public.events`; the creator is recorded from the authenticated user, and RLS restricts edits/cancellations to that creator.
+- Search/discovery and feed visibility continue to rely on deployed Supabase row-level security policies.
+- Reactions, comments, messaging, notifications, opportunities, and organizations are still not fully connected to interactive database-backed pages. Do not treat the UI as production-ready for those workflows until they are implemented and tested.
