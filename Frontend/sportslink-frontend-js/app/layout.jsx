@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
+import Script from "next/script";
 export const metadata = {
   title: { default: "SPORTSLINK — Your world of sport, connected", template: "%s | SPORTSLINK" },
   description: "A professional network for athletes, coaches, scouts, clubs, and sports professionals.",
@@ -14,5 +15,5 @@ export const metadata = {
   robots: { index: false, follow: false }
 };
 export default function RootLayout({ children }) {
-  return <html lang="en"><body><AppShell>{children}</AppShell></body></html>;
+  return <html lang="en" suppressHydrationWarning><body><Script id="sportslink-theme-init" strategy="beforeInteractive">{`try{const t=localStorage.getItem("sportslink-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}`}</Script><AppShell>{children}</AppShell></body></html>;
 }
