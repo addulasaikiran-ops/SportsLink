@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Activity, Compass, Search, Sparkles, UserPlus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
-import { SearchBox } from "./shared";
+import { Heading, SearchBox } from "./shared";
 
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
@@ -109,16 +109,13 @@ export function DirectoryPage({ section, initialQuery = "" }) {
   const filteredProfiles = visibleProfiles.filter((profile) => sport === "All sports" || profile.sport === sport);
 
   return <div className={`page-stack directory-page ${isNetwork ? "network-page" : "discover-page"}`}>
-    <section className="directory-hero">
-      <div className="directory-hero-copy">
-        <p className="directory-hero-kicker"><Sparkles size={14}/>{isNetwork ? "BUILD YOUR CIRCLE" : "EXPAND YOUR HORIZON"}</p>
-        <h1>{isNetwork ? "My Network" : "Discover"}</h1>
-        <p>{isNetwork
-          ? (USE_SPRING_API ? "Discover public profiles and follow people in the SPORTSLINK community." : "Public profiles visible to your account. Connection requests are not connected yet.")
-          : "Search public SPORTSLINK profiles."}</p>
-      </div>
-      <div className="directory-hero-art" aria-hidden="true"><span className="directory-orbit directory-orbit-one"/><span className="directory-orbit directory-orbit-two"/><span className="directory-hero-icon">{isNetwork ? <Users size={35}/> : <Compass size={35}/>}</span></div>
-    </section>
+    <Heading
+      eyebrow={isNetwork ? "BUILD YOUR CIRCLE" : "EXPAND YOUR HORIZON"}
+      title={isNetwork ? "My Network" : "Discover"}
+      subtitle={isNetwork
+        ? (USE_SPRING_API ? "Discover public profiles and follow people in the SPORTSLINK community." : "Public profiles visible to your account. Connection requests are not connected yet.")
+        : "Search public SPORTSLINK profiles."}
+    />
     <div className="toolbar-row directory-toolbar"><SearchBox value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isNetwork ? "Search public profiles" : "Search by name, sport, or expertise"}/>
       {isNetwork && <button className="button button-secondary directory-clear" type="button" onClick={() => setQuery("")}>Clear</button>}
     </div>
