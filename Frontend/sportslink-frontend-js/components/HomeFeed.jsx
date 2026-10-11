@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Activity, ArrowUpRight, Bookmark, CalendarDays, Image as ImageIcon, MessageCircle, MoreHorizontal, Repeat2, Send, Sparkles, ThumbsUp, Trophy, Users, Video } from "lucide-react";
+import { Activity, ArrowUpRight, Bookmark, CalendarDays, Image as ImageIcon, MessageCircle, MoreHorizontal, Repeat2, Send, Sparkles, ThumbsUp, Trash2, Trophy, Users, Video } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
 
@@ -127,6 +127,7 @@ export function HomeFeed() {
   const [commentSubmitting, setCommentSubmitting] = useState({});
   const [reactionSubmitting, setReactionSubmitting] = useState({});
   const [interactionErrors, setInteractionErrors] = useState({});
+  const [deleteSubmitting, setDeleteSubmitting] = useState({});
   const photoInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const commentInputRefs = useRef({});
@@ -313,6 +314,51 @@ export function HomeFeed() {
     }
   }
 
+  async function deletePost(post) {
+    if (!supabase || !currentUser || post.author_id !== currentUser.id) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "You can only delete posts created by your account." }));
+      return;
+    }
+    if (!window.confirm("Delete this post? This also removes its comments and reactions. This cannot be undone.")) return;
+
+    setDeleteSubmitting((current) => ({ ...current, [post.id]: true }));
+    setInteractionErrors((current) => ({ ...current, [post.id]: "" }));
+    setNotice("");
+    try {
+      const { data: mediaRows, error: mediaQueryError } = await supabase
+        .from("post_media")
+        .select("media_url")
+        .eq("post_id", post.id);
+      if (mediaQueryError) throw mediaQueryError;
+
+      // Supabase Row Level Security independently enforces posts_delete_self.
+      const { data: deletedRows, error: deleteError } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", post.id)
+        .eq("author_id", currentUser.id)
+        .select("id");
+      if (deleteError) throw deleteError;
+      if (!deletedRows?.length) throw new Error("This post was not deleted. You can only delete your own posts.");
+
+      setPosts((current) => current.filter((item) => item.id !== post.id));
+      setNotice("Your post was deleted.");
+
+      const mediaPaths = [...new Set((mediaRows || []).map((item) => item.media_url).filter(Boolean))];
+      if (mediaPaths.length) {
+        const { error: storageError } = await supabase.storage.from("post-media").remove(mediaPaths);
+        if (storageError) {
+          console.warn("Post deleted but attached storage media could not be cleaned up.", storageError);
+          setNotice("Your post was deleted, but one or more media files could not be cleaned up.");
+        }
+      }
+    } catch (error) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: getErrorMessage(error, "Unable to delete your post.") }));
+    } finally {
+      setDeleteSubmitting((current) => ({ ...current, [post.id]: false }));
+    }
+  }
+
   async function refreshPostInteractions(postId) {
     if (!supabase) return;
     const interactionData = await loadPostInteractions(supabase, [postId]);
@@ -407,7 +453,7 @@ export function HomeFeed() {
       const author = post.author || {};
       const authorName = author.full_name || author.username || "SPORTSLINK Member";
       const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
-      return <article className="post-card card" key={post.id} id={`post-${post.id}`}><div className="post-head"><Avatar url={author.avatar_url} name={authorName}/><div className="post-author"><div className="author-name">{authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div><button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button></div>{post.content&&<div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div>}<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>{(post.reactions||[]).length} {(post.reactions||[]).length===1?"reaction":"reactions"} · {(post.comments||[]).length} {(post.comments||[]).length===1?"comment":"comments"}</span></div><div className="post-actions"><button type="button" onClick={()=>toggleLike(post)} disabled={!!reactionSubmitting[post.id]} aria-pressed={(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")} style={{color:(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"#2563eb":undefined}}><ThumbsUp/>{reactionSubmitting[post.id]?"Saving…":(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"Liked":"Like"}</button><button type="button" onClick={()=>commentInputRefs.current[post.id]?.focus()}><MessageCircle/>Comment</button><button type="button" disabled title="Reposting is not connected yet"><Repeat2/>Repost</button><button type="button" disabled title="Sharing is not connected yet"><Send/>Send</button><button type="button" disabled aria-label="Save post" title="Bookmarks are not connected yet"><Bookmark/></button></div>{interactionErrors[post.id]&&<p className="auth-error" role="alert" style={{margin:"8px 0"}}>{interactionErrors[post.id]}</p>}<section className="post-comments" aria-label="Comments" style={{marginTop:12,borderTop:"1px solid var(--border,#e2e8f0)",paddingTop:12}}>{(post.comments||[]).slice(-10).map(comment=>{const author=comment.author||{};const name=author.full_name||author.username||(comment.author_id===currentUser?.id?currentUser?.name:"SPORTSLINK member");return <div key={comment.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"8px 0"}}><Avatar url={author.avatar_url} name={name}/><div style={{flex:1,minWidth:0,borderRadius:12,padding:"9px 12px",background:"var(--surface-muted,#f8fafc)"}}><div style={{display:"flex",gap:8,alignItems:"baseline",flexWrap:"wrap"}}><strong style={{fontSize:13}}>{name}</strong><small style={{color:"var(--muted-foreground,#64748b)"}}>{formatPostTime(comment.created_at)}</small></div><p style={{margin:"4px 0 0",whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{comment.content}</p></div></div>})}{!(post.comments||[]).length&&<p style={{fontSize:13,color:"var(--muted-foreground,#64748b)",margin:"4px 0 10px"}}>No comments yet. Start the conversation.</p>}<form onSubmit={(event)=>submitComment(post,event)} style={{display:"flex",gap:8,alignItems:"center",marginTop:8}}><input ref={element=>{commentInputRefs.current[post.id]=element;}} value={commentDrafts[post.id]||""} onChange={event=>setCommentDrafts(current=>({...current,[post.id]:event.target.value}))} maxLength={2000} placeholder="Write a comment…" aria-label="Write a comment" style={{flex:1,minWidth:0,border:"1px solid var(--border,#cbd5e1)",borderRadius:10,padding:"10px 12px",background:"var(--surface,#fff)",color:"inherit"}}/><button className="button button-primary" type="submit" disabled={!!commentSubmitting[post.id]||!(commentDrafts[post.id]||"").trim()}>{commentSubmitting[post.id]?"Sending…":"Comment"}</button></form></section></article>;
+      return <article className="post-card card" key={post.id} id={`post-${post.id}`}><div className="post-head">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="post-avatar-link" aria-label={`View ${authorName}'s profile`}><Avatar url={author.avatar_url} name={authorName}/></Link> : <Avatar url={author.avatar_url} name={authorName}/>}<div className="post-author"><div className="author-name">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="author-profile-link">{authorName}</Link> : authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div>{post.author_id === currentUser?.id ? <button className="subtle-icon" type="button" aria-label="Delete your post" title="Delete your post" disabled={Boolean(deleteSubmitting[post.id])} onClick={() => deletePost(post)}>{deleteSubmitting[post.id] ? <Activity size={18} className="spin"/> : <Trash2 size={18}/>}</button> : <button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button>}</div>{post.content&&<div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div>}<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>{(post.reactions||[]).length} {(post.reactions||[]).length===1?"reaction":"reactions"} · {(post.comments||[]).length} {(post.comments||[]).length===1?"comment":"comments"}</span></div><div className="post-actions"><button type="button" onClick={()=>toggleLike(post)} disabled={!!reactionSubmitting[post.id]} aria-pressed={(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")} style={{color:(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"#2563eb":undefined}}><ThumbsUp/>{reactionSubmitting[post.id]?"Saving…":(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"Liked":"Like"}</button><button type="button" onClick={()=>commentInputRefs.current[post.id]?.focus()}><MessageCircle/>Comment</button><button type="button" disabled title="Reposting is not connected yet"><Repeat2/>Repost</button><button type="button" disabled title="Sharing is not connected yet"><Send/>Send</button><button type="button" disabled aria-label="Save post" title="Bookmarks are not connected yet"><Bookmark/></button></div>{interactionErrors[post.id]&&<p className="auth-error" role="alert" style={{margin:"8px 0"}}>{interactionErrors[post.id]}</p>}<section className="post-comments" aria-label="Comments" style={{marginTop:12,borderTop:"1px solid var(--border,#e2e8f0)",paddingTop:12}}>{(post.comments||[]).slice(-10).map(comment=>{const author=comment.author||{};const name=author.full_name||author.username||(comment.author_id===currentUser?.id?currentUser?.name:"SPORTSLINK member");return <div key={comment.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"8px 0"}}><Avatar url={author.avatar_url} name={name}/><div style={{flex:1,minWidth:0,borderRadius:12,padding:"9px 12px",background:"var(--surface-muted,#f8fafc)"}}><div style={{display:"flex",gap:8,alignItems:"baseline",flexWrap:"wrap"}}><strong style={{fontSize:13}}>{comment.author?.id ? <Link href={`/members/${encodeURIComponent(comment.author.id)}`} className="author-profile-link">{name}</Link> : name}</strong><small style={{color:"var(--muted-foreground,#64748b)"}}>{formatPostTime(comment.created_at)}</small></div><p style={{margin:"4px 0 0",whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{comment.content}</p></div></div>})}{!(post.comments||[]).length&&<p style={{fontSize:13,color:"var(--muted-foreground,#64748b)",margin:"4px 0 10px"}}>No comments yet. Start the conversation.</p>}<form onSubmit={(event)=>submitComment(post,event)} style={{display:"flex",gap:8,alignItems:"center",marginTop:8}}><input ref={element=>{commentInputRefs.current[post.id]=element;}} value={commentDrafts[post.id]||""} onChange={event=>setCommentDrafts(current=>({...current,[post.id]:event.target.value}))} maxLength={2000} placeholder="Write a comment…" aria-label="Write a comment" style={{flex:1,minWidth:0,border:"1px solid var(--border,#cbd5e1)",borderRadius:10,padding:"10px 12px",background:"var(--surface,#fff)",color:"inherit"}}/><button className="button button-primary" type="submit" disabled={!!commentSubmitting[post.id]||!(commentDrafts[post.id]||"").trim()}>{commentSubmitting[post.id]?"Sending…":"Comment"}</button></form></section></article>;
     })}</div>}
   </div>;
 }

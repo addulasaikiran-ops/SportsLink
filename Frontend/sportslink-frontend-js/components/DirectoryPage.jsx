@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Activity, Search, UserPlus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -128,9 +129,10 @@ export function DirectoryPage({ section, initialQuery = "" }) {
               <div className="person-cover" />
               <ProfileAvatar profile={profile} name={name} />
               <div className="person-card-body">
-                <h3>{name}</h3>
+                <h3><Link href={`/members/${encodeURIComponent(profile.id)}`} className="author-profile-link">{name}</Link></h3>
                 {profile.headline && <p>{profile.headline}</p>}
                 {(profile.sport || profile.role) && <small>{[profile.sport, profile.role].filter(Boolean).join(" · ")}</small>}
+                <Link className="button button-primary button-full" style={{ marginTop: 8 }} href={`/members/${encodeURIComponent(profile.id)}`}>View profile</Link>
                 {USE_SPRING_API
                   ? <button className="button button-outline button-full" type="button" disabled={followBusyId === profile.id} onClick={() => toggleFollow(profile.id)}><UserPlus size={15}/>{followBusyId === profile.id ? "Saving…" : followingIds.has(profile.id) ? "Following" : "Follow"}</button>
                   : <button className="button button-outline button-full" type="button" disabled title="Connection requests are not backed by a database table yet"><UserPlus size={15}/> Connect</button>}
