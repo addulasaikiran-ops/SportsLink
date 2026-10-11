@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Activity, ArrowUpRight, Compass, Search, Sparkles, UserPlus, Users } from "lucide-react";
+import { Activity, Compass, Search, Sparkles, UserPlus, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
 import { SearchBox } from "./shared";
@@ -111,42 +111,36 @@ export function DirectoryPage({ section, initialQuery = "" }) {
   return <div className={`page-stack directory-page ${isNetwork ? "network-page" : "discover-page"}`}>
     <section className="directory-hero">
       <div className="directory-hero-copy">
-        <p className="directory-hero-kicker"><Sparkles size={14}/>{isNetwork ? "YOUR SPORTING CIRCLE" : "MEET THE SPORTS COMMUNITY"}</p>
-        <h1>{isNetwork ? <>Build your <span>network.</span></> : <>Discover your <span>next connection.</span></>}</h1>
+        <p className="directory-hero-kicker"><Sparkles size={14}/>{isNetwork ? "BUILD YOUR CIRCLE" : "EXPAND YOUR HORIZON"}</p>
+        <h1>{isNetwork ? "My Network" : "Discover"}</h1>
         <p>{isNetwork
-          ? (USE_SPRING_API ? "Find athletes, coaches, scouts and sports professionals. Follow members to stay close to their journey." : "Explore member profiles and find people who share your sport, goals and interests.")
-          : "Find people by name, sport or expertise and explore the real profiles behind the SPORTSLINK community."}</p>
-        <div className="directory-hero-note"><Users size={15}/><span>Real member profiles · Filter by sport · No sample listings</span></div>
+          ? (USE_SPRING_API ? "Discover public profiles and follow people in the SPORTSLINK community." : "Public profiles visible to your account. Connection requests are not connected yet.")
+          : "Search public SPORTSLINK profiles."}</p>
       </div>
-      <div className="directory-hero-art" aria-hidden="true"><span className="directory-orbit directory-orbit-one"/><span className="directory-orbit directory-orbit-two"/><span className="directory-hero-icon">{isNetwork ? <Users size={35}/> : <Compass size={35}/>}</span><span className="directory-art-dot directory-art-dot-one"/><span className="directory-art-dot directory-art-dot-two"/></div>
+      <div className="directory-hero-art" aria-hidden="true"><span className="directory-orbit directory-orbit-one"/><span className="directory-orbit directory-orbit-two"/><span className="directory-hero-icon">{isNetwork ? <Users size={35}/> : <Compass size={35}/>}</span></div>
     </section>
-    <section className="directory-controls card" aria-label="Search and filter members">
-      <div className="directory-search-row">
-        <SearchBox value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isNetwork ? "Search people by name, sport or role…" : "Search by name, sport or expertise…"}/>
-        {isNetwork && <button className="button button-secondary directory-clear" type="button" onClick={() => { setQuery(""); setSport("All sports"); }}>Reset filters</button>}
-        <span className="directory-result-count">{filteredProfiles.length} <small>{filteredProfiles.length === 1 ? "profile" : "profiles"}</small></span>
-      </div>
-      <div className="directory-filter-heading"><span>Explore by sport</span><small>{sports.length - 1} {sports.length - 1 === 1 ? "sport" : "sports"} represented</small></div>
-      <div className="chip-row directory-sport-chips" role="group" aria-label="Filter by sport">{sports.map((item) => <button key={item} type="button" className={`chip ${sport === item ? "chip-active" : ""}`} aria-pressed={sport === item} onClick={() => setSport(item)}>{item}</button>)}</div>
-    </section>
-    {isNetwork && <div className="directory-capability-note"><UserPlus size={16}/><p>{USE_SPRING_API ? "Following is available where shown on a member card. Formal connection invitations are not available yet." : "Profile browsing is available now. Follow and connection requests will be added when the connection service is enabled."}</p></div>}
+    <div className="toolbar-row directory-toolbar"><SearchBox value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isNetwork ? "Search public profiles" : "Search by name, sport, or expertise"}/>
+      {isNetwork && <button className="button button-secondary directory-clear" type="button" onClick={() => setQuery("")}>Clear</button>}
+    </div>
+    <div className="chip-row directory-sport-chips" role="group" aria-label="Filter by sport">{sports.map((item) => <button key={item} type="button" className={`chip ${sport === item ? "chip-active" : ""}`} aria-pressed={sport === item} onClick={() => setSport(item)}>{item}</button>)}</div>
+    {isNetwork && <p className="inline-notice directory-capability-note" role="status">{USE_SPRING_API ? "Following uses the existing follows feature. Connection invitations are a separate feature and are not implemented yet." : "Connection and invitation records are not available in the current database schema."}</p>}
     {error && <div className="inline-notice directory-error" role="alert"><p>{error}</p><button className="button button-secondary" type="button" disabled={!client || loading} onClick={() => client && loadProfiles(client)}>{loading ? "Loading…" : "Retry"}</button></div>}
-    {loading ? <div className="directory-loading card" role="status"><Activity/><h3>Finding your sports community…</h3><p>Loading profiles visible to your account.</p></div>
+    {loading ? <div className="empty-state card" role="status"><Activity/><h3>Loading public profiles…</h3></div>
       : error ? null
-        : filteredProfiles.length === 0 ? <div className="directory-empty card"><span className="directory-empty-icon"><Search size={24}/></span><h2>{profiles.length ? "No profiles match those filters" : "Your directory is waiting for its first members"}</h2><p>{profiles.length ? "Try another name, role or sport, or reset the filters to explore all available profiles." : "No public profiles are available under your current account access yet. New members will appear here when their profiles are available."}</p>{(query || sport !== "All sports") && <button className="button button-secondary" type="button" onClick={() => { setQuery(""); setSport("All sports"); }}>Clear search and filters <ArrowUpRight size={15}/></button>}</div>
+        : filteredProfiles.length === 0 ? <div className="empty-state card"><Search/><h3>{profiles.length ? "No profiles match" : "No public profiles available"}</h3><p>{profiles.length ? "Try a different name, role, sport, or location." : "Only profiles visible under your account's current RLS policies appear here."}</p></div>
           : <div className="people-grid directory-people-grid">{filteredProfiles.map((profile) => {
             const name = profile.full_name || profile.username || "SPORTSLINK Member";
             return <article className="person-card card directory-person-card" key={profile.id}>
-              <div className="person-cover directory-person-cover"><span>{profile.sport || "SPORTSLINK MEMBER"}</span></div>
+              <div className="person-cover directory-person-cover" />
               <ProfileAvatar profile={profile} name={name} />
               <div className="person-card-body">
                 <h3><Link href={`/members/${encodeURIComponent(profile.id)}`} className="author-profile-link">{name}</Link></h3>
-                <p className="directory-member-headline">{profile.headline || "SPORTSLINK community member"}</p>
+                {profile.headline && <p className="directory-member-headline">{profile.headline}</p>}
                 {(profile.sport || profile.role) && <small className="directory-member-meta">{[profile.sport, profile.role].filter(Boolean).join(" · ")}</small>}
-                <Link className="button button-primary button-full directory-view-profile" href={`/members/${encodeURIComponent(profile.id)}`}>View profile <ArrowUpRight size={14}/></Link>
+                <Link className="button button-primary button-full directory-view-profile" href={`/members/${encodeURIComponent(profile.id)}`}>View profile</Link>
                 {USE_SPRING_API
                   ? <button className="button button-outline button-full directory-follow" type="button" disabled={followBusyId === profile.id} onClick={() => toggleFollow(profile.id)}><UserPlus size={15}/>{followBusyId === profile.id ? "Saving…" : followingIds.has(profile.id) ? "Following" : "Follow"}</button>
-                  : <button className="button button-outline button-full directory-follow" type="button" disabled title="Follow and connection requests are not enabled in this deployment"><UserPlus size={15}/>Connect soon</button>}
+                  : <button className="button button-outline button-full directory-follow" type="button" disabled title="Connection requests are not backed by a database table yet"><UserPlus size={15}/>Connect</button>}
               </div>
             </article>;
           })}</div>}
