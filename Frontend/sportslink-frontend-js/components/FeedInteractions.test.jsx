@@ -33,7 +33,7 @@ test("prevents repeated submits while in flight and handles helper authenticatio
   assert.match(component, /if \(commentBusy\) return/);
   assert.match(component, /backendRequest/);
   assert.match(component, /Your session is invalid or expired/);
-  assert.match(component, /Please sign in to comment\\./);
+  assert.match(component, /Sign in to comment/);
 });
 
 test("HomeFeed wires interactions per post without enabling the global Spring API flag", () => {
