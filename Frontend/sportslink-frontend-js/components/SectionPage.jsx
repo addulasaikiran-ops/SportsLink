@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Activity, ArrowUpRight, Building2, CalendarDays, Compass, Settings, PlusCircle, Trophy, RefreshCw, Save, ShieldCheck, Sparkles, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
+import { Activity, Building2, CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 
