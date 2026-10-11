@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -114,12 +116,16 @@ class SportslinkBackendApplicationTests {
                         .content("""
                                 {
                                   "full_name": "Updated Member",
-                                  "headline": "Coach"
+                                  "headline": "Coach",
+                                  "role": "admin"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("user-123"))
                 .andExpect(jsonPath("$.full_name").value("Updated Member"));
+        verify(profileService).updateMyProfile(any(Jwt.class), eq(java.util.Map.of(
+                "full_name", "Updated Member",
+                "headline", "Coach")));
     }
 
     @Test
