@@ -1075,7 +1075,6 @@ input,textarea,select{max-width:100%;min-width:0}
   .auth-main-signup{padding-inline:10px}
   .auth-form-wrap-signup{padding:20px 14px}
   .auth-form-wrap-signup .signup-heading{margin-bottom:17px}
-  .signup-divider{gap:8px;font-size:8px;letter-spacing:1px}
 }
 :root[data-theme="dark"] .auth-form-wrap-signup{background:rgba(13,24,40,.86)}
 :root[data-theme="dark"] .auth-form-wrap-signup .signup-consent{background:rgba(132,159,202,.08)}
