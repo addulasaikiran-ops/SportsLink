@@ -10,7 +10,7 @@ import { Heading, Notice } from "./shared";
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
 function EmptyWorkspacePage({ title, eyebrow, subtitle, icon: Icon, message }) {
-  return <div className="page-stack">
+  return <div className={`page-stack ${title === "Opportunities" ? "opportunities-page" : ""}`}>
     <Heading eyebrow={eyebrow} title={title} subtitle={subtitle}/>
     <div className="empty-state card"><Icon/><h2>{message}</h2><p>This feature has no connected data source yet. No sample records are shown.</p></div>
   </div>;
