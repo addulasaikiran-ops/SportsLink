@@ -1,14 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays, Plus } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Bookmark, Menu, X, CalendarDays, Plus } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 const nav = [
   ["/home","Home",Home],["/network","My Network",Users],["/discover","Discover",Compass],
   ["/opportunities","Opportunities",BriefcaseBusiness],["/messages","Messaging",MessageCircle],
-  ["/notifications","Notifications",Bell],["/organizations","Organizations",Building2],["/events","Events",CalendarDays],["/settings","Settings",Settings]
+  ["/notifications","Notifications",Bell],["/bookmarks","Bookmarks",Bookmark],["/organizations","Organizations",Building2],["/events","Events",CalendarDays],["/settings","Settings",Settings]
 ];
 function MemberAvatar({ url, name, className }) {
   if (url) return <img className={className} src={url} alt=""/>;
