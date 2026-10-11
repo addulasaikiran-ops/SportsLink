@@ -522,7 +522,10 @@ function initials(name) {
 function ProfileAvatar({ profile, name }) {
   return profile.avatar_url
     ? <img className="avatar avatar-profile-large" src={profile.avatar_url} alt="" />
-    : <span className="avatar avatar-profile-large avatar-initials" aria-hexport function ProfilePage() {
+    : <span className="avatar avatar-profile-large avatar-initials" aria-hidden="true">{initials(name)}</span>;
+}
+
+export function ProfilePage() {
   const [client, setClient] = useState(null);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
