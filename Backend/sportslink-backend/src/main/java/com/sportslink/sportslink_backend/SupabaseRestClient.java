@@ -1,0 +1,128 @@
+package com.sportslink.sportslink_backend;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import tools.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
+
+@Service
+public class SupabaseRestClient {
+
+    private final RestClient restClient;
+    private final String publishableKey;
+
+    public SupabaseRestClient(
+            @Value("${sportslink.supabase.url}") String supabaseUrl,
+            @Value("${sportslink.supabase.publishable-key:}") String publishableKey) {
+        this.restClient = RestClient.builder()
+                .baseUrl(supabaseUrl.replaceAll("/+$", ""))
+                .build();
+        this.publishableKey = publishableKey;
+    }
+
+    public JsonNode get(String path, Jwt jwt, Map<String, String> query) {
+        ensureConfigured();
+        try {
+            return restClient.get()
+                    .uri(uriBuilder -> {
+                        uriBuilder.path(path);
+                        query.forEach(uriBuilder::queryParam);
+                        return uriBuilder.build();
+                    })
+                    .headers(headers -> setUserHeaders(headers, jwt))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(JsonNode.class);
+        } catch (RestClientResponseException exception) {
+            throw upstreamFailure(exception);
+        } catch (RestClientException exception) {
+            throw unreachable();
+        }
+    }
+
+    public JsonNode post(String path, Jwt jwt, Map<String, String> query, Map<String, Object> body) {
+        ensureConfigured();
+        try {
+            return restClient.post()
+                    .uri(uriBuilder -> {
+                        uriBuilder.path(path);
+                        query.forEach(uriBuilder::queryParam);
+                        return uriBuilder.build();
+                    })
+                    .headers(headers -> {
+                        setUserHeaders(headers, jwt);
+                        headers.set("Prefer", "return=representation");
+                    })
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(body)
+                    .retrieve()
+                    .body(JsonNode.class);
+        } catch (RestClientResponseException exception) {
+            throw upstreamFailure(exception);
+        } catch (RestClientException exception) {
+            throw unreachable();
+        }
+    }
+
+    public JsonNode patch(String path, Jwt jwt, Map<String, String> query, Map<String, Object> body) {
+        ensureConfigured();
+        try {
+            return restClient.patch()
+                    .uri(uriBuilder -> {
+                        uriBuilder.path(path);
+                        query.forEach(uriBuilder::queryParam);
+                        return uriBuilder.build();
+                    })
+                    .headers(headers -> {
+                        setUserHeaders(headers, jwt);
+                        headers.set("Prefer", "return=representation");
+                    })
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(body)
+                    .retrieve()
+                    .body(JsonNode.class);
+        } catch (RestClientResponseException exception) {
+            throw upstreamFailure(exception);
+        } catch (RestClientException exception) {
+            throw unreachable();
+        }
+    }
+
+    private void setUserHeaders(HttpHeaders headers, Jwt jwt) {
+        headers.set("apikey", publishableKey);
+        headers.setBearerAuth(jwt.getTokenValue());
+    }
+
+    private void ensureConfigured() {
+        if (publishableKey == null || publishableKey.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Supabase REST APIs are not configured. Set SUPABASE_PUBLISHABLE_KEY in the backend environment.");
+        }
+    }
+
+    private ResponseStatusException upstreamFailure(RestClientResponseException exception) {
+        return new ResponseStatusException(
+                HttpStatus.BAD_GATEWAY,
+                "Supabase REST request failed (HTTP " + exception.getStatusCode().value()
+                        + "). Check the requested resource and its Row Level Security policies.");
+    }
+
+    private ResponseStatusException unreachable() {
+        return new ResponseStatusException(
+                HttpStatus.BAD_GATEWAY,
+                "Unable to reach the Supabase REST API. Verify SUPABASE_URL and network connectivity.");
+    }
+}
