@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays, Plus, UserRound } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays, Plus } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
