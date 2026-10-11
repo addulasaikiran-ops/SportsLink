@@ -303,6 +303,70 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 @media(prefers-reduced-motion:reduce){.public-site *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 
+/* Landing hero: premium sports-arena atmosphere with pitch-inspired linework */
+.landing-hero{
+  position:relative;
+  isolation:isolate;
+  max-width:none;
+  width:100%;
+  min-height:610px;
+  padding:78px max(30px,calc((100vw - 1180px)/2)) 64px;
+  color:#f7faff;
+  background:
+    radial-gradient(ellipse at 77% 43%,rgba(43,103,226,.34) 0%,transparent 43%),
+    radial-gradient(ellipse at 9% 0%,rgba(38,92,198,.24) 0%,transparent 37%),
+    linear-gradient(115deg,#09152b 0%,#10264c 52%,#0a1730 100%);
+}
+.landing-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.64;
+  background:
+    linear-gradient(90deg,transparent 49.85%,#ffffff0d 49.95%,#ffffff0d 50.05%,transparent 50.15%),
+    linear-gradient(0deg,transparent 49.85%,#ffffff08 49.95%,#ffffff08 50.05%,transparent 50.15%);
+}
+.landing-hero::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:-150px;
+  right:3%;
+  width:min(58vw,690px);
+  aspect-ratio:1;
+  border:1px solid #ffffff20;
+  border-radius:50%;
+  box-shadow:0 0 0 48px #ffffff06,0 0 0 98px #ffffff05,0 0 0 158px #ffffff03;
+  pointer-events:none;
+}
+.landing-hero-copy{z-index:2}
+.landing-visual{z-index:1}
+.landing-hero h1{color:#f7faff}
+.landing-hero h1 span{color:#8db9ff}
+.landing-hero .public-eyebrow{color:#b5cbff}
+.landing-lede{color:#c0cbe0}
+.landing-proof b{color:#f3f7ff}
+.landing-proof small{color:#aebbd2}
+.landing-proof .proof-avatars{background:#ffffff0d;border-color:#ffffff30;color:#a9c8ff}
+.landing-hero .visual-glow{
+  width:min(350px,82%);
+  height:min(350px,82vw);
+  aspect-ratio:1;
+  background:radial-gradient(circle,rgba(64,119,231,.32) 0%,rgba(31,66,132,.2) 44%,rgba(7,19,42,0) 73%);
+}
+.landing-hero .visual-orbit{border-color:#ffffff2b}
+.landing-hero .orbit-two{border-color:#ffffff1b}
+@media(max-width:800px){
+  .landing-hero{min-height:auto}
+  .landing-hero::after{top:36%;right:-18%;width:78vw}
+}
+@media(max-width:480px){
+  .landing-hero{padding-left:20px;padding-right:20px}
+  .landing-hero::after{top:43%;right:-35%;width:100vw}
+}
+
 /* Public member profiles and post-owner actions */
 .post-avatar-link{display:inline-flex;flex:0 0 auto;border-radius:999px;text-decoration:none}
 .post-avatar-link:focus-visible{outline:3px solid var(--focus-ring,#2563eb);outline-offset:3px}
