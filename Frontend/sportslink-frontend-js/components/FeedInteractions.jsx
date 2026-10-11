@@ -149,7 +149,11 @@ export function FeedInteractions({ postId, currentUserId }) {
       }
       setCommentDraft("");
       setCommentNotice("Your comment was added.");
-      await loadComments();
+      try {
+        await loadComments();
+      } catch {
+        // The submit succeeded, but the user can retry loading the list.
+      }
     } catch (error) {
       setCommentError(messageFor(error, "Unable to add your comment."));
     } finally {
