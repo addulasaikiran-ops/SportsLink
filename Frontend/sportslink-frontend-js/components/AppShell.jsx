@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search, Settings, Trophy, Users, Building2, Menu, X, CalendarDays, Plus, UserRound } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -102,6 +102,15 @@ export function AppShell({children}) {
   const displayRole = currentUser?.role ? currentUser.role.replaceAll("_", " ").replace(/\b\w/g, letter => letter.toUpperCase()) : "";
   function submitSearch(event) { if (event.key === "Enter" && search.trim()) router.push(`/discover?search=${encodeURIComponent(search.trim())}`); }
 
+  function openMobileComposer() {
+    setOpen(false);
+    if (path === "/home") {
+      window.dispatchEvent(new Event("sportslink:compose"));
+      return;
+    }
+    router.push("/home?compose=1");
+  }
+
   async function handleLogout() {
     if (logoutInProgress.current) return;
     logoutInProgress.current = true;
@@ -147,5 +156,22 @@ export function AppShell({children}) {
         <footer className="site-footer"><div><Link href="/settings">About</Link><Link href="/settings">Help Center</Link><Link href="/settings">Privacy</Link><Link href="/settings">Terms</Link></div><p><b>SPORTSLINK</b> © {new Date().getFullYear()} · Connecting the world of sport.</p></footer>
       </aside>
     </div>
+    <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+      <Link href="/home" className={`mobile-nav-link ${path === "/home" ? "mobile-nav-active" : ""}`} aria-current={path === "/home" ? "page" : undefined}>
+        <Home size={21} strokeWidth={path === "/home" ? 2.4 : 1.9}/><span>Home</span>
+      </Link>
+      <Link href="/discover" className={`mobile-nav-link ${path === "/discover" ? "mobile-nav-active" : ""}`} aria-current={path === "/discover" ? "page" : undefined}>
+        <Compass size={21} strokeWidth={path === "/discover" ? 2.4 : 1.9}/><span>Discover</span>
+      </Link>
+      <button type="button" className="mobile-nav-link mobile-nav-create" onClick={openMobileComposer} aria-label="Create a post">
+        <span className="mobile-nav-create-icon"><Plus size={23} strokeWidth={2.5}/></span><span>Create</span>
+      </button>
+      <Link href="/messages" className={`mobile-nav-link ${path === "/messages" ? "mobile-nav-active" : ""}`} aria-current={path === "/messages" ? "page" : undefined}>
+        <MessageCircle size={21} strokeWidth={path === "/messages" ? 2.4 : 1.9}/><span>Messages</span>
+      </Link>
+      <Link href="/profile" className={`mobile-nav-link ${path === "/profile" ? "mobile-nav-active" : ""}`} aria-current={path === "/profile" ? "page" : undefined}>
+        <MemberAvatar url={currentUser?.avatar} name={displayName} className={`mobile-nav-profile-avatar ${path === "/profile" ? "mobile-nav-profile-active" : ""}`}/><span>Profile</span>
+      </Link>
+    </nav>
   </div>;
 }
