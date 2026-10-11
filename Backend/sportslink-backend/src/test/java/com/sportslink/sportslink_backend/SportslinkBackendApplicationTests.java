@@ -228,7 +228,7 @@ class SportslinkBackendApplicationTests {
         verify(supabaseRestClient).post(
                 eq("/rest/v1/posts"),
                 any(Jwt.class),
-                eq(Map.of("select", "id,author_id,content,visibility,created_at,author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role)")),
+                eq(Map.of("select", "id,author_id,content,visibility,created_at,author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role),media:post_media(id,media_url,media_type,created_at)")),
                 eq(Map.of(
                         "author_id", "user-123",
                         "content", "My first post",
