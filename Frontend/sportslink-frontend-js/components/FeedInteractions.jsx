@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import { backendRequest } from "@/lib/api/backend";
 import "./feed-interactions.css";
@@ -40,7 +40,7 @@ export function FeedInteractions({ postId, currentUserId }) {
   const [commentError, setCommentError] = useState("");
   const [commentNotice, setCommentNotice] = useState("");
 
-  const loadComments = useCallback(async () => {
+  async function loadComments() {
     setCommentsLoading(true);
     setCommentError("");
     try {
@@ -53,7 +53,7 @@ export function FeedInteractions({ postId, currentUserId }) {
     } finally {
       setCommentsLoading(false);
     }
-  }, [postId]);
+  }
 
   useEffect(() => {
     let active = true;
