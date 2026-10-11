@@ -1,6 +1,5 @@
 package com.sportslink.sportslink_backend;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import tools.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
