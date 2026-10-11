@@ -112,7 +112,7 @@ export function SignupPage() {
  async function submit(e){
   e.preventDefault();setError("");setNotice("");
   if(name.trim().length<2){setError("Please enter your full name.");return;}
-  if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){setError("Enter a valid email address.");return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setError("Enter a valid email address.");return;}
   if(password.length<8){setError("Use a password with at least 8 characters.");return;}
   if(!terms){setError("Please confirm your agreement before creating an account.");return;}
   const supabase=createClient();
