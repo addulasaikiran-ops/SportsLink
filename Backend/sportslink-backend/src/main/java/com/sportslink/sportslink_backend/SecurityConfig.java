@@ -12,6 +12,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -38,7 +39,14 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource(
             @Value("${sportslink.cors.allowed-origin:http://localhost:3000}") String allowedOrigin) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOrigin));
+        // Support a comma-separated allowlist so production and local/preview
+        // frontends can be configured without allowing arbitrary origins.
+        List<String> allowedOrigins = Arrays.stream(allowedOrigin.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .distinct()
+                .toList();
+        configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         configuration.setExposedHeaders(List.of("WWW-Authenticate"));
