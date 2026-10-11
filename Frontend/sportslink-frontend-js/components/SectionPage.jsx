@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
+import Link from "next/link";
+import { Activity, ArrowUpRight, Building2, CalendarDays, Compass, Settings, PlusCircle, RefreshCw, Save, ShieldCheck, Sparkles, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 
@@ -19,9 +20,31 @@ function formatDate(value) {
 const inputClass = "settings-field";
 
 function EmptyOrganizationPage() {
-  return <div className="page-stack">
-    <Heading eyebrow="ORGANIZATIONS" title="Organizations" subtitle="Clubs and organizations in the SPORTSLINK community." />
-    <div className="empty-state card"><UserRound/><h2>No organizations available</h2><p>Organization management is not connected yet. No sample records are shown.</p></div>
+  return <div className="page-stack organizations-page">
+    <section className="section-page-hero organizations-hero">
+      <div className="section-hero-copy">
+        <p className="section-hero-kicker"><Building2 size={14}/> THE SPORTSLINK DIRECTORY</p>
+        <h1>Where sports <span>communities connect.</span></h1>
+        <p>Discover clubs, academies, teams and organizations shaping the next generation of sport.</p>
+        <div className="section-hero-note"><ShieldCheck size={15}/><span>Only verified, available organization records will be displayed.</span></div>
+      </div>
+      <div className="section-hero-art organizations-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><Building2 size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
+    </section>
+    <section className="organization-directory-empty card">
+      <div className="organization-empty-icon"><Building2 size={27}/></div>
+      <span className="section-hero-kicker">ORGANIZATION DIRECTORY</span>
+      <h2>Organization profiles are coming soon</h2>
+      <p>The organization directory is not connected to live organization records yet. We’re keeping it clear of sample clubs and fictional listings.</p>
+      <div className="organization-next-actions">
+        <Link href="/discover" className="button button-primary"><Compass size={16}/>Discover members <ArrowUpRight size={15}/></Link>
+        <Link href="/events" className="button button-secondary"><CalendarDays size={16}/>Explore sports events</Link>
+      </div>
+    </section>
+    <div className="organization-feature-row">
+      <article className="organization-feature-card"><span><Users size={18}/></span><div><strong>Clubs & teams</strong><p>Find organizations and local sporting communities.</p></div></article>
+      <article className="organization-feature-card"><span><Trophy size={18}/></span><div><strong>Academies & development</strong><p>Explore pathways for training, trials and growth.</p></div></article>
+      <article className="organization-feature-card"><span><UserRound size={18}/></span><div><strong>People behind the sport</strong><p>Meet players, coaches, scouts and sports professionals.</p></div></article>
+    </div>
   </div>;
 }
 
@@ -261,18 +284,34 @@ export function SectionPage({ section }) {
   }
 
   if (section === "events") {
-    return <div className="page-stack">
-      <Heading eyebrow="SPORTS EVENTS" title="Events" subtitle="Publish competitions, training sessions, tryouts, and community meetups." />
+    const publishedCount = events.filter((item) => item.status === "published").length;
+    const upcomingCount = events.filter((item) => item.status === "published" && Date.parse(item.starts_at) >= Date.now()).length;
+    const yourEventsCount = events.filter((item) => item.created_by === user?.id).length;
+    return <div className="page-stack events-page">
+      <section className="section-page-hero events-hero">
+        <div className="section-hero-copy">
+          <p className="section-hero-kicker"><CalendarDays size={14}/> SPORTS EVENTS</p>
+          <h1>Bring your next <span>event to life.</span></h1>
+          <p>Publish competitions, training sessions, tryouts and community meetups. Share the details athletes need to show up.</p>
+          <div className="section-hero-note"><ShieldCheck size={15}/><span>Events you publish are saved to SPORTSLINK and listed below.</span></div>
+        </div>
+        <div className="section-hero-art events-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><CalendarDays size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
+      </section>
+      <div className="section-stat-grid events-stats">
+        <article className="section-stat-card card"><span className="section-stat-icon blue"><CalendarDays size={18}/></span><div><small>Published events</small><strong>{publishedCount}</strong><span>Live community listings</span></div></article>
+        <article className="section-stat-card card"><span className="section-stat-icon green"><Activity size={18}/></span><div><small>Upcoming</small><strong>{upcomingCount}</strong><span>Still to take place</span></div></article>
+        <article className="section-stat-card card"><span className="section-stat-icon orange"><UserRound size={18}/></span><div><small>Created by you</small><strong>{yourEventsCount}</strong><span>Your event history</span></div></article>
+      </div>
       {error && <p className="auth-error" role="alert">{error}</p>}
       {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
-      <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
-      <section className="content-card card">
+      <section className="event-management-grid">
+      <section className="content-card card event-create-card">
         <h2><PlusCircle size={19} style={{ verticalAlign: "middle", marginRight: 8 }}/>Create an event</h2>
         <p>Published events appear in the community list. You can cancel events you created.</p>
-        <form onSubmit={createEvent} className="settings-form" style={{ display: "grid", gap: 14 }}>
+        <form onSubmit={createEvent} className="settings-form event-create-form">
           <label className={inputClass}>Event title<input required maxLength={160} value={eventDraft.title} onChange={(e) => setEventDraft({ ...eventDraft, title: e.target.value })} placeholder="e.g. Weekend football trials" /></label>
           <label className={inputClass}>Description<textarea rows={3} maxLength={3000} value={eventDraft.description} onChange={(e) => setEventDraft({ ...eventDraft, description: e.target.value })} placeholder="What should participants know?" /></label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+          <div className="event-form-grid">
             <label className={inputClass}>Event type<select value={eventDraft.event_type} onChange={(e) => setEventDraft({ ...eventDraft, event_type: e.target.value })}><option value="training">Training</option><option value="competition">Competition</option><option value="tryout">Tryout</option><option value="meetup">Meetup</option><option value="other">Other</option></select></label>
             <label className={inputClass}>Sport (optional)<input maxLength={100} value={eventDraft.sport} onChange={(e) => setEventDraft({ ...eventDraft, sport: e.target.value })} placeholder="e.g. Football" /></label>
             <label className={inputClass}>Location<input required maxLength={240} value={eventDraft.location} onChange={(e) => setEventDraft({ ...eventDraft, location: e.target.value })} placeholder="Venue or online" /></label>
@@ -282,7 +321,7 @@ export function SectionPage({ section }) {
           <div><button className="button button-primary" type="submit" disabled={saving}>{saving ? "Publishing…" : "Publish event"}</button></div>
         </form>
       </section>
-      <aside className="content-card card" aria-label="Live event preview" style={{ position: "sticky", top: 16, overflow: "hidden" }}>
+      <aside className="content-card card event-live-preview" aria-label="Live event preview">
         <div className="eyebrow"><CalendarDays size={14} style={{ verticalAlign: "middle", marginRight: 6 }}/>LIVE PREVIEW</div>
         <div style={{margin:"12px 0 16px",borderRadius:14,background:"linear-gradient(135deg,#172554,#1d4ed8 58%,#0f766e)",minHeight:130,padding:18,color:"#fff",display:"flex",flexDirection:"column",justifyContent:"space-between",gap:16}}>
           <span style={{fontSize:11,letterSpacing:1.2,fontWeight:700}}>SPORTSLINK · COMMUNITY EVENT</span>
@@ -297,12 +336,12 @@ export function SectionPage({ section }) {
         <p style={{marginTop:18,fontSize:12,color:"var(--muted-foreground,#64748b)"}}>This preview updates as you fill in the event form. Publishing saves the event to Supabase.</p>
       </aside>
       </section>
-      <section className="page-stack">
-        <div className="page-heading"><div><h2>Community events</h2><p>Live records from the SPORTSLINK database.</p></div><button className="button button-secondary" type="button" onClick={() => loadEvents(client, user)} disabled={saving}><RefreshCw size={15}/> Refresh</button></div>
+      <section className="page-stack event-list-section">
+        <div className="page-heading"><div><p className="eyebrow">COMMUNITY CALENDAR</p><h2>Community events</h2><p>Published event records from SPORTSLINK.</p></div><button className="button button-secondary" type="button" onClick={() => loadEvents(client, user)} disabled={saving}><RefreshCw size={15}/> Refresh</button></div>
         {!events.length ? <div className="empty-state card"><CalendarDays/><h2>No events published yet</h2><p>Create the first event above to share it with the community.</p></div> : <div style={{ display: "grid", gap: 14 }}>{events.map((item) => {
           const creatorName = item.created_by === user?.id ? "You" : item.creator?.full_name || item.creator?.username || "SPORTSLINK member";
-          return <article key={item.id} className="content-card card">
-            <div style={{ display: "flex", gap: 12, alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap" }}>
+          return <article key={item.id} className="content-card card event-list-card">
+            <div className="event-list-card-head">
               <div style={{ minWidth: 0, flex: 1 }}><div className="eyebrow">{item.event_type.replaceAll("_", " ")}{item.sport ? ` · ${item.sport}` : ""}</div><h3>{item.title}</h3><p>{item.description || "No additional details provided."}</p></div>
               <span className="badge">{item.status === "cancelled" ? "Cancelled" : "Published"}</span>
             </div>
@@ -315,11 +354,20 @@ export function SectionPage({ section }) {
     </div>;
   }
 
-  return <div className="page-stack">
-    <Heading eyebrow="ACCOUNT SETTINGS" title="Settings" subtitle="Update the details connected to your SPORTSLINK account." />
+  return <div className="page-stack settings-page">
+    <section className="section-page-hero settings-hero">
+      <div className="section-hero-copy">
+        <p className="section-hero-kicker"><Settings size={14}/> ACCOUNT CONTROL</p>
+        <h1>Settings & <span>security.</span></h1>
+        <p>Keep your profile current and manage the security details that protect your SPORTSLINK account.</p>
+        <div className="section-hero-note"><ShieldCheck size={15}/><span>Your account settings are visible only to you.</span></div>
+      </div>
+      <div className="section-hero-art settings-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><ShieldCheck size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
+    </section>
     {error && <p className="auth-error" role="alert">{error}</p>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
-    {!profileDraft ? <div className="empty-state card"><Settings/><h2>Your profile details are not available</h2><p>You can still manage your password below. Check that your Supabase profile row exists if you expected existing details.</p></div> : <form onSubmit={saveProfile} className="content-card card settings-form" style={{ display: "grid", gap: 14 }}>
+    <div className="settings-content-grid">
+    {!profileDraft ? <div className="empty-state card settings-profile-card"><Settings/><h2>Your profile details are not available</h2><p>You can still manage your password below. Check that your Supabase profile row exists if you expected existing details.</p></div> : <form onSubmit={saveProfile} className="content-card card settings-form settings-profile-card">
       <h2><UserRound size={19} style={{ verticalAlign: "middle", marginRight: 8 }}/>Profile details</h2>
       <p>These details are saved to your profile and shown according to the current database access rules.</p>
       <label className={inputClass}>Email address<input value={user?.email || ""} readOnly aria-describedby="settings-email-help" /></label>
@@ -335,13 +383,14 @@ export function SectionPage({ section }) {
       <label className={inputClass}>About<textarea rows={5} maxLength={5000} value={profileDraft.bio} onChange={(e) => setProfileDraft({ ...profileDraft, bio: e.target.value })} /></label>
       <div><button className="button button-primary" type="submit" disabled={saving}><Save size={15}/>{saving ? "Saving…" : "Save profile settings"}</button></div>
     </form>}
-    <form onSubmit={updatePassword} className="content-card card settings-form" style={{ display: "grid", gap: 14 }}>
+    <form onSubmit={updatePassword} className="content-card card settings-form settings-security-card">
       <h2><LockKeyhole size={19} style={{ verticalAlign: "middle", marginRight: 8 }}/>Security</h2>
       <p>Change your password. Use at least 8 characters and keep it private.</p>
       <label className={inputClass}>New password<input type="password" autoComplete="new-password" minLength={8} required value={passwordDraft.password} onChange={(e) => setPasswordDraft({ ...passwordDraft, password: e.target.value })} /></label>
       <label className={inputClass}>Confirm new password<input type="password" autoComplete="new-password" minLength={8} required value={passwordDraft.confirm} onChange={(e) => setPasswordDraft({ ...passwordDraft, confirm: e.target.value })} /></label>
       <div><button className="button button-secondary" type="submit" disabled={saving}>{saving ? "Updating…" : "Update password"}</button></div>
     </form>
-    <p>Account updates are saved by Supabase. Sign-in and database access remain protected by your existing authentication and row-level security policies.</p>
+    </div>
+    <p className="settings-security-footnote">Account updates are saved by Supabase. Sign-in and database access remain protected by your existing authentication and row-level security policies.</p>
   </div>;
 }
