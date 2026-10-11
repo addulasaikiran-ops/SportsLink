@@ -4257,3 +4257,34 @@ input,textarea,select{max-width:100%;min-width:0}
 :root[data-theme="dark"] .chat-composer input{color:#edf4ff}
 @media(max-width:1100px){.messaging-layout{grid-template-columns:minmax(235px,32%) minmax(0,1fr);height:clamp(520px,calc(100svh - 315px),720px)}.chat-header{padding:0 17px}.chat-messages{padding:20px}}
 @media(max-width:760px){.messaging-layout{height:auto;min-height:0;display:flex;flex-direction:column}.conversation-list{max-height:340px;flex:0 0 auto}.conversation-items{max-height:225px}.chat-panel{height:min(68svh,680px);min-height:450px;flex:0 0 auto}.chat-header{flex-basis:68px;min-height:68px;padding:0 13px}.chat-header .button{min-height:38px;padding:0 11px}.chat-messages{padding:18px 13px}.message-bubble{max-width:88%;padding:12px 13px}.chat-composer{margin:10px 11px 0;padding:5px 6px 5px 12px;gap:7px}.chat-composer input{height:40px;font-size:12px}.chat-composer .send-message{width:40px;height:40px;flex-basis:40px}.chat-panel .demo-disclaimer{padding:8px 10px 10px!important;font-size:9px}}
+
+
+/* SPORTSLINK cinematic stadium backdrop. Keep the supplied stadium artwork behind the UI
+   while preserving contrast for cards, forms, and navigation in both themes. */
+body{
+  background-color:#061328;
+  background-image:linear-gradient(rgba(4,13,29,.70),rgba(4,13,29,.76)),url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center,center 48%;
+  background-size:cover,cover;
+  background-attachment:fixed,fixed;
+  background-repeat:no-repeat;
+}
+:root[data-theme="light"] body,
+:root:not([data-theme="dark"]) body{
+  background-color:#edf3fc;
+  background-image:linear-gradient(rgba(239,245,255,.88),rgba(239,245,255,.91)),url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center,center 48%;
+  background-size:cover,cover;
+  background-attachment:fixed,fixed;
+  background-repeat:no-repeat;
+}
+.landing-hero{
+  background-image:url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center 52%;
+  background-size:cover;
+}
+@media(max-width:760px){
+  body{background-attachment:scroll,scroll}
+  :root[data-theme="light"] body,
+  :root:not([data-theme="dark"]) body{background-attachment:scroll,scroll}
+}
