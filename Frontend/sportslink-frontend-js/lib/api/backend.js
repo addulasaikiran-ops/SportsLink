@@ -45,5 +45,6 @@ export async function backendRequest(path, options = {}) {
     throw new Error(`Backend request failed with HTTP ${response.status}.`);
   }
 
+  if (response.status === 204) return null;
   return response.json();
 }
