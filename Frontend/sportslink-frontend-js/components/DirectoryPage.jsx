@@ -123,7 +123,7 @@ export function DirectoryPage({ section, initialQuery = "" }) {
       {isNetwork && <button className="button button-secondary directory-clear" type="button" onClick={() => setQuery("")}>Clear</button>}
     </div>
     <div className="chip-row directory-sport-chips" role="group" aria-label="Filter by sport">{sports.map((item) => <button key={item} type="button" className={`chip ${sport === item ? "chip-active" : ""}`} aria-pressed={sport === item} onClick={() => setSport(item)}>{item}</button>)}</div>
-    {isNetwork && <p className="inline-notice directory-capability-note" role="status">{USE_SPRING_API ? "Following uses the existing follows feature. Connection invitations are a separate feature and are not implemented yet." : "Connection and invitation records are not available in the current database schema."}</p>}
+    {isNetwork && <p className="inline-notice" role="status">{USE_SPRING_API ? "Following uses the existing follows feature. Connection invitations are a separate feature and are not implemented yet." : "Connection and invitation records are not available in the current database schema."}</p>}
     {error && <div className="inline-notice directory-error" role="alert"><p>{error}</p><button className="button button-secondary" type="button" disabled={!client || loading} onClick={() => client && loadProfiles(client)}>{loading ? "Loading…" : "Retry"}</button></div>}
     {loading ? <div className="empty-state card" role="status"><Activity/><h3>Loading public profiles…</h3></div>
       : error ? null
