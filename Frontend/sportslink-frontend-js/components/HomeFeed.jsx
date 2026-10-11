@@ -128,6 +128,9 @@ export function HomeFeed() {
   const [commentSubmitting, setCommentSubmitting] = useState({});
   const [commentDeleteSubmitting, setCommentDeleteSubmitting] = useState({});
   const [reactionSubmitting, setReactionSubmitting] = useState({});
+  const [savedPostIds, setSavedPostIds] = useState([]);
+  const [bookmarkSubmitting, setBookmarkSubmitting] = useState({});
+  const [repostSubmitting, setRepostSubmitting] = useState({});
   const [interactionErrors, setInteractionErrors] = useState({});
   const [deleteSubmitting, setDeleteSubmitting] = useState({});
   const photoInputRef = useRef(null);
@@ -209,6 +212,8 @@ export function HomeFeed() {
       if (error || !data.user || !active) return;
 
       const user = data.user;
+      const { data: bookmarks } = await client.from("post_bookmarks").select("post_id").eq("user_id", user.id);
+      if (active && Array.isArray(bookmarks)) setSavedPostIds(bookmarks.map((item) => item.post_id));
       const { data: profile, error: profileError } = await client
         .from("profiles")
         .select("username, full_name, avatar_url, sport")
@@ -410,6 +415,70 @@ export function HomeFeed() {
     }
   }
 
+  async function toggleBookmark(post) {
+    if (!supabase || !currentUser) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "Sign in to save posts." }));
+      return;
+    }
+    const isSaved = savedPostIds.includes(post.id);
+    setBookmarkSubmitting((current) => ({ ...current, [post.id]: true }));
+    setInteractionErrors((current) => ({ ...current, [post.id]: "" }));
+    try {
+      if (isSaved) {
+        const { error } = await supabase.from("post_bookmarks").delete().eq("post_id", post.id).eq("user_id", currentUser.id);
+        if (error) throw error;
+        setSavedPostIds((current) => current.filter((id) => id !== post.id));
+        setNotice("Post removed from your bookmarks.");
+      } else {
+        const { error } = await supabase.from("post_bookmarks").insert({ post_id: post.id, user_id: currentUser.id });
+        if (error) throw error;
+        setSavedPostIds((current) => [...new Set([...current, post.id])]);
+        setNotice("Post saved to your bookmarks.");
+      }
+    } catch (error) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: getErrorMessage(error, "Unable to update this bookmark.") }));
+    } finally {
+      setBookmarkSubmitting((current) => ({ ...current, [post.id]: false }));
+    }
+  }
+
+  async function repostPost(post) {
+    if (!supabase || !currentUser) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: "Sign in to repost." }));
+      return;
+    }
+    setRepostSubmitting((current) => ({ ...current, [post.id]: true }));
+    setInteractionErrors((current) => ({ ...current, [post.id]: "" }));
+    try {
+      const { error } = await supabase.from("post_reposts").insert({ post_id: post.id, user_id: currentUser.id });
+      if (error?.code === "23505") throw new Error("You have already reposted this post.");
+      if (error) throw error;
+      setNotice("Post reposted to your network.");
+    } catch (error) {
+      setInteractionErrors((current) => ({ ...current, [post.id]: getErrorMessage(error, "Unable to repost this post.") }));
+    } finally {
+      setRepostSubmitting((current) => ({ ...current, [post.id]: false }));
+    }
+  }
+
+  async function sharePost(post) {
+    const url = typeof window !== "undefined" ? new URL("/home", window.location.origin).toString() + "#post-" + post.id : "";
+    const text = (post.content || "Check out this SPORTSLINK post").slice(0, 240);
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "SPORTSLINK post", text, url });
+        setNotice("Share sheet opened.");
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setNotice("Post link copied. You can share it anywhere.");
+      } else {
+        window.prompt("Copy this post link:", url);
+      }
+    } catch (error) {
+      if (error?.name !== "AbortError") setInteractionErrors((current) => ({ ...current, [post.id]: "Unable to share this post from this browser." }));
+    }
+  }
+
   function toggleComments(postId) {
     const willOpen = !openCommentPosts[postId];
     setOpenCommentPosts((current) => ({ ...current, [postId]: willOpen }));
@@ -508,7 +577,7 @@ export function HomeFeed() {
       const author = post.author || {};
       const authorName = author.full_name || author.username || "SPORTSLINK Member";
       const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
-      return <article className="post-card card" key={post.id} id={`post-${post.id}`}><div className="post-head">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="post-avatar-link" aria-label={`View ${authorName}'s profile`}><Avatar url={author.avatar_url} name={authorName}/></Link> : <Avatar url={author.avatar_url} name={authorName}/>}<div className="post-author"><div className="author-name">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="author-profile-link">{authorName}</Link> : authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div>{post.author_id === currentUser?.id ? <button className="subtle-icon" type="button" aria-label="Delete your post" title="Delete your post" disabled={Boolean(deleteSubmitting[post.id])} onClick={() => deletePost(post)}>{deleteSubmitting[post.id] ? <Activity size={18} className="spin"/> : <Trash2 size={18}/>}</button> : <button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button>}</div>{post.content&&<div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div>}<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>{(post.reactions||[]).length} {(post.reactions||[]).length===1?"reaction":"reactions"} · {(post.comments||[]).length} {(post.comments||[]).length===1?"comment":"comments"}</span></div><div className="post-actions"><button type="button" onClick={()=>toggleLike(post)} disabled={!!reactionSubmitting[post.id]} aria-pressed={(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")} style={{color:(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"#2563eb":undefined}}><ThumbsUp/>{reactionSubmitting[post.id]?"Saving…":(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"Liked":"Like"}</button><button type="button" onClick={()=>toggleComments(post.id)} aria-expanded={!!openCommentPosts[post.id]} aria-controls={`comments-${post.id}`}><MessageCircle/>{openCommentPosts[post.id]?"Hide comments":"Comment"}</button><button type="button" disabled title="Reposting is not connected yet"><Repeat2/>Repost</button><button type="button" disabled title="Sharing is not connected yet"><Send/>Send</button><button type="button" disabled aria-label="Save post" title="Bookmarks are not connected yet"><Bookmark/></button></div>{interactionErrors[post.id]&&<p className="auth-error comment-error" role="alert">{interactionErrors[post.id]}</p>}{openCommentPosts[post.id]&&<section id={`comments-${post.id}`} className="post-comments" aria-label="Comments"><div className="comment-section-heading"><strong>Comments</strong><span>{(post.comments||[]).length}</span></div><div className="comment-list">{(post.comments||[]).slice(-10).map(comment=>{const author=comment.author||{};const name=author.full_name||author.username||(comment.author_id===currentUser?.id?currentUser?.name:"SPORTSLINK member");const canDelete=comment.author_id===currentUser?.id;return <article key={comment.id} className="comment-item"><Avatar url={author.avatar_url} name={name}/><div className="comment-bubble"><div className="comment-meta"><strong>{comment.author?.id ? <Link href={`/members/${encodeURIComponent(comment.author.id)}`} className="author-profile-link">{name}</Link> : name}</strong><small>{formatPostTime(comment.created_at)}</small>{canDelete&&<button type="button" className="comment-delete" aria-label={`Delete comment by ${name}`} title="Delete your comment" disabled={!!commentDeleteSubmitting[comment.id]} onClick={()=>deleteComment(post,comment)}>{commentDeleteSubmitting[comment.id]?<Activity size={14} className="spin"/>:<Trash2 size={14}/>}</button>}</div><p className="comment-text">{comment.content}</p></div></article>})}</div>{!(post.comments||[]).length&&<p className="comment-empty">No comments yet. Start the conversation.</p>}<form onSubmit={(event)=>submitComment(post,event)} className="comment-form"><input ref={element=>{commentInputRefs.current[post.id]=element;}} value={commentDrafts[post.id]||""} onChange={event=>setCommentDrafts(current=>({...current,[post.id]:event.target.value}))} maxLength={2000} placeholder="Write a comment…" aria-label="Write a comment" /><button className="button button-primary" type="submit" disabled={!!commentSubmitting[post.id]||!(commentDrafts[post.id]||"").trim()}>{commentSubmitting[post.id]?"Sending…":"Comment"}</button></form></section>}</article>;
+      return <article className="post-card card" key={post.id} id={`post-${post.id}`}><div className="post-head">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="post-avatar-link" aria-label={`View ${authorName}'s profile`}><Avatar url={author.avatar_url} name={authorName}/></Link> : <Avatar url={author.avatar_url} name={authorName}/>}<div className="post-author"><div className="author-name">{author.id ? <Link href={`/members/${encodeURIComponent(author.id)}`} className="author-profile-link">{authorName}</Link> : authorName}</div><p>{authorRole}</p><span>{formatPostTime(post.created_at)} · {post.visibility === "followers" ? "Followers" : "Public"}</span></div>{post.author_id === currentUser?.id ? <button className="subtle-icon" type="button" aria-label="Delete your post" title="Delete your post" disabled={Boolean(deleteSubmitting[post.id])} onClick={() => deletePost(post)}>{deleteSubmitting[post.id] ? <Activity size={18} className="spin"/> : <Trash2 size={18}/>}</button> : <button className="subtle-icon" type="button" aria-label="More post options" onClick={()=>setNotice("Post reporting and moderation are not connected yet.")}><MoreHorizontal/></button>}</div>{post.content&&<div className="post-copy">{post.content.split("\n").map((line,index)=><p key={`${post.id}-${index}`}>{line || " "}</p>)}</div>}<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:10,marginTop:12}}>{(post.media||[]).filter(item=>item.signed_url).map(item=>item.media_type==="video"?<video key={item.id} src={item.signed_url} controls preload="metadata" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#0b1220"}}/>:<img key={item.id} src={item.signed_url} alt="Post attachment" loading="lazy" style={{width:"100%",maxHeight:420,objectFit:"contain",borderRadius:12,background:"#f2f4f8"}} />)}</div><div className="post-reaction-summary"><span>{(post.reactions||[]).length} {(post.reactions||[]).length===1?"reaction":"reactions"} · {(post.comments||[]).length} {(post.comments||[]).length===1?"comment":"comments"}</span></div><div className="post-actions"><button type="button" onClick={()=>toggleLike(post)} disabled={!!reactionSubmitting[post.id]} aria-pressed={(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")} style={{color:(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"#2563eb":undefined}}><ThumbsUp/>{reactionSubmitting[post.id]?"Saving…":(post.reactions||[]).some(reaction=>reaction.user_id===currentUser?.id&&reaction.reaction==="like")?"Liked":"Like"}</button><button type="button" onClick={()=>toggleComments(post.id)} aria-expanded={!!openCommentPosts[post.id]} aria-controls={`comments-${post.id}`}><MessageCircle/>{openCommentPosts[post.id]?"Hide comments":"Comment"}</button><button type="button" onClick={()=>repostPost(post)} disabled={!!repostSubmitting[post.id]}><Repeat2/>{repostSubmitting[post.id]?"Reposting…":"Repost"}</button><button type="button" onClick={()=>sharePost(post)}><Send/>Share</button><button type="button" onClick={()=>toggleBookmark(post)} disabled={!!bookmarkSubmitting[post.id]} aria-label={savedPostIds.includes(post.id)?"Remove bookmark":"Save post"} aria-pressed={savedPostIds.includes(post.id)} title={savedPostIds.includes(post.id)?"Remove bookmark":"Save post"}><Bookmark fill={savedPostIds.includes(post.id)?"currentColor":"none"}/></button></div>{interactionErrors[post.id]&&<p className="auth-error comment-error" role="alert">{interactionErrors[post.id]}</p>}{openCommentPosts[post.id]&&<section id={`comments-${post.id}`} className="post-comments" aria-label="Comments"><div className="comment-section-heading"><strong>Comments</strong><span>{(post.comments||[]).length}</span></div><div className="comment-list">{(post.comments||[]).slice(-10).map(comment=>{const author=comment.author||{};const name=author.full_name||author.username||(comment.author_id===currentUser?.id?currentUser?.name:"SPORTSLINK member");const canDelete=comment.author_id===currentUser?.id;return <article key={comment.id} className="comment-item"><Avatar url={author.avatar_url} name={name}/><div className="comment-bubble"><div className="comment-meta"><strong>{comment.author?.id ? <Link href={`/members/${encodeURIComponent(comment.author.id)}`} className="author-profile-link">{name}</Link> : name}</strong><small>{formatPostTime(comment.created_at)}</small>{canDelete&&<button type="button" className="comment-delete" aria-label={`Delete comment by ${name}`} title="Delete your comment" disabled={!!commentDeleteSubmitting[comment.id]} onClick={()=>deleteComment(post,comment)}>{commentDeleteSubmitting[comment.id]?<Activity size={14} className="spin"/>:<Trash2 size={14}/>}</button>}</div><p className="comment-text">{comment.content}</p></div></article>})}</div>{!(post.comments||[]).length&&<p className="comment-empty">No comments yet. Start the conversation.</p>}<form onSubmit={(event)=>submitComment(post,event)} className="comment-form"><input ref={element=>{commentInputRefs.current[post.id]=element;}} value={commentDrafts[post.id]||""} onChange={event=>setCommentDrafts(current=>({...current,[post.id]:event.target.value}))} maxLength={2000} placeholder="Write a comment…" aria-label="Write a comment" /><button className="button button-primary" type="submit" disabled={!!commentSubmitting[post.id]||!(commentDrafts[post.id]||"").trim()}>{commentSubmitting[post.id]?"Sending…":"Comment"}</button></form></section>}</article>;
     })}</div>}
   </div>;
 }
