@@ -19,20 +19,9 @@ function formatDate(value) {
 const inputClass = "settings-field";
 
 function EmptyOrganizationPage() {
-  return <div className="page-stack organizations-page">
-    <section className="section-page-hero organizations-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Building2 size={14}/> ORGANIZATIONS</p>
-        <h1>Organizations</h1>
-        <p>Clubs and organizations in the SPORTSLINK community.</p>
-      </div>
-      <div className="section-hero-art organizations-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><Building2 size={35}/></span></div>
-    </section>
-    <div className="organization-directory-empty card">
-      <div className="organization-empty-icon"><Building2 size={27}/></div>
-      <h2>No organizations available</h2>
-      <p>Organization management is not connected yet. No sample records are shown.</p>
-    </div>
+  return <div className="page-stack">
+    <Heading eyebrow="ORGANIZATIONS" title="Organizations" subtitle="Clubs and organizations in the SPORTSLINK community." />
+    <div className="empty-state card"><UserRound/><h2>No organizations available</h2><p>Organization management is not connected yet. No sample records are shown.</p></div>
   </div>;
 }
 
@@ -273,14 +262,7 @@ export function SectionPage({ section }) {
 
   if (section === "events") {
     return <div className="page-stack events-page">
-      <section className="section-page-hero events-hero">
-        <div className="section-hero-copy">
-          <p className="section-hero-kicker"><CalendarDays size={14}/> SPORTS EVENTS</p>
-          <h1>Events</h1>
-          <p>Publish competitions, training sessions, tryouts, and community meetups.</p>
-        </div>
-        <div className="section-hero-art events-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><CalendarDays size={35}/></span></div>
-      </section>
+      <Heading eyebrow="SPORTS EVENTS" title="Events" subtitle="Publish competitions, training sessions, tryouts, and community meetups." />
       {error && <p className="auth-error" role="alert">{error}</p>}
       {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
       <section className="event-management-grid">
@@ -334,14 +316,7 @@ export function SectionPage({ section }) {
   }
 
   return <div className="page-stack settings-page">
-    <section className="section-page-hero settings-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Settings size={14}/> ACCOUNT SETTINGS</p>
-        <h1>Settings</h1>
-        <p>Update the details connected to your SPORTSLINK account.</p>
-      </div>
-      <div className="section-hero-art settings-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><Settings size={35}/></span></div>
-    </section>
+    <Heading eyebrow="ACCOUNT SETTINGS" title="Settings" subtitle="Update the details connected to your SPORTSLINK account." />
     {error && <p className="auth-error" role="alert">{error}</p>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
     <div className="settings-content-grid">
