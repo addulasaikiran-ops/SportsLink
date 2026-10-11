@@ -462,7 +462,7 @@ body{
 .organization-card,.person-card,.notification-list,.notification-summary,.messaging-layout,
 .auth-form-wrap,.profile-overview{border-radius:18px;overflow:hidden}
 .quick-stat,.metric-card,.feature-card{border-radius:16px}
-:where(button,.button,a.button,input[type="button"],input[type="submit"],input[type="reset"]){
+button:not(:disabled),button:disabled,.button,a.button,input[type="button"],input[type="submit"],input[type="reset"]{
   border:1px solid var(--glass-hairline);
   border-radius:12px;
   box-shadow:var(--glass-highlight),0 4px 14px rgba(32,52,88,.07);
