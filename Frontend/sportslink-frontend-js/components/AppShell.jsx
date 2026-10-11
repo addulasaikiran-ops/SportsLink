@@ -21,6 +21,7 @@ export function AppShell({children}) {
   const [currentUser, setCurrentUser] = useState(null);
   const logoutInProgress = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   useEffect(() => {
     if (isPublic) {
       logoutInProgress.current = false;
@@ -75,6 +76,25 @@ export function AppShell({children}) {
     });
     return () => { active = false; subscription.unsubscribe(); };
   }, [isPublic, path, router]);
+  useEffect(() => {
+    const supabase = createClient();
+    if (!currentUser?.id || !supabase) {
+      setUnreadNotifications(0);
+      return undefined;
+    }
+    let active = true;
+    async function refreshUnreadCount() {
+      const { count, error } = await supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", currentUser.id)
+        .eq("is_read", false);
+      if (active && !error) setUnreadNotifications(count || 0);
+    }
+    refreshUnreadCount();
+    const timer = setInterval(refreshUnreadCount, 15000);
+    return () => { active = false; clearInterval(timer); };
+  }, [currentUser?.id]);
   const [open,setOpen] = useState(false);
   const [search,setSearch] = useState("");
   const displayName = currentUser?.name || "SPORTSLINK Member";
@@ -109,12 +129,12 @@ export function AppShell({children}) {
       <button className="icon-button mobile-menu" onClick={()=>setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation">{open?<X/>:<Menu/>}</button>
       <Link href="/home" className="brand"><span className="brand-mark"><Activity size={22}/></span><span>SPORTS<span className="brand-accent">LINK</span></span></Link>
       <label className="global-search" aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
-      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label="Notifications"><Bell size={20}/></Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
+      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label={unreadNotifications ? `Notifications, ${unreadNotifications} unread` : "Notifications"}><Bell size={20}/>{unreadNotifications>0&&<span className="notification-dot" aria-hidden="true"/>}</Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
     </div></header>
     <div className="app-layout">
       <aside className={`sidebar ${open?"sidebar-open":""}`}>
         <div className="sidebar-profile card"><div className="cover-strip"/><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar avatar-lg profile-avatar"/><b className="profile-name">{displayName}</b><p>{[displayRole, currentUser?.sport].filter(Boolean).join(" · ")}</p><small>{currentUser?.location || currentUser?.email || "Complete your professional profile"}</small><Link className="sidebar-link-accent" href="/profile">View your profile →</Link></div>
-        <nav className="side-nav" id="primary-navigation" aria-label="Primary navigation"><p className="nav-section-label">YOUR WORKSPACE</p>{nav.map(([href,label,Icon])=><Link key={href} href={href} onClick={()=>setOpen(false)} aria-current={path===href ? "page" : undefined} className={`nav-link ${path===href?"active":""}`}><Icon size={18}/><span>{label}</span></Link>)}</nav>
+        <nav className="side-nav" id="primary-navigation" aria-label="Primary navigation"><p className="nav-section-label">YOUR WORKSPACE</p>{nav.map(([href,label,Icon])=><Link key={href} href={href} onClick={()=>setOpen(false)} aria-current={path===href ? "page" : undefined} className={`nav-link ${path===href?"active":""}`}><Icon size={18}/><span>{label}</span>{href==="/notifications"&&unreadNotifications>0&&<span className="nav-count">{unreadNotifications>99?"99+":unreadNotifications}</span>}</Link>)}</nav>
         <div className="sidebar-promo card"><div className="promo-icon"><Trophy size={19}/></div><b>Take your career further</b><p>Discover opportunities built for your sporting journey.</p><Link href="/opportunities">Explore opportunities →</Link></div>
         <div className="sidebar-footer">✓ Built for the world of sport</div>
       </aside>
