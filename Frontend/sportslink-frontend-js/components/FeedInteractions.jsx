@@ -48,8 +48,10 @@ export function FeedInteractions({ postId, currentUserId }) {
       if (!Array.isArray(rows)) throw new Error("The comments API returned an unexpected response.");
       setComments(rows);
       setCommentsLoaded(true);
+      return true;
     } catch (error) {
       setCommentError(messageFor(error, "Unable to load comments."));
+      return false;
     } finally {
       setCommentsLoading(false);
     }
@@ -137,11 +139,7 @@ export function FeedInteractions({ postId, currentUserId }) {
       }
       setCommentDraft("");
       setCommentNotice("Your comment was added.");
-      try {
-        await loadComments();
-      } catch {
-        // The submit succeeded, but the user can retry loading the list.
-      }
+      await loadComments();
     } catch (error) {
       setCommentError(messageFor(error, "Unable to add your comment."));
     } finally {
