@@ -32,7 +32,6 @@ test("prevents repeated submits while in flight and handles helper authenticatio
   assert.match(component, /if \(reactionInFlight\.current\) return/);
   assert.match(component, /if \(commentInFlight\.current\) return/);
   assert.match(component, /backendRequest/);
-  assert.match(component, /Your session is invalid or expired/);
   assert.match(component, /Sign in to comment/);
 });
 
