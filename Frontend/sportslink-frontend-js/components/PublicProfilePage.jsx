@@ -231,4 +231,3 @@ export function PublicProfilePage({ profileId }) {
     </div>
   </div>;
 }
-}
