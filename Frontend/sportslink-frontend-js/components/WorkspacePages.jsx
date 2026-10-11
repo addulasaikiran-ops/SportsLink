@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { Activity, Bell, BriefcaseBusiness, MapPin, Pencil, Save, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { backendRequest } from "@/lib/api/backend";
 import { Heading, Notice } from "./shared";
+
+const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
 function EmptyWorkspacePage({ title, eyebrow, subtitle, icon: Icon, message }) {
   return <div className="page-stack">
@@ -62,12 +65,18 @@ export function ProfilePage() {
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError) throw authError;
         if (!authData.user) throw new Error("Sign in to view your profile.");
-        const { data, error: profileError } = await supabase
-          .from("profiles")
-          .select(PROFILE_COLUMNS)
-          .eq("id", authData.user.id)
-          .maybeSingle();
-        if (profileError) throw profileError;
+        let data;
+        if (USE_SPRING_API) {
+          data = await backendRequest("/api/profiles/me");
+        } else {
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select(PROFILE_COLUMNS)
+            .eq("id", authData.user.id)
+            .maybeSingle();
+          if (profileError) throw profileError;
+          data = profileData;
+        }
         if (!active) return;
         setUser(authData.user);
         setProfile(data);
@@ -96,13 +105,22 @@ export function ProfilePage() {
     setError("");
     setNotice("");
     try {
-      const { data, error: updateError } = await client
-        .from("profiles")
-        .update(draft)
-        .eq("id", user.id)
-        .select(PROFILE_COLUMNS)
-        .single();
-      if (updateError) throw updateError;
+      let data;
+      if (USE_SPRING_API) {
+        data = await backendRequest("/api/profiles/me", {
+          method: "PATCH",
+          body: JSON.stringify(draft),
+        });
+      } else {
+        const { data: profileData, error: updateError } = await client
+          .from("profiles")
+          .update(draft)
+          .eq("id", user.id)
+          .select(PROFILE_COLUMNS)
+          .single();
+        if (updateError) throw updateError;
+        data = profileData;
+      }
       if (!data) throw new Error("The profile update was not returned. Check the profile RLS policies.");
       setProfile(data);
       setDraft({
