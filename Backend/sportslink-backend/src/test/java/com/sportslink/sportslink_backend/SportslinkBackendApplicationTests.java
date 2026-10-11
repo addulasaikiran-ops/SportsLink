@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +37,9 @@ class SportslinkBackendApplicationTests {
 
     @MockitoBean
     private SupabaseProfileService profileService;
+
+    @MockitoBean
+    private SupabasePostService postService;
 
     @Test
     void contextLoads() {
@@ -136,4 +140,89 @@ class SportslinkBackendApplicationTests {
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void postsFeedRejectsRequestsWithoutToken() throws Exception {
+        mockMvc.perform(get("/api/posts"))
+                .andExpect(result -> assertTrue(
+                        result.getResponse().getStatus() == 401
+                                || result.getResponse().getStatus() == 403,
+                        "Expected an unauthenticated feed request to be rejected"));
+    }
+
+    @Test
+    void postsFeedReturnsPostsForAuthenticatedUser() throws Exception {
+        JsonNode posts = objectMapper.readTree("""
+                [
+                  {
+                    "id": "post-1",
+                    "author_id": "user-123",
+                    "content": "Welcome to SPORTSLINK",
+                    "visibility": "public"
+                  }
+                ]
+                """);
+        when(postService.getFeed(any(Jwt.class))).thenReturn(posts);
+
+        mockMvc.perform(get("/api/posts").with(jwt()
+                        .jwt(jwt -> jwt.subject("user-123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("post-1"))
+                .andExpect(jsonPath("$[0].content").value("Welcome to SPORTSLINK"));
+    }
+
+    @Test
+    void creatingPostReturnsCreatedAndUsesAuthenticatedRequest() throws Exception {
+        JsonNode createdPost = objectMapper.readTree("""
+                {
+                  "id": "post-2",
+                  "author_id": "user-123",
+                  "content": "My first post",
+                  "visibility": "public"
+                }
+                """);
+        when(postService.createPost(any(Jwt.class), any(CreatePostRequest.class))).thenReturn(createdPost);
+
+        mockMvc.perform(post("/api/posts")
+                        .with(jwt().jwt(jwt -> jwt.subject("user-123")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "My first post",
+                                  "visibility": "public",
+                                  "author_id": "another-user"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("post-2"))
+                .andExpect(jsonPath("$.author_id").value("user-123"));
+    }
+
+    @Test
+    void creatingBlankPostIsRejected() throws Exception {
+        mockMvc.perform(post("/api/posts")
+                        .with(jwt().jwt(jwt -> jwt.subject("user-123")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "   ",
+                                  "visibility": "public"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void unsupportedPostVisibilityIsRejected() throws Exception {
+        mockMvc.perform(post("/api/posts")
+                        .with(jwt().jwt(jwt -> jwt.subject("user-123")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "My first post",
+                                  "visibility": "admin"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
 }
