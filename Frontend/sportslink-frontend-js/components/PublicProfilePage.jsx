@@ -15,7 +15,9 @@ function initials(name) {
 function websiteHref(value) {
   if (!value || typeof value !== "string") return "";
   try {
-    const candidate = /^https?:\\/\\//i.test(value.trim()) ? value.trim() : `https://${value.trim()}`;
+    const trimmed = value.trim();
+    const hasProtocol = trimmed.toLowerCase().startsWith("https://") || trimmed.toLowerCase().startsWith("http://");
+    const candidate = hasProtocol ? trimmed : `https://${trimmed}`;
     const url = new URL(candidate);
     return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
   } catch {
