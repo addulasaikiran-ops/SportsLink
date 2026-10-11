@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, Trash2, UserPlus, UserRound, Users } from "lucide-react";
+import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -223,17 +223,28 @@ export function MessagesPage() {
     }
   }
 
+  const pageHeading = <div className="messages-page-heading">
+    <div className="messages-page-heading-copy">
+      <p className="eyebrow"><MessageCircle size={15}/> PRIVATE MESSAGING</p>
+      <div className="messages-title-row"><h1>Messages</h1><span className="messages-private-pill"><ShieldCheck size={13}/> Private inbox</span></div>
+      <p>Connect directly with athletes, coaches, scouts and the people moving sport forward.</p>
+    </div>
+    <button className="button button-primary messages-new-button" type="button" onClick={() => setShowPeople((value) => !value)}>
+      <PlusCircle size={17}/>{showPeople ? "Close member finder" : "New message"}
+    </button>
+  </div>;
+
   if (loading) {
-    return <div className="page-stack"><Heading eyebrow="MESSAGING" title="Messages" subtitle="Private conversations with real SPORTSLINK members."/><div className="empty-state card" role="status"><Activity/><h2>Loading your conversations…</h2></div></div>;
+    return <div className="page-stack messages-page">{pageHeading}<div className="messages-loading card" role="status"><span className="messages-empty-art"><Activity size={26}/></span><h2>Opening your inbox</h2><p>Loading your conversations and member list…</p></div></div>;
   }
 
-  return <div className="page-stack">
-    <Heading eyebrow="MESSAGING" title="Messages" subtitle="Send text messages to real SPORTSLINK members. New messages create an in-app notification for the recipient." action={<button className="button button-primary" type="button" onClick={() => setShowPeople((value) => !value)}><PlusCircle size={16}/>{showPeople ? "Hide people" : "New message"}</button>}/>
-    {error && <p className="auth-error" role="alert">{error}</p>}
+  return <div className="page-stack messages-page">
+    {pageHeading}
+    {error && <div className="messaging-error" role="alert"><span className="messaging-error-icon"><Activity size={18}/></span><div><b>We couldn’t load your inbox</b><p>{error}</p></div><button className="button button-secondary" type="button" onClick={() => window.location.reload()}>Try again</button></div>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
     <section className="messaging-layout card" aria-label="SPORTSLINK messaging">
       <aside className="conversation-list">
-        <div className="conversation-list-head"><h2>Your conversations</h2><small>{conversations.length} total</small></div>
+        <div className="conversation-list-head"><div><h2>Your conversations</h2><small>Pick up where you left off</small></div><span className="conversation-total">{conversations.length}</span></div>
         {showPeople && <div style={{padding:"0 12px 12px"}}>
           <label className="search-field" aria-label="Search people to message"><Search size={16}/><input value={peopleQuery} onChange={(event)=>setPeopleQuery(event.target.value)} placeholder="Find a member…" autoComplete="off"/></label>
           <p style={{fontSize:10,color:"var(--muted)",lineHeight:1.5,margin:"9px 2px"}}>Choose a real member to start a private text conversation.</p>
@@ -269,7 +280,7 @@ export function MessagesPage() {
             {messagesLoading&&messages.length===0
               ? <div className="empty-state" role="status"><Activity/><p>Loading messages…</p></div>
               : messages.length===0
-                ? <div className="empty-state"><MessageCircle/><h3>Say hello</h3><p>This is the beginning of your conversation. Send a text below.</p></div>
+                ? <div className="chat-empty-start"><span className="chat-empty-start-icon"><MessageCircle size={24}/></span><h3>Start with a hello</h3><p>This is the beginning of your conversation. Send a friendly first message below.</p></div>
                 : messages.map((message)=> {
                   const isOwn=message.sender_id===user?.id;
                   const senderName=message.sender?.full_name||message.sender?.username||(isOwn?"You":activeContact.name);
@@ -285,9 +296,12 @@ export function MessagesPage() {
             <button className="send-message" type="submit" aria-label="Send message" disabled={sending||!draft.trim()}><Send size={16}/></button>
           </form>
           <p className="demo-disclaimer" style={{padding:"7px 12px 0"}}>Messages are saved to your conversation. Recipients receive an in-app notification.</p>
-        </> : <div className="empty-state" style={{margin:"auto",padding:28}}>
-          <MessageCircle size={34}/><h2>Your messages</h2><p>Select a conversation or start a new one with another SPORTSLINK member.</p>
-          <button className="button button-primary" type="button" onClick={()=>setShowPeople(true)}><PlusCircle size={16}/> Start a conversation</button>
+        </> : <div className="message-empty-screen">
+          <div className="message-empty-illustration"><span className="message-empty-orbit message-empty-orbit-one"/><span className="message-empty-orbit message-empty-orbit-two"/><span className="message-empty-icon"><MessageCircle size={34}/></span></div>
+          <span className="message-empty-kicker">YOUR NEXT CONNECTION STARTS HERE</span>
+          <h2>Your inbox, ready for a conversation</h2>
+          <p>Start a private conversation with an athlete, coach, scout or another sports professional in your network.</p>
+          <button className="button button-primary messages-new-button" type="button" onClick={()=>setShowPeople(true)}><PlusCircle size={16}/> Find a member</button>
         </div>}
       </section>
     </section>
