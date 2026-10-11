@@ -380,3 +380,5 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .profile-post-item small{display:block;margin-top:7px;color:var(--text-muted,#6b778c);font-size:11px}
 .public-member-profile .profile-overview-actions{max-width:100%}
 .public-member-profile .profile-overview-copy{overflow-wrap:anywhere}
+
+/* Background asset is served from the frontend public directory for efficient caching. */
