@@ -1,4 +1,4 @@
-package com.sportslink.backend;
+package com.sportslink.sportslink_backend;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
