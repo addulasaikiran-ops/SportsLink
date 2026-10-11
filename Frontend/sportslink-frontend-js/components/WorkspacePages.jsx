@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, Building2, CalendarDays, CheckCheck, Compass, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Sparkles, Trash2, UserPlus, UserRound, Users } from "lucide-react";
+import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CalendarDays, CheckCheck, Compass, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Sparkles, Trash2, UserPlus, UserRound, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -470,37 +470,31 @@ export function NotificationsPage() {
 
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
-  if (loading) return <div className="page-stack notifications-page"><section className="section-page-hero notifications-hero"><div><p className="section-hero-kicker"><Bell size={14}/> YOUR ACTIVITY</p><h1>Notifications</h1><p>Keep up with messages, reactions, comments and new followers.</p></div></section><div className="notification-loading card" role="status"><Activity/><h2>Gathering your updates…</h2><p>Your latest community activity will appear here.</p></div></div>;
+  if (loading) return <div className="page-stack notifications-page"><section className="section-page-hero notifications-hero"><div className="section-hero-copy"><p className="section-hero-kicker"><Bell size={14}/> NOTIFICATIONS</p><h1>Notifications</h1><p>Messages, reactions, comments, and new followers from your SPORTSLINK community.</p></div></section><div className="notification-loading card" role="status"><Activity/><h2>Loading your notifications…</h2></div></div>;
 
   return <div className="page-stack notifications-page">
     <section className="section-page-hero notifications-hero">
       <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Bell size={14}/> YOUR ACTIVITY</p>
+        <p className="section-hero-kicker"><Bell size={14}/> NOTIFICATIONS</p>
         <h1>Notifications</h1>
-        <p>Keep up with messages, reactions, comments and the people connecting with you on SPORTSLINK.</p>
-        <div className="section-hero-note"><ShieldCheck size={15}/><span>Your activity is private to your account.</span></div>
+        <p>Reactions, comments, and new followers from your SPORTSLINK community.</p>
+        <small className="notifications-saved-note">Notifications are saved to your account.</small>
       </div>
       <div className="notifications-hero-count">
         <span className="notifications-hero-icon"><Bell size={23}/></span>
         <strong>{unreadCount}</strong>
-        <span>{unreadCount === 1 ? "unread update" : "unread updates"}</span>
-        {unreadCount > 0 && <button className="button button-primary" type="button" onClick={markAllRead} disabled={busyId === "all"}><CheckCheck size={15}/>{busyId === "all" ? "Saving…" : "Mark all read"}</button>}
+        <span>{unreadCount === 1 ? "unread" : "unread"}</span>
+        {unreadCount > 0 && <button className="button button-secondary" type="button" onClick={markAllRead} disabled={busyId === "all"}><CheckCheck size={15}/>{busyId === "all" ? "Saving…" : "Mark all read"}</button>}
       </div>
     </section>
-    <div className="notification-overview-grid">
-      <article className="notification-overview-card card"><span className="notification-overview-icon blue"><Bell size={18}/></span><div><small>Unread</small><strong>{unreadCount}</strong><span>Needs your attention</span></div></article>
-      <article className="notification-overview-card card"><span className="notification-overview-icon green"><CheckCheck size={18}/></span><div><small>Read</small><strong>{notifications.length - unreadCount}</strong><span>Already seen</span></div></article>
-      <article className="notification-overview-card card"><span className="notification-overview-icon purple"><Activity size={18}/></span><div><small>All activity</small><strong>{notifications.length}</strong><span>Latest 100 updates</span></div></article>
-    </div>
-    <div className="notification-list-heading"><div><h2>Recent activity</h2><p>Your newest notifications appear first.</p></div><span>{notifications.length} {notifications.length === 1 ? "update" : "updates"}</span></div>
     {error && <p className="auth-error" role="alert">{error}</p>}
     {notice && <p className="inline-notice" role="status">{notice}</p>}
     {!notifications.length
-      ? <div className="notification-empty card"><span className="notification-empty-art"><Bell size={25}/></span><h2>You’re all caught up</h2><p>When people message you, react to your posts, comment or follow you, their activity will show up here.</p><Link href="/discover" className="button button-secondary">Explore the community <ArrowUpRight size={15}/></Link></div>
+      ? <div className="empty-state card"><Bell/><h2>You’re all caught up</h2><p>New messages, likes, comments, and followers will show up here.</p></div>
       : <div className="notification-list">{notifications.map((item) => {
         const actor = item.actor || {};
         const actorName = actor.full_name || actor.username || "A SPORTSLINK member";
-        const message = item.message || (item.type === "follow" ? "started following you" : item.type === "comment" ? "commented on your post" : item.type === "reaction" ? "reacted to your post" : item.type === "message" ? "sent you a message" : "sent you a notification");
+        const message = item.message || (item.type === "follow" ? "started following you" : item.type === "comment" ? "commented on your post" : item.type === "reaction" ? "reacted to your post" : "sent you a notification");
         return <article key={item.id} className={`notification-item-card card ${item.is_read ? "notification-read" : "notification-unread"}`}>
           <button type="button" className="notification-open" onClick={() => openNotification(item)} aria-label={`Open notification from ${actorName}`}>
             <span className={`notification-symbol notification-symbol-${item.type || "default"}`}><NotificationTypeIcon type={item.type}/></span>
@@ -509,10 +503,9 @@ export function NotificationsPage() {
               <span className="notification-card-message">{message}</span>
               <small>{notificationTime(item.created_at)}</small>
             </span>
-            <ArrowUpRight className="notification-open-arrow" size={16}/>
           </button>
           <div className="notification-actions">
-            {!item.is_read && <button type="button" className="button button-secondary" onClick={() => markRead(item.id)} disabled={busyId === item.id}>{busyId === item.id ? "Saving…" : <><CheckCheck size={14}/>Mark read</>}</button>}
+            {!item.is_read && <button type="button" className="button button-secondary" onClick={() => markRead(item.id)} disabled={busyId === item.id}>{busyId === item.id ? "Saving…" : <><CheckCheck size={14}/>Read</>}</button>}
             <button type="button" className="notification-delete" aria-label="Delete notification" title="Delete notification" onClick={() => deleteNotification(item.id)} disabled={busyId === item.id}><Trash2 size={15}/></button>
           </div>
         </article>;
@@ -525,24 +518,16 @@ export function OpportunitiesPage() {
   return <div className="page-stack opportunities-page">
     <section className="section-page-hero opportunities-hero">
       <div className="section-hero-copy">
-        <p className="section-hero-kicker"><BriefcaseBusiness size={14}/> YOUR NEXT MOVE</p>
-        <h1>Make your next opportunity <span>count.</span></h1>
-        <p>Find roles, trials, coaching opportunities and ways to grow your career in sport.</p>
-        <div className="section-hero-note"><ShieldCheck size={15}/><span>Only live opportunities will be listed here.</span></div>
+        <p className="section-hero-kicker"><BriefcaseBusiness size={14}/> OPPORTUNITIES</p>
+        <h1>Opportunities</h1>
+        <p>Roles and opportunities from SPORTSLINK organizations.</p>
       </div>
-      <div className="section-hero-art opportunities-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><BriefcaseBusiness size={35}/></span><Sparkles className="section-hero-art-sparkle" size={17}/></div>
+      <div className="section-hero-art opportunities-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><BriefcaseBusiness size={35}/></span></div>
     </section>
-    <div className="opportunities-intro-row"><div><h2>Opportunities for your sporting journey</h2><p>New listings will appear here when SPORTSLINK organizations publish them.</p></div><span className="opportunities-status"><span/> Listing board in preparation</span></div>
     <section className="opportunities-empty card">
       <div className="opportunities-empty-illustration"><span className="opportunities-empty-ring opportunities-ring-one"/><span className="opportunities-empty-ring opportunities-ring-two"/><span className="opportunities-empty-icon"><BriefcaseBusiness size={26}/></span></div>
-      <span className="section-hero-kicker">THE NEXT CHAPTER STARTS HERE</span>
-      <h2>No live opportunities just yet</h2>
-      <p>The opportunities board isn’t connected to live organization listings yet, so we’re not showing sample jobs. In the meantime, build your network and discover upcoming events.</p>
-      <div className="opportunities-next-actions">
-        <Link href="/discover" className="opportunity-next-card"><span className="opportunity-next-icon"><Compass size={19}/></span><span><strong>Discover members</strong><small>Meet people in your sport</small></span><ArrowUpRight size={16}/></Link>
-        <Link href="/organizations" className="opportunity-next-card"><span className="opportunity-next-icon"><Building2 size={19}/></span><span><strong>Organizations</strong><small>Explore the club directory</small></span><ArrowUpRight size={16}/></Link>
-        <Link href="/events" className="opportunity-next-card"><span className="opportunity-next-icon"><CalendarDays size={19}/></span><span><strong>Sports events</strong><small>See activities and tryouts</small></span><ArrowUpRight size={16}/></Link>
-      </div>
+      <h2>No live opportunities available</h2>
+      <p>This feature has no connected data source yet. No sample records are shown.</p>
     </section>
   </div>;
 }
