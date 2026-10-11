@@ -45,7 +45,6 @@ export function ThemeToggle({ compact = false }) {
       <span className="theme-toggle-symbol" aria-hidden="true">
         {theme === "dark" ? <Sun size={17} strokeWidth={1.9} /> : <Moon size={17} strokeWidth={1.9} />}
       </span>
-      <span className="theme-toggle-label">{theme === "dark" ? "Light" : "Dark"}</span>
     </button>
   );
 }
