@@ -469,23 +469,19 @@ export function NotificationsPage() {
 
   const unreadCount = notifications.filter((item) => !item.is_read).length;
 
-  if (loading) return <div className="page-stack notifications-page"><section className="section-page-hero notifications-hero"><div className="section-hero-copy"><p className="section-hero-kicker"><Bell size={14}/> NOTIFICATIONS</p><h1>Notifications</h1><p>Messages, reactions, comments, and new followers from your SPORTSLINK community.</p></div></section><div className="notification-loading card" role="status"><Activity/><h2>Loading your notifications…</h2></div></div>;
+  if (loading) return <div className="page-stack notifications-page"><Heading eyebrow="NOTIFICATIONS" title="Notifications" subtitle="Messages, reactions, comments, and new followers from your SPORTSLINK community."/><div className="empty-state card" role="status"><Activity/><h2>Loading your notifications…</h2></div></div>;
 
   return <div className="page-stack notifications-page">
-    <section className="section-page-hero notifications-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><Bell size={14}/> NOTIFICATIONS</p>
-        <h1>Notifications</h1>
-        <p>Reactions, comments, and new followers from your SPORTSLINK community.</p>
-        <small className="notifications-saved-note">Notifications are saved to your account.</small>
-      </div>
-      <div className="notifications-hero-count">
-        <span className="notifications-hero-icon"><Bell size={23}/></span>
-        <strong>{unreadCount}</strong>
-        <span>unread</span>
-        {unreadCount > 0 && <button className="button button-secondary" type="button" onClick={markAllRead} disabled={busyId === "all"}><CheckCheck size={15}/>{busyId === "all" ? "Saving…" : "Mark all read"}</button>}
-      </div>
-    </section>
+    <Heading
+      eyebrow="NOTIFICATIONS"
+      title="Notifications"
+      subtitle="Reactions, comments, and new followers from your SPORTSLINK community."
+      action={unreadCount > 0 ? <button className="button button-secondary" type="button" onClick={markAllRead} disabled={busyId === "all"}><CheckCheck size={16}/>{busyId === "all" ? "Saving…" : "Mark all read"}</button> : null}
+    />
+    <div className="notifications-meta-row">
+      <span className="badge">{unreadCount} unread</span>
+      <span>Notifications are saved to your account.</span>
+    </div>
     {error && <p className="auth-error" role="alert">{error}</p>}
     {notice && <p className="inline-notice" role="status">{notice}</p>}
     {!notifications.length
@@ -514,21 +510,7 @@ export function NotificationsPage() {
 
 
 export function OpportunitiesPage() {
-  return <div className="page-stack opportunities-page">
-    <section className="section-page-hero opportunities-hero">
-      <div className="section-hero-copy">
-        <p className="section-hero-kicker"><BriefcaseBusiness size={14}/> OPPORTUNITIES</p>
-        <h1>Opportunities</h1>
-        <p>Roles and opportunities from SPORTSLINK organizations.</p>
-      </div>
-      <div className="section-hero-art opportunities-hero-art" aria-hidden="true"><span className="section-hero-art-orbit"/><span className="section-hero-art-icon"><BriefcaseBusiness size={35}/></span></div>
-    </section>
-    <section className="opportunities-empty card">
-      <div className="opportunities-empty-illustration"><span className="opportunities-empty-ring opportunities-ring-one"/><span className="opportunities-empty-ring opportunities-ring-two"/><span className="opportunities-empty-icon"><BriefcaseBusiness size={26}/></span></div>
-      <h2>No live opportunities available</h2>
-      <p>This feature has no connected data source yet. No sample records are shown.</p>
-    </section>
-  </div>;
+  return <EmptyWorkspacePage title="Opportunities" eyebrow="OPPORTUNITIES" subtitle="Roles and opportunities from SPORTSLINK organizations." icon={BriefcaseBusiness} message="No live opportunities available"/>;
 }
 
 const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at";
