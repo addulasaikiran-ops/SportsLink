@@ -942,7 +942,7 @@ input,textarea,select{max-width:100%;min-width:0}
 }
 
 
-/* Signup refresh: centered glass panel, tighter form rhythm, and a clear Google OAuth path. */
+/* Signup refresh: centered glass panel, consistent form rhythm, and responsive fields. */
 .auth-main-signup{
   grid-template-columns:minmax(0,1fr) minmax(0,510px);
   gap:clamp(28px,4vw,60px);
@@ -992,48 +992,6 @@ input,textarea,select{max-width:100%;min-width:0}
   height:16px;
   margin:2px 0 0;
   accent-color:var(--blue);
-}
-.google-signup-button{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:11px;
-  width:100%;
-  height:49px;
-  min-height:49px;
-  padding:0 16px;
-  border:1px solid var(--glass-hairline)!important;
-  border-radius:13px!important;
-  background:var(--glass-control)!important;
-  color:var(--ink)!important;
-  font-size:13px;
-  font-weight:700;
-  box-shadow:var(--glass-highlight),0 4px 14px rgba(24,42,72,.06)!important;
-}
-.google-signup-button:hover:not(:disabled){
-  background:rgba(122,151,199,.13)!important;
-  border-color:rgba(112,147,209,.48)!important;
-  box-shadow:var(--glass-highlight),0 8px 22px rgba(24,42,72,.1)!important;
-}
-.google-signup-button:disabled{opacity:.7;cursor:wait}
-.google-mark{width:19px;height:19px;display:block;flex:0 0 19px}
-.signup-divider{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin:19px 0 13px;
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:1.25px;
-  white-space:nowrap;
-}
-.signup-divider:before,.signup-divider:after{
-  content:"";
-  display:block;
-  height:1px;
-  flex:1;
-  background:var(--glass-hairline);
 }
 .auth-form-wrap-signup .signup-form{gap:7px}
 .auth-form-wrap-signup .signup-form>label{
@@ -1117,9 +1075,7 @@ input,textarea,select{max-width:100%;min-width:0}
   .auth-main-signup{padding-inline:10px}
   .auth-form-wrap-signup{padding:20px 14px}
   .auth-form-wrap-signup .signup-heading{margin-bottom:17px}
-  .signup-divider{gap:8px;font-size:8px;letter-spacing:1px}
 }
 :root[data-theme="dark"] .auth-form-wrap-signup{background:rgba(13,24,40,.86)}
 :root[data-theme="dark"] .auth-form-wrap-signup .signup-consent{background:rgba(132,159,202,.08)}
 :root[data-theme="dark"] .auth-form-wrap-signup .signup-form>label{color:#d5e0f1}
-:root[data-theme="dark"] .auth-form-wrap-signup .google-signup-button{background:rgba(24,39,60,.78)!important;color:#e9f0fb!important}
