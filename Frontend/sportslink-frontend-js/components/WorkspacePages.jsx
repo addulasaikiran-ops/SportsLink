@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CalendarDays, CheckCheck, Compass, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Sparkles, Trash2, UserPlus, UserRound, Users } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -483,7 +482,7 @@ export function NotificationsPage() {
       <div className="notifications-hero-count">
         <span className="notifications-hero-icon"><Bell size={23}/></span>
         <strong>{unreadCount}</strong>
-        <span>{unreadCount === 1 ? "unread" : "unread"}</span>
+        <span>unread</span>
         {unreadCount > 0 && <button className="button button-secondary" type="button" onClick={markAllRead} disabled={busyId === "all"}><CheckCheck size={15}/>{busyId === "all" ? "Saving…" : "Mark all read"}</button>}
       </div>
     </section>
