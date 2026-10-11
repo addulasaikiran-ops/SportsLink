@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Activity, ArrowUpRight, Bookmark, CalendarDays, Image as ImageIcon, MessageCircle, MoreHorizontal, Repeat2, Send, Sparkles, ThumbsUp, Trophy, Users, Video } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { backendRequest } from "@/lib/api/backend";
+
+const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
 const POST_SELECT = "id,author_id,content,visibility,created_at,author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role)";
 
@@ -13,7 +16,11 @@ function Avatar({ url, name }) {
   return <span className="avatar avatar-md avatar-initials" aria-hidden="true">{initials}</span>;
 }
 
-function queryFeed(client) {
+async function queryFeed(client) {
+  if (USE_SPRING_API) {
+    const data = await backendRequest("/api/posts");
+    return { data, error: null };
+  }
   return client
     .from("posts")
     .select(POST_SELECT)
@@ -133,12 +140,19 @@ export function HomeFeed() {
         return;
       }
 
-      const { error: insertError } = await supabase.from("posts").insert({
-        author_id: user.id,
-        content,
-        visibility: "public",
-      });
-      if (insertError) throw insertError;
+      if (USE_SPRING_API) {
+        await backendRequest("/api/posts", {
+          method: "POST",
+          body: JSON.stringify({ content, visibility: "public" }),
+        });
+      } else {
+        const { error: insertError } = await supabase.from("posts").insert({
+          author_id: user.id,
+          content,
+          visibility: "public",
+        });
+        if (insertError) throw insertError;
+      }
 
       setDraft("");
       const { data, error: refreshError } = await queryFeed(supabase);
