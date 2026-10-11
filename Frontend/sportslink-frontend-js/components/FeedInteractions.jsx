@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import { backendRequest } from "@/lib/api/backend";
 import "./feed-interactions.css";
@@ -39,20 +39,6 @@ export function FeedInteractions({ postId, currentUserId }) {
   const [commentBusy, setCommentBusy] = useState(false);
   const [commentError, setCommentError] = useState("");
   const [commentNotice, setCommentNotice] = useState("");
-
-  const loadReactions = useCallback(async () => {
-    setReactionsLoading(true);
-    setReactionError("");
-    try {
-      const rows = await backendRequest(`/api/posts/${postId}/reactions`);
-      if (!Array.isArray(rows)) throw new Error("The reactions API returned an unexpected response.");
-      setReactionRows(rows);
-    } catch (error) {
-      setReactionError(messageFor(error, "Unable to load reactions."));
-    } finally {
-      setReactionsLoading(false);
-    }
-  }, [postId]);
 
   const loadComments = useCallback(async () => {
     setCommentsLoading(true);
