@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import { backendRequest } from "@/lib/api/backend";
 import "./feed-interactions.css";
