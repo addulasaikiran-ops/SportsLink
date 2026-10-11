@@ -787,6 +787,7 @@ function ProfileAvatar({ profile, name }) {
     <section className="profile-hero-card card">
       {(coverPreview || profile.cover_url) && <img className="profile-cover-image" src={coverPreview || profile.cover_url} alt="" />}
       <div className="profile-hero-shade" aria-hidden="true" />
+      <div className="profile-reference-kicker"><UserRound size={16}/><span>PUBLIC PROFILE</span></div>
       <div className="profile-hero-content">
         <div className="profile-reference-avatar-wrap">
           <div className="profile-reference-avatar-ring">
@@ -853,7 +854,7 @@ function ProfileAvatar({ profile, name }) {
           {editing
             ? <label className="profile-reference-edit-field">Primary sport<input maxLength={100} value={draft.sport} onChange={(event) => setDraft({ ...draft, sport: event.target.value })} placeholder="e.g. Football (Soccer)"/></label>
             : <div className="profile-reference-pill-list">
-                {profile.sport && <span><span className="profile-reference-pill-icon">●</span>{profile.sport}</span>}
+                {profile.sport && <span><Activity size={17}/>{profile.sport}</span>}
                 {profile.role && <span><UserRound size={17}/>{roleLabel}</span>}
                 {!profile.sport && !profile.role && <p className="profile-reference-empty">Add a sport to highlight your athletic profile.</p>}
               </div>}
