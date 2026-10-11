@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Activity, Bell, BriefcaseBusiness, Camera, CheckCheck, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound } from "lucide-react";
+import { Activity, Award, Bell, BriefcaseBusiness, Camera, CheckCheck, GraduationCap, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, Trophy, UserPlus, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -513,7 +513,7 @@ export function OpportunitiesPage() {
   return <EmptyWorkspacePage title="Opportunities" eyebrow="OPPORTUNITIES" subtitle="Roles and opportunities from SPORTSLINK organizations." icon={BriefcaseBusiness} message="No live opportunities available"/>;
 }
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,created_at,updated_at";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,created_at,updated_at";
 
 function initials(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -562,6 +562,18 @@ export function ProfilePage() {
     return () => URL.revokeObjectURL(previewUrl);
   }, [coverFile]);
 
+  function draftFromProfile(data) {
+    return {
+      full_name: data?.full_name || "",
+      headline: data?.headline || "",
+      bio: data?.bio || "",
+      location: data?.location || "",
+      sport: data?.sport || "",
+      studied_at: data?.studied_at || "",
+      skills: Array.isArray(data?.skills) ? data.skills.join(", ") : typeof data?.skills === "string" ? data.skills : "",
+    };
+  }
+
   useEffect(() => {
     const supabase = createClient();
     setClient(supabase);
@@ -580,13 +592,13 @@ export function ProfilePage() {
         let data;
         if (USE_SPRING_API) {
           data = await backendRequest("/api/profiles/me");
-          const { data: imageFields, error: imageFieldsError } = await supabase
+          const { data: extendedProfile, error: extendedError } = await supabase
             .from("profiles")
-            .select("avatar_url,cover_url")
+            .select("avatar_url,cover_url,studied_at,skills")
             .eq("id", authData.user.id)
             .maybeSingle();
-          if (imageFieldsError) throw imageFieldsError;
-          data = { ...data, ...(imageFields || {}) };
+          if (extendedError) throw extendedError;
+          data = { ...data, ...(extendedProfile || {}) };
         } else {
           const { data: profileData, error: profileError } = await supabase
             .from("profiles")
@@ -599,13 +611,7 @@ export function ProfilePage() {
         if (!active) return;
         setUser(authData.user);
         setProfile(data);
-        setDraft(data ? {
-          full_name: data.full_name || "",
-          headline: data.headline || "",
-          bio: data.bio || "",
-          location: data.location || "",
-          sport: data.sport || "",
-        } : null);
+        setDraft(data ? draftFromProfile(data) : null);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load your profile.");
       } finally {
@@ -621,7 +627,6 @@ export function ProfilePage() {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-
     const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
     if (!allowedTypes.has(file.type)) {
       setError("Choose a JPG, PNG, WebP, or GIF image.");
@@ -631,7 +636,6 @@ export function ProfilePage() {
       setError("Profile images must be 5 MB or smaller.");
       return;
     }
-
     setError("");
     setNotice("");
     if (kind === "avatar") setAvatarFile(file);
@@ -639,22 +643,13 @@ export function ProfilePage() {
   }
 
   async function uploadProfileImage(file, kind) {
-    const extensionByType = {
-      "image/jpeg": "jpg",
-      "image/png": "png",
-      "image/webp": "webp",
-      "image/gif": "gif",
-    };
+    const extensionByType = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" };
     const extension = extensionByType[file.type];
     if (!extension) throw new Error("Choose a JPG, PNG, WebP, or GIF image.");
-    const path = `${user.id}/${kind}-${crypto.randomUUID()}.${extension}`;
-    const { error: uploadError } = await client.storage
-      .from("profile-images")
-      .upload(path, file, {
-        cacheControl: "3600",
-        contentType: file.type,
-        upsert: false,
-      });
+    const path = user.id + "/" + kind + "-" + crypto.randomUUID() + "." + extension;
+    const { error: uploadError } = await client.storage.from("profile-images").upload(path, file, {
+      cacheControl: "3600", contentType: file.type, upsert: false,
+    });
     if (uploadError) throw uploadError;
     const { data: publicData } = client.storage.from("profile-images").getPublicUrl(path);
     return { path, url: publicData.publicUrl };
@@ -671,18 +666,21 @@ export function ProfilePage() {
     } catch {
       return;
     }
-    if (!path.startsWith(`${user.id}/`)) return;
+    if (!path.startsWith(user.id + "/")) return;
     const { error: removeError } = await client.storage.from("profile-images").remove([path]);
     if (removeError) console.warn("The old profile image could not be removed.", removeError);
   }
 
   async function saveProfile(event) {
     event.preventDefault();
-    if (!client || !user || !draft) return;
+    if (!client || !user || !draft || !profile) return;
+    if (!draft.full_name.trim()) {
+      setError("Please add your name before saving your profile.");
+      return;
+    }
     setSaving(true);
     setError("");
     setNotice("");
-
     let avatarUpload = null;
     let coverUpload = null;
     let profileSaved = false;
@@ -693,52 +691,55 @@ export function ProfilePage() {
       const mediaUpdates = {};
       if (avatarUpload) mediaUpdates.avatar_url = avatarUpload.url;
       if (coverUpload) mediaUpdates.cover_url = coverUpload.url;
+      const supplementalUpdates = {
+        studied_at: draft.studied_at.trim() || null,
+        skills: [...new Set(draft.skills.split(",").map((skill) => skill.trim()).filter(Boolean))].slice(0, 30),
+      };
+      const baseDraft = {
+        full_name: draft.full_name.trim(),
+        headline: draft.headline.trim(),
+        bio: draft.bio.trim(),
+        location: draft.location.trim() || null,
+        sport: draft.sport.trim() || null,
+      };
       let data;
 
       if (USE_SPRING_API) {
         data = await backendRequest("/api/profiles/me", {
           method: "PATCH",
-          body: JSON.stringify(draft),
+          body: JSON.stringify(baseDraft),
         });
-        if (!data) throw new Error("The profile update was not returned. Check the profile RLS policies.");
-        if (Object.keys(mediaUpdates).length) {
-          const { data: imageData, error: imageSaveError } = await client
-            .from("profiles")
-            .update(mediaUpdates)
-            .eq("id", user.id)
-            .select("avatar_url,cover_url")
-            .single();
-          if (imageSaveError) throw imageSaveError;
-          data = { ...data, ...imageData };
-        } else {
-          data = { ...data, avatar_url: profile.avatar_url || null, cover_url: profile.cover_url || null };
-        }
+        if (!data) throw new Error("The profile update was not returned. Check the profile access policies.");
+        const { data: extendedData, error: extendedSaveError } = await client
+          .from("profiles")
+          .update({ ...mediaUpdates, ...supplementalUpdates })
+          .eq("id", user.id)
+          .select("avatar_url,cover_url,studied_at,skills")
+          .single();
+        if (extendedSaveError) throw extendedSaveError;
+        data = { ...data, ...extendedData };
       } else {
         const { data: profileData, error: updateError } = await client
           .from("profiles")
-          .update({ ...draft, ...mediaUpdates })
+          .update({ ...baseDraft, ...mediaUpdates, ...supplementalUpdates })
           .eq("id", user.id)
           .select(PROFILE_COLUMNS)
           .single();
         if (updateError) throw updateError;
         data = profileData;
       }
-      if (!data) throw new Error("The profile update was not returned. Check the profile RLS policies.");
+      if (!data) throw new Error("The profile update was not returned. Check the profile access policies.");
 
       const nextProfile = {
         ...profile,
         ...data,
         avatar_url: data.avatar_url ?? profile.avatar_url ?? null,
         cover_url: data.cover_url ?? profile.cover_url ?? null,
+        studied_at: data.studied_at ?? null,
+        skills: Array.isArray(data.skills) ? data.skills : [],
       };
       setProfile(nextProfile);
-      setDraft({
-        full_name: nextProfile.full_name || "",
-        headline: nextProfile.headline || "",
-        bio: nextProfile.bio || "",
-        location: nextProfile.location || "",
-        sport: nextProfile.sport || "",
-      });
+      setDraft(draftFromProfile(nextProfile));
       profileSaved = true;
       setAvatarFile(null);
       setCoverFile(null);
@@ -751,13 +752,8 @@ export function ProfilePage() {
           avatarUrl: nextProfile.avatar_url || null,
         },
       }));
-
-      if (avatarUpload && profile.avatar_url && profile.avatar_url !== avatarUpload.url) {
-        await removePreviousProfileImage(profile.avatar_url);
-      }
-      if (coverUpload && profile.cover_url && profile.cover_url !== coverUpload.url) {
-        await removePreviousProfileImage(profile.cover_url);
-      }
+      if (avatarUpload && profile.avatar_url && profile.avatar_url !== avatarUpload.url) await removePreviousProfileImage(profile.avatar_url);
+      if (coverUpload && profile.cover_url && profile.cover_url !== coverUpload.url) await removePreviousProfileImage(profile.cover_url);
     } catch (saveError) {
       if (!profileSaved) {
         const paths = [avatarUpload?.path, coverUpload?.path].filter(Boolean);
@@ -772,50 +768,110 @@ export function ProfilePage() {
     }
   }
 
+  function cancelEdit() {
+    setDraft(draftFromProfile(profile));
+    setAvatarFile(null);
+    setCoverFile(null);
+    setError("");
+    setNotice("");
+    setEditing(false);
+  }
+
   if (loading) return <div className="empty-state card" role="status"><Activity/><h2>Loading your profile…</h2></div>;
   if (error && !profile) return <div className="page-stack"><Heading eyebrow="YOUR PROFILE" title="Profile" subtitle="Your public SPORTSLINK profile."/><div className="inline-notice" role="alert">{error}</div></div>;
-  if (!profile) return <div className="page-stack"><Heading eyebrow="YOUR PROFILE" title="Profile" subtitle="Your public SPORTSLINK profile."/><div className="empty-state card"><UserRound/><h2>No profile data is visible</h2><p>This may mean the profile row is missing or the current SELECT policy hides it. Verify profile creation and RLS before changing database policy or creating rows manually.</p></div></div>;
+  if (!profile) return <div className="page-stack"><Heading eyebrow="YOUR PROFILE" title="Profile" subtitle="Your public SPORTSLINK profile."/><div className="empty-state card"><UserRound/><h2>No profile data is visible</h2><p>This may mean your profile row is missing or hidden by a database access rule.</p></div></div>;
 
   const name = profile.full_name || profile.username || user?.email?.split("@")[0] || "SPORTSLINK Member";
   const skills = Array.isArray(profile.skills) ? profile.skills : typeof profile.skills === "string" ? profile.skills.split(",").map((skill) => skill.trim()).filter(Boolean) : [];
+  const roleLabel = (profile.role || "member").replaceAll("_", " ");
+  const heroHeadline = [roleLabel, profile.sport].filter(Boolean).join(" · ");
 
-  return <div className="page-stack">
-    <div className={`profile-cover-large ${(coverPreview || profile.cover_url) ? "profile-cover-with-image" : ""}`}>
+  return <div className="page-stack profile-page-redesign">
+    <section className="profile-hero-card card">
       {(coverPreview || profile.cover_url) && <img className="profile-cover-image" src={coverPreview || profile.cover_url} alt="" />}
-      <span className="cover-label"><UserRound size={15}/> PUBLIC PROFILE</span>
-      {editing && <>
-        <input ref={coverFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "cover")} aria-label="Choose a public profile cover image" />
-        <button className="profile-cover-upload-button" type="button" onClick={() => coverFileInputRef.current?.click()} disabled={saving}><ImagePlus size={15}/>{(coverPreview || profile.cover_url) ? "Change cover image" : "Add cover image"}</button>
-      </>}
-    </div>
-    <section className="profile-overview card">
-      <div className="profile-avatar-edit-wrap">
-        <ProfileAvatar profile={{ ...profile, avatar_url: avatarPreview || profile.avatar_url }} name={name}/>
-        {editing && <>
-          <input ref={avatarFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "avatar")} aria-label="Choose a profile picture" />
-          <button className="profile-avatar-upload-button" type="button" onClick={() => avatarFileInputRef.current?.click()} disabled={saving} title={(avatarPreview || profile.avatar_url) ? "Change profile picture" : "Add profile picture"}><Camera size={15}/><span>{(avatarPreview || profile.avatar_url) ? "Change photo" : "Add photo"}</span></button>
-        </>}
+      <div className="profile-hero-shade" aria-hidden="true" />
+      <div className="profile-reference-kicker"><UserRound size={16}/><span>PUBLIC PROFILE</span></div>
+      <div className="profile-hero-content">
+        <div className="profile-reference-avatar-wrap">
+          <div className="profile-reference-avatar-ring">
+            <ProfileAvatar profile={{ ...profile, avatar_url: avatarPreview || profile.avatar_url }} name={name}/>
+          </div>
+          {editing && <>
+            <input ref={avatarFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "avatar")} aria-label="Choose a profile picture" />
+            <button className="profile-reference-avatar-upload" type="button" onClick={() => avatarFileInputRef.current?.click()} disabled={saving} title={(avatarPreview || profile.avatar_url) ? "Change profile picture" : "Add profile picture"}><Camera size={15}/><span>{(avatarPreview || profile.avatar_url) ? "Change photo" : "Add photo"}</span></button>
+          </>}
+        </div>
+
+        <div className="profile-reference-identity">
+          {editing
+            ? <label className="profile-reference-edit-field">Name<input required value={draft.full_name} maxLength={120} onChange={(event) => setDraft({ ...draft, full_name: event.target.value })}/></label>
+            : <h1>{name}</h1>}
+          {editing
+            ? <label className="profile-reference-edit-field">Headline<input value={draft.headline} maxLength={180} onChange={(event) => setDraft({ ...draft, headline: event.target.value })} placeholder="Your sporting role or goal"/></label>
+            : <p className="profile-reference-subtitle">{heroHeadline}</p>}
+          {profile.headline && !editing && <p className="profile-reference-headline">{profile.headline}</p>}
+          {editing
+            ? <label className="profile-reference-edit-field profile-reference-location-edit">Location<input value={draft.location} maxLength={160} onChange={(event) => setDraft({ ...draft, location: event.target.value })} placeholder="City, region, country"/></label>
+            : profile.location && <p className="profile-reference-location"><MapPin size={17}/>{profile.location}</p>}
+          <div className="profile-reference-tags">
+            {profile.sport && <span>{profile.sport}</span>}
+            {profile.role && <span>{roleLabel}</span>}
+          </div>
+        </div>
+
+        <div className="profile-reference-actions">
+          {editing
+            ? <div className="profile-reference-edit-actions">
+                <button type="button" className="button button-secondary" disabled={saving} onClick={cancelEdit}>Cancel</button>
+                <button type="button" className="button button-secondary profile-cover-action" onClick={() => coverFileInputRef.current?.click()} disabled={saving}><ImagePlus size={16}/>{(coverPreview || profile.cover_url) ? "Change cover" : "Add cover"}</button>
+                <input ref={coverFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "cover")} aria-label="Choose a public profile cover image"/>
+                <button form="profile-reference-edit-form" type="submit" className="button button-primary" disabled={saving}><Save size={16}/>{saving ? "Saving…" : "Save profile"}</button>
+              </div>
+            : <button className="button button-primary profile-reference-edit-button" type="button" onClick={() => { setError(""); setNotice(""); setEditing(true); }}><Pencil size={17}/> Edit profile</button>}
+        </div>
       </div>
-      <div className="profile-overview-actions">
-        {editing
-          ? <form onSubmit={saveProfile} className="settings-actions"><button type="button" className="button button-secondary" disabled={saving} onClick={() => { setDraft({ full_name: profile.full_name || "", headline: profile.headline || "", bio: profile.bio || "", location: profile.location || "", sport: profile.sport || "" }); setAvatarFile(null); setCoverFile(null); setError(""); setNotice(""); setEditing(false); }}>Cancel</button><button type="submit" className="button button-primary" disabled={saving}><Save size={15}/>{saving ? "Saving…" : "Save profile"}</button></form>
-          : <button className="button button-primary" type="button" onClick={() => { setError(""); setEditing(true); }}><Pencil size={15}/> Edit profile</button>}
-      </div>
-      <div className="profile-overview-copy">
-        <h1>{name}</h1>
-        {editing ? <label className="settings-field">Name<input value={draft.full_name} maxLength={120} onChange={(event) => setDraft({ ...draft, full_name: event.target.value })}/></label> : profile.headline && <p className="profile-headline">{profile.headline}</p>}
-        {profile.location && <span className="profile-location"><MapPin size={14}/> {profile.location}</span>}
-        {(profile.sport || profile.role) && <div className="profile-sports-tags">{profile.sport && <span>{profile.sport}</span>}{profile.role && <span>{profile.role}</span>}</div>}
-      </div>
+      {editing && <form id="profile-reference-edit-form" className="profile-reference-form-proxy" onSubmit={saveProfile} aria-label="Save profile changes"/>}
     </section>
+
     <Notice>{notice}</Notice>
     {error && <p className="auth-error" role="alert">{error}</p>}
-    <div className="profile-content-grid">
-      <div className="profile-main-column">
-        <section className="content-card card"><h2>About</h2>{editing ? <label className="settings-field">Headline<input value={draft.headline} maxLength={180} onChange={(event) => setDraft({ ...draft, headline: event.target.value })}/></label> : profile.headline ? <p className="profile-headline">{profile.headline}</p> : <p className="about-text">No headline added.</p>}{editing ? <label className="settings-field">About<textarea rows={5} maxLength={5000} value={draft.bio} onChange={(event) => setDraft({ ...draft, bio: event.target.value })}/></label> : <p className="about-text">{profile.bio || "No bio added."}</p>}</section>
-        <section className="content-card card"><h2>Profile details</h2>{editing ? <><label className="settings-field">Location<input value={draft.location} maxLength={160} onChange={(event) => setDraft({ ...draft, location: event.target.value })}/></label><label className="settings-field">Sport<input value={draft.sport} maxLength={100} onChange={(event) => setDraft({ ...draft, sport: event.target.value })}/></label></> : <dl className="stat-grid">{[["Username", profile.username], ["Sport", profile.sport], ["Role", profile.role], ["Location", profile.location]].filter(([, value]) => value).map(([label, value]) => <div className="stat-cell" key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}</section>
+
+    <div className="profile-reference-grid">
+      <div className="profile-reference-main-column">
+        <section className="profile-reference-card card">
+          <h2><UserRound size={27}/> About</h2>
+          {editing
+            ? <label className="profile-reference-edit-field profile-reference-bio-field">About<textarea rows={4} maxLength={5000} value={draft.bio} onChange={(event) => setDraft({ ...draft, bio: event.target.value })} placeholder="Tell the community about your sporting journey…"/></label>
+            : <p className="profile-reference-about">{profile.bio || "This member hasn’t added an About description yet."}</p>}
+          <div className="profile-reference-divider"/>
+          <h3><GraduationCap size={31}/> Education</h3>
+          {editing
+            ? <label className="profile-reference-edit-field profile-reference-education-edit">School, college or degree<input maxLength={180} value={draft.studied_at} onChange={(event) => setDraft({ ...draft, studied_at: event.target.value })} placeholder="e.g. UG – BTECH"/></label>
+            : <p className="profile-reference-education">{profile.studied_at || "Education not added yet."}</p>}
+        </section>
       </div>
-      <aside className="profile-side-column"><section className="content-card card"><h3>Skills</h3>{skills.length ? <div className="skill-tags">{skills.map((skill) => <span key={skill}>{skill}</span>)}</div> : <p>No skills added.</p>}</section><section className="content-card card"><h3>Profile visibility</h3><p>Public profile data shown here is limited by your Supabase RLS policies.</p></section></aside>
+
+      <aside className="profile-reference-side-column">
+        <section className="profile-reference-card card">
+          <h2><Trophy size={28}/> Sports</h2>
+          {editing
+            ? <label className="profile-reference-edit-field">Primary sport<input maxLength={100} value={draft.sport} onChange={(event) => setDraft({ ...draft, sport: event.target.value })} placeholder="e.g. Football (Soccer)"/></label>
+            : <div className="profile-reference-pill-list">
+                {profile.sport && <span><Activity size={17}/>{profile.sport}</span>}
+                {profile.role && <span><UserRound size={17}/>{roleLabel}</span>}
+                {!profile.sport && !profile.role && <p className="profile-reference-empty">Add a sport to highlight your athletic profile.</p>}
+              </div>}
+        </section>
+
+        <section className="profile-reference-card card">
+          <h2><Award size={28}/> Skills</h2>
+          {editing
+            ? <label className="profile-reference-edit-field">Skills (separate with commas)<textarea rows={3} maxLength={1200} value={draft.skills} onChange={(event) => setDraft({ ...draft, skills: event.target.value })} placeholder="Football, Teamwork, Fitness & Training"/></label>
+            : skills.length
+              ? <div className="profile-reference-skill-list">{skills.map((skill) => <span key={skill}>{skill}</span>)}</div>
+              : <p className="profile-reference-empty">No skills added yet.</p>}
+        </section>
+      </aside>
     </div>
   </div>;
 }
