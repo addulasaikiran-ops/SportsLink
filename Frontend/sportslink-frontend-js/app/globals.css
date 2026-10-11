@@ -2207,3 +2207,30 @@ input,textarea,select{max-width:100%;min-width:0}
   .directory-hero-art{flex-basis:64px;width:64px;height:80px}
   .directory-hero-icon{width:42px;height:42px;border-radius:13px}
 }
+
+
+/* Keep section headers compact and unboxed; improve rhythm without adding new modules. */
+.directory-page,.notifications-page,.organizations-page,.events-page,.settings-page{gap:16px}
+.directory-page>.page-heading,
+.notifications-page>.page-heading,
+.organizations-page>.page-heading,
+.events-page>.page-heading,
+.settings-page>.page-heading{margin:0 0 2px}
+.notifications-meta-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:-6px;color:var(--muted,#778196);font-size:11px;line-height:1.5;
+}
+.notifications-meta-row .badge{font-size:10px}
+.directory-page .toolbar-row{align-items:center;gap:10px}
+.directory-page .toolbar-row .search-field{min-width:0;flex:1}
+.directory-page .chip-row{gap:8px;flex-wrap:wrap}
+.directory-people-grid{margin-top:2px}
+.directory-person-card{min-width:0}
+:root[data-theme="dark"] .notifications-meta-row{color:var(--muted,#9eacc3)}
+@media(max-width:760px){
+  .directory-page,.notifications-page,.organizations-page,.events-page,.settings-page{gap:13px}
+  .directory-page>.page-heading .page-heading,
+  .notifications-page>.page-heading .page-heading{gap:10px}
+  .directory-page .toolbar-row{align-items:stretch}
+  .notifications-meta-row{margin-top:-2px;font-size:10px}
+}
