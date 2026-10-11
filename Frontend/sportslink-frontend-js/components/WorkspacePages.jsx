@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, Trash2, UserPlus, UserRound, Users } from "lucide-react";
+import { Activity, ArrowUpRight, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
