@@ -38,52 +38,44 @@ public class SupabaseMessagingService {
     }
 
     public JsonNode createConversation(Jwt jwt, CreateConversationRequest request) {
-        UUID conversationId = UUID.randomUUID();
         String currentUserId = jwt.getSubject();
         Set<String> memberIds = new LinkedHashSet<>();
         for (UUID memberId : request.memberIds()) {
-            if (!memberId.toString().equals(currentUserId)) {
-                memberIds.add(memberId.toString());
-            }
+            if (!memberId.toString().equals(currentUserId)) memberIds.add(memberId.toString());
         }
         if (memberIds.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Add at least one other participant to the conversation.");
         }
 
-        boolean group = Boolean.TRUE.equals(request.isGroup());
-        Map<String, Object> newConversation = new java.util.LinkedHashMap<>();
-        newConversation.put("id", conversationId.toString());
-        newConversation.put("created_by", currentUserId);
-        newConversation.put("is_group", group);
-        if (request.title() != null && !request.title().isBlank()) {
-            newConversation.put("title", request.title().trim());
+        Map<String, Object> rpcBody = new java.util.LinkedHashMap<>();
+        rpcBody.put("p_member_ids", new ArrayList<>(memberIds));
+        rpcBody.put("p_is_group", Boolean.TRUE.equals(request.isGroup()));
+        rpcBody.put("p_title", request.title());
+        JsonNode result = supabaseRestClient.post(
+                "/rest/v1/rpc/create_conversation_for_user", jwt, Map.of(), rpcBody);
+        if (result == null || result.isNull() || result.isMissingNode()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY, "Supabase did not return the new conversation id.");
         }
-
-        supabaseRestClient.post(
+        String idValue = result.isTextual() ? result.asText()
+                : result.isArray() && !result.isEmpty() ? result.get(0).asText() : result.asText();
+        UUID conversationId;
+        try {
+            conversationId = UUID.fromString(idValue);
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY, "Supabase returned an invalid conversation id.");
+        }
+        JsonNode rows = supabaseRestClient.get(
                 "/rest/v1/conversations",
                 jwt,
-                Map.of("select", "id,is_group,title,created_by,created_at"),
-                newConversation);
-
-        try {
-            addMember(jwt, conversationId, currentUserId);
-            for (String memberId : memberIds) {
-                addMember(jwt, conversationId, memberId);
-            }
-            JsonNode rows = supabaseRestClient.get(
-                    "/rest/v1/conversations",
-                    jwt,
-                    Map.of("id", "eq." + conversationId, "select", CONVERSATION_COLUMNS, "limit", "1"));
-            if (rows == null || !rows.isArray() || rows.isEmpty()) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_GATEWAY, "The conversation was created but could not be read back.");
-            }
-            return rows.get(0);
-        } catch (RuntimeException exception) {
-            cleanupConversation(jwt, conversationId, memberIds, currentUserId);
-            throw exception;
+                Map.of("id", "eq." + conversationId, "select", CONVERSATION_COLUMNS, "limit", "1"));
+        if (rows == null || !rows.isArray() || rows.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY, "The conversation was created but could not be read back.");
         }
+        return rows.get(0);
     }
 
     public JsonNode listMessages(Jwt jwt, UUID conversationId) {
