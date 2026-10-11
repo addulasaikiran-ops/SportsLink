@@ -23,6 +23,22 @@ export function AppShell({children}) {
   const logoutInProgress = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  useEffect(() => {
+    function handleProfileUpdated(event) {
+      const detail = event.detail || {};
+      setCurrentUser((current) => {
+        if (!current || current.id !== detail.id) return current;
+        return {
+          ...current,
+          name: detail.name || current.name,
+          avatar: detail.avatarUrl !== undefined ? detail.avatarUrl : current.avatar,
+        };
+      });
+    }
+    window.addEventListener("sportslink:profile-updated", handleProfileUpdated);
+    return () => window.removeEventListener("sportslink:profile-updated", handleProfileUpdated);
+  }, []);
   useEffect(() => {
     if (isPublic) {
       logoutInProgress.current = false;

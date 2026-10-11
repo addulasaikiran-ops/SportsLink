@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Activity, Bell, BriefcaseBusiness, CheckCheck, Heart, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Activity, Bell, BriefcaseBusiness, Camera, CheckCheck, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, UserPlus, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -513,7 +513,7 @@ export function OpportunitiesPage() {
   return <EmptyWorkspacePage title="Opportunities" eyebrow="OPPORTUNITIES" subtitle="Roles and opportunities from SPORTSLINK organizations." icon={BriefcaseBusiness} message="No live opportunities available"/>;
 }
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,created_at,updated_at";
 
 function initials(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -535,6 +535,32 @@ export function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [coverFile, setCoverFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [coverPreview, setCoverPreview] = useState("");
+  const avatarFileInputRef = useRef(null);
+  const coverFileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!avatarFile) {
+      setAvatarPreview("");
+      return undefined;
+    }
+    const previewUrl = URL.createObjectURL(avatarFile);
+    setAvatarPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [avatarFile]);
+
+  useEffect(() => {
+    if (!coverFile) {
+      setCoverPreview("");
+      return undefined;
+    }
+    const previewUrl = URL.createObjectURL(coverFile);
+    setCoverPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [coverFile]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -554,6 +580,13 @@ export function ProfilePage() {
         let data;
         if (USE_SPRING_API) {
           data = await backendRequest("/api/profiles/me");
+          const { data: imageFields, error: imageFieldsError } = await supabase
+            .from("profiles")
+            .select("avatar_url,cover_url")
+            .eq("id", authData.user.id)
+            .maybeSingle();
+          if (imageFieldsError) throw imageFieldsError;
+          data = { ...data, ...(imageFields || {}) };
         } else {
           const { data: profileData, error: profileError } = await supabase
             .from("profiles")
@@ -584,23 +617,106 @@ export function ProfilePage() {
     return () => { active = false; };
   }, []);
 
+  function selectProfileImage(event, kind) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+    if (!allowedTypes.has(file.type)) {
+      setError("Choose a JPG, PNG, WebP, or GIF image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Profile images must be 5 MB or smaller.");
+      return;
+    }
+
+    setError("");
+    setNotice("");
+    if (kind === "avatar") setAvatarFile(file);
+    else setCoverFile(file);
+  }
+
+  async function uploadProfileImage(file, kind) {
+    const extensionByType = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    };
+    const extension = extensionByType[file.type];
+    if (!extension) throw new Error("Choose a JPG, PNG, WebP, or GIF image.");
+    const path = `${user.id}/${kind}-${crypto.randomUUID()}.${extension}`;
+    const { error: uploadError } = await client.storage
+      .from("profile-images")
+      .upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type,
+        upsert: false,
+      });
+    if (uploadError) throw uploadError;
+    const { data: publicData } = client.storage.from("profile-images").getPublicUrl(path);
+    return { path, url: publicData.publicUrl };
+  }
+
+  async function removePreviousProfileImage(url) {
+    if (!client || !user || !url) return;
+    const marker = "/storage/v1/object/public/profile-images/";
+    const markerIndex = url.indexOf(marker);
+    if (markerIndex < 0) return;
+    let path;
+    try {
+      path = decodeURIComponent(url.slice(markerIndex + marker.length).split("?")[0]);
+    } catch {
+      return;
+    }
+    if (!path.startsWith(`${user.id}/`)) return;
+    const { error: removeError } = await client.storage.from("profile-images").remove([path]);
+    if (removeError) console.warn("The old profile image could not be removed.", removeError);
+  }
+
   async function saveProfile(event) {
     event.preventDefault();
     if (!client || !user || !draft) return;
     setSaving(true);
     setError("");
     setNotice("");
+
+    let avatarUpload = null;
+    let coverUpload = null;
+    let profileSaved = false;
     try {
+      if (avatarFile) avatarUpload = await uploadProfileImage(avatarFile, "avatar");
+      if (coverFile) coverUpload = await uploadProfileImage(coverFile, "cover");
+
+      const mediaUpdates = {};
+      if (avatarUpload) mediaUpdates.avatar_url = avatarUpload.url;
+      if (coverUpload) mediaUpdates.cover_url = coverUpload.url;
       let data;
+
       if (USE_SPRING_API) {
         data = await backendRequest("/api/profiles/me", {
           method: "PATCH",
           body: JSON.stringify(draft),
         });
+        if (!data) throw new Error("The profile update was not returned. Check the profile RLS policies.");
+        if (Object.keys(mediaUpdates).length) {
+          const { data: imageData, error: imageSaveError } = await client
+            .from("profiles")
+            .update(mediaUpdates)
+            .eq("id", user.id)
+            .select("avatar_url,cover_url")
+            .single();
+          if (imageSaveError) throw imageSaveError;
+          data = { ...data, ...imageData };
+        } else {
+          data = { ...data, avatar_url: profile.avatar_url || null, cover_url: profile.cover_url || null };
+        }
       } else {
         const { data: profileData, error: updateError } = await client
           .from("profiles")
-          .update(draft)
+          .update({ ...draft, ...mediaUpdates })
           .eq("id", user.id)
           .select(PROFILE_COLUMNS)
           .single();
@@ -608,17 +724,48 @@ export function ProfilePage() {
         data = profileData;
       }
       if (!data) throw new Error("The profile update was not returned. Check the profile RLS policies.");
-      setProfile(data);
+
+      const nextProfile = {
+        ...profile,
+        ...data,
+        avatar_url: data.avatar_url ?? profile.avatar_url ?? null,
+        cover_url: data.cover_url ?? profile.cover_url ?? null,
+      };
+      setProfile(nextProfile);
       setDraft({
-        full_name: data.full_name || "",
-        headline: data.headline || "",
-        bio: data.bio || "",
-        location: data.location || "",
-        sport: data.sport || "",
+        full_name: nextProfile.full_name || "",
+        headline: nextProfile.headline || "",
+        bio: nextProfile.bio || "",
+        location: nextProfile.location || "",
+        sport: nextProfile.sport || "",
       });
+      profileSaved = true;
+      setAvatarFile(null);
+      setCoverFile(null);
       setEditing(false);
       setNotice("Profile changes saved.");
+      window.dispatchEvent(new CustomEvent("sportslink:profile-updated", {
+        detail: {
+          id: user.id,
+          name: nextProfile.full_name || nextProfile.username || user.email?.split("@")[0] || "SPORTSLINK Member",
+          avatarUrl: nextProfile.avatar_url || null,
+        },
+      }));
+
+      if (avatarUpload && profile.avatar_url && profile.avatar_url !== avatarUpload.url) {
+        await removePreviousProfileImage(profile.avatar_url);
+      }
+      if (coverUpload && profile.cover_url && profile.cover_url !== coverUpload.url) {
+        await removePreviousProfileImage(profile.cover_url);
+      }
     } catch (saveError) {
+      if (!profileSaved) {
+        const paths = [avatarUpload?.path, coverUpload?.path].filter(Boolean);
+        if (paths.length && client) {
+          const { error: cleanupError } = await client.storage.from("profile-images").remove(paths);
+          if (cleanupError) console.warn("New profile image cleanup failed.", cleanupError);
+        }
+      }
       setError(saveError instanceof Error ? saveError.message : "Unable to save your profile.");
     } finally {
       setSaving(false);
@@ -633,12 +780,25 @@ export function ProfilePage() {
   const skills = Array.isArray(profile.skills) ? profile.skills : typeof profile.skills === "string" ? profile.skills.split(",").map((skill) => skill.trim()).filter(Boolean) : [];
 
   return <div className="page-stack">
-    <div className="profile-cover-large"><span className="cover-label"><UserRound size={15}/> PUBLIC PROFILE</span></div>
+    <div className={`profile-cover-large ${(coverPreview || profile.cover_url) ? "profile-cover-with-image" : ""}`}>
+      {(coverPreview || profile.cover_url) && <img className="profile-cover-image" src={coverPreview || profile.cover_url} alt="" />}
+      <span className="cover-label"><UserRound size={15}/> PUBLIC PROFILE</span>
+      {editing && <>
+        <input ref={coverFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "cover")} aria-label="Choose a public profile cover image" />
+        <button className="profile-cover-upload-button" type="button" onClick={() => coverFileInputRef.current?.click()} disabled={saving}><ImagePlus size={15}/>{(coverPreview || profile.cover_url) ? "Change cover image" : "Add cover image"}</button>
+      </>}
+    </div>
     <section className="profile-overview card">
-      <ProfileAvatar profile={profile} name={name}/>
+      <div className="profile-avatar-edit-wrap">
+        <ProfileAvatar profile={{ ...profile, avatar_url: avatarPreview || profile.avatar_url }} name={name}/>
+        {editing && <>
+          <input ref={avatarFileInputRef} className="profile-image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(event) => selectProfileImage(event, "avatar")} aria-label="Choose a profile picture" />
+          <button className="profile-avatar-upload-button" type="button" onClick={() => avatarFileInputRef.current?.click()} disabled={saving} title={(avatarPreview || profile.avatar_url) ? "Change profile picture" : "Add profile picture"}><Camera size={15}/><span>{(avatarPreview || profile.avatar_url) ? "Change photo" : "Add photo"}</span></button>
+        </>}
+      </div>
       <div className="profile-overview-actions">
         {editing
-          ? <form onSubmit={saveProfile} className="settings-actions"><button type="button" className="button button-secondary" disabled={saving} onClick={() => { setDraft({ full_name: profile.full_name || "", headline: profile.headline || "", bio: profile.bio || "", location: profile.location || "", sport: profile.sport || "" }); setEditing(false); }}>Cancel</button><button type="submit" className="button button-primary" disabled={saving}><Save size={15}/>{saving ? "Saving…" : "Save profile"}</button></form>
+          ? <form onSubmit={saveProfile} className="settings-actions"><button type="button" className="button button-secondary" disabled={saving} onClick={() => { setDraft({ full_name: profile.full_name || "", headline: profile.headline || "", bio: profile.bio || "", location: profile.location || "", sport: profile.sport || "" }); setAvatarFile(null); setCoverFile(null); setError(""); setNotice(""); setEditing(false); }}>Cancel</button><button type="submit" className="button button-primary" disabled={saving}><Save size={15}/>{saving ? "Saving…" : "Save profile"}</button></form>
           : <button className="button button-primary" type="button" onClick={() => { setError(""); setEditing(true); }}><Pencil size={15}/> Edit profile</button>}
       </div>
       <div className="profile-overview-copy">

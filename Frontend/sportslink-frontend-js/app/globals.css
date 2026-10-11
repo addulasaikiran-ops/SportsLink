@@ -3069,3 +3069,168 @@ input,textarea,select{max-width:100%;min-width:0}
   .comment-form{align-items:stretch}
   .comment-form .button{padding:0 9px}
 }
+
+
+/* Profile photo and public cover image controls. */
+.profile-cover-large{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background-position:center;
+  background-size:cover;
+}
+.profile-cover-image{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 40%;
+}
+.profile-cover-large:has(.profile-cover-image):after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(8,20,47,.48),rgba(8,20,47,.06) 75%),linear-gradient(0deg,rgba(8,20,47,.18),transparent 58%);
+}
+.profile-cover-large .cover-label{
+  z-index:1;
+  width:max-content;
+  max-width:calc(100% - 30px);
+  padding:7px 10px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:8px;
+  background:rgba(12,28,58,.22);
+  color:#fff;
+  backdrop-filter:blur(8px);
+}
+.profile-image-input{display:none!important}
+.profile-cover-upload-button{
+  position:absolute;
+  z-index:2;
+  top:14px;
+  right:15px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:36px;
+  max-width:calc(100% - 30px);
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.68);
+  border-radius:10px;
+  background:rgba(255,255,255,.94);
+  color:#20365a;
+  font:700 10px/1.2 'DM Sans',sans-serif;
+  box-shadow:0 5px 16px rgba(8,22,49,.13);
+  cursor:pointer;
+  transition:transform .15s ease,background .15s ease,box-shadow .15s ease;
+}
+.profile-cover-upload-button:hover:not(:disabled){
+  transform:translateY(-1px);
+  background:#fff;
+  box-shadow:0 8px 19px rgba(8,22,49,.18);
+}
+.profile-cover-upload-button:focus-visible,
+.profile-avatar-upload-button:focus-visible{
+  outline:3px solid rgba(126,168,255,.8);
+  outline-offset:3px;
+}
+.profile-cover-upload-button:disabled,
+.profile-avatar-upload-button:disabled{opacity:.6;cursor:wait}
+.profile-avatar-edit-wrap{
+  position:relative;
+  z-index:3;
+  display:block;
+  flex:0 0 108px;
+  width:108px;
+  height:108px;
+  margin-top:-55px;
+}
+.profile-avatar-edit-wrap .avatar-profile-large{
+  display:block;
+  width:108px;
+  height:108px;
+  margin-top:0;
+  object-fit:cover;
+  object-position:center;
+}
+.profile-avatar-upload-button{
+  position:absolute;
+  z-index:3;
+  right:-9px;
+  bottom:-5px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:29px;
+  max-width:calc(100vw - 60px);
+  padding:5px 9px;
+  border:1px solid rgba(113,139,184,.25);
+  border-radius:999px;
+  background:rgba(255,255,255,.97);
+  color:#25436f;
+  font:700 9px/1.2 'DM Sans',sans-serif;
+  box-shadow:0 5px 15px rgba(22,43,78,.16);
+  white-space:nowrap;
+  cursor:pointer;
+  transition:transform .15s ease,background .15s ease;
+}
+.profile-avatar-upload-button:hover:not(:disabled){
+  transform:translateY(-1px);
+  background:#fff;
+}
+.profile-overview .profile-avatar-edit-wrap + .profile-overview-actions{margin-top:15px}
+:root[data-theme="dark"] .profile-cover-upload-button{
+  color:#e8f0ff;
+  background:rgba(16,30,50,.94);
+  border-color:rgba(199,216,247,.25);
+}
+:root[data-theme="dark"] .profile-avatar-upload-button{
+  color:#e8f0ff;
+  background:rgba(16,30,50,.97);
+  border-color:rgba(199,216,247,.25);
+}
+@media(max-width:760px){
+  .profile-cover-large{height:145px}
+  .profile-cover-upload-button{
+    top:12px;
+    right:12px;
+    min-height:33px;
+    padding:7px 9px;
+    font-size:9px;
+  }
+  .profile-avatar-edit-wrap{
+    width:85px;
+    height:85px;
+    flex-basis:85px;
+    margin-top:-43px;
+  }
+  .profile-avatar-edit-wrap .avatar-profile-large{
+    width:85px;
+    height:85px;
+  }
+  .profile-avatar-upload-button{
+    right:-8px;
+    bottom:-5px;
+    min-height:27px;
+    padding:4px 7px;
+    font-size:8px;
+  }
+}
+@media(max-width:420px){
+  .profile-cover-large .cover-label{
+    left:12px;
+    top:12px;
+    padding:6px 8px;
+    font-size:8px;
+  }
+  .profile-cover-upload-button{gap:5px;padding:7px 8px}
+  .profile-avatar-upload-button span{display:none}
+  .profile-avatar-upload-button{width:29px;height:29px;padding:0;right:-5px}
+}
