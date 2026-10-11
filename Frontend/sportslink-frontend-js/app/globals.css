@@ -314,7 +314,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   padding:78px max(30px,calc((100vw - 1180px)/2)) 64px;
   color:#f7faff;
   background-color:#07162b;
-  background-image:url("/sportslink-stadium.webp");
+  background-image:url("/sportslink-stadium.webp?v=20261011-hd");
   background-position:center 54%;
   background-size:cover;
   background-repeat:no-repeat;
@@ -326,7 +326,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   z-index:0;
   pointer-events:none;
   background:
-    linear-gradient(90deg,rgba(4,12,27,.72) 0%,rgba(4,12,27,.59) 35%,rgba(4,12,27,.32) 63%,rgba(4,12,27,.14) 100%),
+    linear-gradient(90deg,rgba(4,12,27,.64) 0%,rgba(4,12,27,.48) 35%,rgba(4,12,27,.23) 63%,rgba(4,12,27,.08) 100%),
     linear-gradient(0deg,rgba(3,9,20,.46) 0%,rgba(3,9,20,.06) 46%,rgba(3,9,20,.16) 100%);
 }
 .landing-hero::after{content:none}
