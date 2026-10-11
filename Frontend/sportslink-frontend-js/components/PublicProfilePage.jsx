@@ -9,7 +9,7 @@ import { Heading } from "./shared";
 const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,website_url,created_at";
 
 function initials(name) {
-  return name.trim().split(/\\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
+  return name.trim().split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
 }
 
 function websiteHref(value) {
