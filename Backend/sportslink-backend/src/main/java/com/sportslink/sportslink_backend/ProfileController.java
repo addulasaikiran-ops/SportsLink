@@ -22,6 +22,11 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
+    @GetMapping
+    public JsonNode getProfiles(@AuthenticationPrincipal Jwt jwt) {
+        return profileService.getProfiles(jwt);
+    }
+
     @GetMapping("/me")
     public JsonNode getMyProfile(@AuthenticationPrincipal Jwt jwt) {
         JsonNode profile = profileService.getMyProfile(jwt);
