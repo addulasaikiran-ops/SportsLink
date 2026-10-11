@@ -1,6 +1,6 @@
 # SPORTSLINK Spring Boot backend
 
-This service is the authenticated REST API foundation for SPORTSLINK. The current milestone verifies Supabase access tokens and exposes the current authenticated user's ID. Profile/feed/business APIs will be added in later increments after the existing Supabase schema and Row Level Security (RLS) behavior are verified.
+This service is the authenticated REST API foundation for SPORTSLINK. It validates Supabase access tokens and exposes current-user and profile endpoints. The profile API forwards the caller's validated access token to Supabase REST, so the caller's Supabase grants and Row Level Security (RLS) policies remain in force.
 
 ## Requirements
 
@@ -22,27 +22,33 @@ The default server port is 8080. If that port is occupied, stop the existing SPO
 
 - `GET /api/health` — public health check.
 - `GET /api/me` — requires `Authorization: Bearer <Supabase access token>`; returns the validated JWT subject as `id` and `authenticated: true`.
+- `GET /api/profiles/me` — returns the caller's readable profile row.
+- `PATCH /api/profiles/me` — updates only `full_name`, `headline`, `bio`, `location`, and `sport`; field lengths are validated.
 
-Every other endpoint requires authentication by default.
+Every endpoint except `GET /api/health` requires authentication. Profile endpoints use the JWT subject to select the profile ID; clients cannot supply another user's ID. The update endpoint does not permit changing identity, username, role, or avatar.
 
-## Supabase JWT configuration
+## Supabase configuration
 
-By default, the service verifies signatures using this project's public Supabase JWKS endpoint and validates the issuer:
+By default, the service verifies JWT signatures using this project's public Supabase JWKS endpoint and validates the issuer:
 
 - Issuer: `https://ozqitjwttigfpmnroeqi.supabase.co/auth/v1`
 - JWKS: `https://ozqitjwttigfpmnroeqi.supabase.co/auth/v1/.well-known/jwks.json`
 
-Optional environment overrides:
+Environment variables supported by the backend:
 
-- `SUPABASE_JWT_ISSUER`
-- `SUPABASE_JWKS_URL`
-- `SPORTSLINK_CORS_ALLOWED_ORIGIN` (defaults to `http://localhost:3000`)
+- `SUPABASE_JWT_ISSUER` — optional JWT issuer override.
+- `SUPABASE_JWKS_URL` — optional JWKS URL override.
+- `SUPABASE_URL` — Supabase project URL for REST requests.
+- `SUPABASE_PUBLISHABLE_KEY` — required by profile endpoints; use the project's publishable key from the frontend environment, never a service-role key.
+- `SPORTSLINK_CORS_ALLOWED_ORIGIN` — allowed frontend origin; defaults to `http://localhost:3000`.
 
-The URLs above are public configuration, not keys. Do not put access tokens, passwords, Supabase secret keys, or service-role keys in source control.
+The URLs above are public configuration, not keys. Never put access tokens, passwords, Supabase secret keys, or service-role keys in source control. The profile service forwards the user's own Bearer token rather than using a privileged server key, so Supabase RLS policies still apply.
 
-## Frontend helper
+## Frontend integration
 
-The Next.js client helper at `Frontend/sportslink-frontend-js/lib/api/backend.js` uses the current Supabase session's access token and calls the API URL from `NEXT_PUBLIC_API_URL`. If that variable is unset it uses `http://localhost:8080`.
+The Next.js helper at `Frontend/sportslink-frontend-js/lib/api/backend.js` gets the current Supabase access token and calls `NEXT_PUBLIC_API_URL`; by default it uses `http://localhost:8080`.
+
+The existing profile UI remains on its current direct-Supabase implementation unless `NEXT_PUBLIC_USE_SPRING_API=true` is set in the frontend `.env.local`. Enable that flag only after setting `SUPABASE_PUBLISHABLE_KEY` for the backend. Restart both servers after changing environment variables.
 
 Example from client-side React code:
 
@@ -52,10 +58,10 @@ import { backendRequest } from "@/lib/api/backend";
 const currentUser = await backendRequest("/api/me");
 ```
 
-For local development, set `NEXT_PUBLIC_API_URL=http://localhost:8080` in the frontend's `.env.local` if you want to make the setting explicit, then restart the Next.js dev server.
+## Verification status and next work
 
-## Verification status
+Automated tests cover the public health endpoint, rejection without authentication, the protected identity endpoint, and profile controller behavior. These tests mock the profile service; they do not verify the live Supabase profile table or its deployed RLS policies.
 
-Automated tests cover the public health endpoint, rejection without authentication, and an authenticated mock JWT. After starting the service locally, also test `GET /api/me` from the signed-in frontend using a real session. The real-token integration has not been assumed based on the health endpoint alone.
+Before enabling the backend profile UI, verify that a row exists in `profiles`, that the relevant SELECT and UPDATE RLS policies work, and that the backend can call Supabase REST with the publishable key and user's access token. The repository contains no database migrations or trigger definitions; the signup profile trigger and RLS configuration must be verified in the Supabase project.
 
-Database-backed profile, post, connection, messaging, notification, and opportunity APIs are not implemented in this milestone. Verify the project's deployed Supabase schema, grants, and RLS policies before adding database writes or privileged access.
+Post creation/feed, connections, messaging, notifications, opportunities/applications, events, organizations, reactions, and comments remain future backend work.
