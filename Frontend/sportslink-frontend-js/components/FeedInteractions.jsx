@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import { backendRequest } from "@/lib/api/backend";
 import "./feed-interactions.css";
@@ -29,6 +29,8 @@ export function FeedInteractions({ postId, currentUserId }) {
   const [reactionRefreshKey, setReactionRefreshKey] = useState(0);
   const [reactionsLoading, setReactionsLoading] = useState(true);
   const [reactionBusy, setReactionBusy] = useState(false);
+  const reactionInFlight = useRef(false);
+  const commentInFlight = useRef(false);
   const [reactionError, setReactionError] = useState("");
   const [reactionNotice, setReactionNotice] = useState("");
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -81,7 +83,8 @@ export function FeedInteractions({ postId, currentUserId }) {
   const counts = countReactions(reactionRows);
 
   async function chooseReaction(reaction) {
-    if (reactionBusy) return;
+    if (reactionInFlight.current) return;
+    reactionInFlight.current = true;
     setReactionBusy(true);
     setReactionError("");
     setReactionNotice("");
@@ -109,13 +112,14 @@ export function FeedInteractions({ postId, currentUserId }) {
       // A write may have succeeded even if the response could not be read; refresh before retrying.
       setReactionRefreshKey((key) => key + 1);
     } finally {
+      reactionInFlight.current = false;
       setReactionBusy(false);
     }
   }
 
   async function submitComment(event) {
     event.preventDefault();
-    if (commentBusy) return;
+    if (commentInFlight.current) return;
     const content = commentDraft.trim();
     setCommentError("");
     setCommentNotice("");
@@ -128,6 +132,7 @@ export function FeedInteractions({ postId, currentUserId }) {
       return;
     }
 
+    commentInFlight.current = true;
     setCommentBusy(true);
     try {
       const created = await backendRequest(`/api/posts/${postId}/comments`, {
@@ -143,6 +148,7 @@ export function FeedInteractions({ postId, currentUserId }) {
     } catch (error) {
       setCommentError(messageFor(error, "Unable to add your comment."));
     } finally {
+      commentInFlight.current = false;
       setCommentBusy(false);
     }
   }
