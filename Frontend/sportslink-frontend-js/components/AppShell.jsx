@@ -127,6 +127,22 @@ export function AppShell({children}) {
     router.push("/home?compose=1");
   }
 
+  function clearLocalAuthCookies() {
+    if (typeof document === "undefined") return;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    const names = document.cookie
+      .split(";")
+      .map((cookie) => cookie.trim().split("=")[0])
+      .filter((name) => name.startsWith("sb-") && name.includes("-auth-token"));
+
+    // Supabase SSR sessions may be stored in one cookie or numbered chunks.
+    // Expire each visible chunk before the full-page redirect.
+    for (const name of names) {
+      document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax${secure}`;
+      document.cookie = `${name}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax${secure}`;
+    }
+  }
+
   async function handleLogout() {
     if (logoutInProgress.current) return;
     logoutInProgress.current = true;
@@ -134,18 +150,33 @@ export function AppShell({children}) {
     setCurrentUser(null);
 
     const supabase = createClient();
-    try {
-      if (supabase) {
-        // Clear only this browser's session; avoid waiting for remote-wide revocation.
-        await supabase.auth.signOut({ scope: "local" });
-      }
-    } catch (error) {
-      // Always leave the protected workspace if auth cleanup reports a transient error.
-      console.error("Unable to complete local sign-out cleanly.", error);
-    } finally {
-      router.replace("/");
-      router.refresh();
+    if (!supabase) {
+      clearLocalAuthCookies();
+      window.location.replace("/");
+      return;
     }
+
+    // Supabase's logout endpoint can be slow. Give it a brief chance to revoke
+    // the current session, but never keep the user waiting on a remote request.
+    const logoutRequest = supabase.auth
+      .signOut({ scope: "local" })
+      .then(({ error }) => ({ done: true, error }))
+      .catch((error) => ({ done: true, error }));
+    const result = await Promise.race([
+      logoutRequest,
+      new Promise((resolve) => setTimeout(() => resolve({ timedOut: true }), 500)),
+    ]);
+
+    if (result.timedOut || result.error) {
+      // Ensure this browser is logged out even if Supabase's remote revocation
+      // is slow or temporarily unavailable. Remote revocation continues best-effort.
+      clearLocalAuthCookies();
+      if (result.error) console.warn("Supabase sign-out needed local cleanup.", result.error);
+    }
+
+    // A full navigation drops the in-memory client and lets middleware start
+    // the public page without the protected workspace's pending queries.
+    window.location.replace("/");
   }
 
   if (isPublic) return children;
