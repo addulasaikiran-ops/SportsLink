@@ -427,7 +427,7 @@ export function MessagesPage() {
             <ConversationAvatar profile={contact.profile} name={memberText}/>
             <span className="conversation-copy">
               <span className="conversation-row-top"><b>{memberText}{!conversation.is_group && <ProfileCompletionBadge completed={contact.profile.profile_details_completed} size={13} />}</b><time>{conversationListTime(conversationTimestamp(conversation))}</time></span>
-              <span className="conversation-row-bottom"><small>{preview}</small>{unread&&<span className="conversation-unread-dot" aria-label="Unread message"/>}</span>
+              <span className={`conversation-row-bottom ${unread ? "has-unread" : ""}`}><small>{preview}</small>{unread&&<span className="conversation-unread-dot" aria-label="Unread message"/>}</span>
             </span>
           </button>;
         })}</div>
