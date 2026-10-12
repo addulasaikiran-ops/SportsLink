@@ -153,7 +153,7 @@ export function AppShell({children}) {
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <header className="topbar"><div className="topbar-inner">
       <button className="icon-button mobile-menu" onClick={()=>setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation">{open?<X/>:<Menu/>}</button>
-      <Link href="/home" className="brand"><span className="brand-mark"><Activity size={22}/></span><span>SPORTS<span className="brand-accent">LINK</span></span></Link>
+      <Link href="/home" className="brand"><img className="sportslink-logo app-brand-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link>
       <ThemeToggle compact />
       <label className="global-search" aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
       <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label={unreadNotifications ? `Notifications, ${unreadNotifications} unread` : "Notifications"}><Bell size={20}/>{unreadNotifications>0&&<span className="notification-dot" aria-hidden="true"/>}</Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
