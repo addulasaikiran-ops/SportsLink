@@ -19,7 +19,8 @@ public class SupabaseMessagingService {
     private static final String CONVERSATION_COLUMNS =
             "id,is_group,title,created_by,created_at,"
                     + "members:conversation_members(user_id,joined_at,last_read_at,"
-                    + "profile:profiles!conversation_members_user_id_fkey(id,username,full_name,avatar_url,profile_details_completed))";
+                    + "profile:profiles!conversation_members_user_id_fkey(id,username,full_name,avatar_url,profile_details_completed)),"
+                    + "last_message:messages(id,conversation_id,sender_id,content,created_at)";
     private static final String MESSAGE_COLUMNS =
             "id,conversation_id,sender_id,content,created_at,edited_at,"
                     + "sender:profiles!messages_sender_id_fkey(id,username,full_name,avatar_url,profile_details_completed)";
@@ -34,7 +35,12 @@ public class SupabaseMessagingService {
         return supabaseRestClient.get(
                 "/rest/v1/conversations",
                 jwt,
-                Map.of("select", CONVERSATION_COLUMNS, "order", "created_at.desc", "limit", "100"));
+                Map.of(
+                        "select", CONVERSATION_COLUMNS,
+                        "order", "created_at.desc",
+                        "limit", "100",
+                        "last_message.order", "created_at.desc",
+                        "last_message.limit", "1"));
     }
 
     public JsonNode createConversation(Jwt jwt, CreateConversationRequest request) {
@@ -70,7 +76,12 @@ public class SupabaseMessagingService {
         JsonNode rows = supabaseRestClient.get(
                 "/rest/v1/conversations",
                 jwt,
-                Map.of("id", "eq." + conversationId, "select", CONVERSATION_COLUMNS, "limit", "1"));
+                Map.of(
+                        "id", "eq." + conversationId,
+                        "select", CONVERSATION_COLUMNS,
+                        "limit", "1",
+                        "last_message.order", "created_at.desc",
+                        "last_message.limit", "1"));
         if (rows == null || !rows.isArray() || rows.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY, "The conversation was created but could not be read back.");
