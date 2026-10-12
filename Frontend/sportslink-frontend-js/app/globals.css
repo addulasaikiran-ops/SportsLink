@@ -4365,3 +4365,26 @@ body{
  .messages-page .chat-composer{margin:10px 10px 0;padding:5px 6px 5px 13px}
  .messages-page .chat-composer input{height:40px;font-size:12px}
 }
+
+/* Inbox-first, WhatsApp-style navigation */
+.messages-page .messaging-layout.inbox-first .chat-panel{display:none}
+.messages-page .messaging-layout.inbox-first{grid-template-columns:minmax(0,1fr);min-height:560px;max-width:900px}
+.messages-page .messaging-layout.inbox-first .conversation-list{border-right:0}
+.messages-page .messaging-layout.chat-open{grid-template-columns:minmax(0,1fr);min-height:620px;max-width:900px}
+.messages-page .messaging-layout.chat-open .conversation-list{display:none}
+.messages-page .messaging-layout.chat-open .chat-panel{display:flex}
+.messages-page .chat-back-button{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
+.messages-page .chat-back-button:hover{background:var(--surface-soft,#edf2f8)}
+.messages-page .messaging-layout.inbox-first .conversation-list-head{padding:23px 22px 18px}
+.messages-page .messaging-layout.inbox-first .conversation-items{padding:0 12px 14px}
+.messages-page .messaging-layout.inbox-first .conversation-item{padding:15px 13px}
+.messages-page .messaging-layout.inbox-first .conversation-copy small{max-width:55ch}
+.messages-page .chat-header{gap:12px}
+@media(max-width:760px){
+ .messages-page .messaging-layout.inbox-first{min-height:calc(100svh - 230px)}
+ .messages-page .messaging-layout.chat-open{min-height:0;height:calc(100svh - 150px);border-radius:14px}
+ .messages-page .messaging-layout.chat-open .chat-panel{height:100%;min-height:0}
+ .messages-page .messaging-layout.chat-open .chat-messages{flex:1;min-height:0;overflow-y:auto}
+ .messages-page .messaging-layout.chat-open .chat-header{padding:0 10px}
+ .messages-page .chat-back-button{width:34px;height:34px;flex-basis:34px}
+}
