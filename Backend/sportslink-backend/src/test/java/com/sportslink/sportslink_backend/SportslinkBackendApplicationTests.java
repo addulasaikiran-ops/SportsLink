@@ -335,7 +335,7 @@ class SportslinkBackendApplicationTests {
 
         verify(supabaseRestClient).post(
                 eq("/rest/v1/comments"), any(Jwt.class),
-                eq(Map.of("select", "id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url)")),
+                eq(Map.of("select", "id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url,profile_details_completed)")),
                 eq(Map.of(
                         "post_id", postId.toString(),
                         "author_id", "user-123",
