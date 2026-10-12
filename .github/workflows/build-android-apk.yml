@@ -31,6 +31,13 @@ jobs:
       - name: Generate Android project
         run: npx cap add android
 
+      - name: Apply SPORTSLINK launcher icon
+        run: |
+          npm install --no-save @capacitor/assets
+          mkdir -p assets
+          cp public/favicon_tag_pro_SL_ghost.png assets/icon.png
+          npx capacitor-assets generate --android
+
       - name: Build debug APK
         run: |
           cd android
