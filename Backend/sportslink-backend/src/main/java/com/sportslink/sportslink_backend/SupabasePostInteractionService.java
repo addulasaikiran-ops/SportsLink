@@ -13,7 +13,7 @@ import java.util.UUID;
 public class SupabasePostInteractionService {
 
     private static final String COMMENT_COLUMNS =
-            "id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url)";
+            "id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url,profile_details_completed)";
     private static final String REACTION_COLUMNS = "post_id,user_id,reaction,created_at";
 
     private final SupabaseRestClient supabaseRestClient;
