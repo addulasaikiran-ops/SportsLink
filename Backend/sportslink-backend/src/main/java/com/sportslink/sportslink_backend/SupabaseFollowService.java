@@ -14,7 +14,7 @@ import java.util.UUID;
 public class SupabaseFollowService {
 
     private static final String PROFILE_COLUMNS =
-            "id,username,full_name,headline,avatar_url,sport,role";
+            "id,username,full_name,headline,avatar_url,sport,role,profile_details_completed";
     private static final String FOLLOWING_COLUMNS =
             "follower_id,following_id,created_at,following:profiles!follows_following_id_fkey("
                     + PROFILE_COLUMNS + ")";
