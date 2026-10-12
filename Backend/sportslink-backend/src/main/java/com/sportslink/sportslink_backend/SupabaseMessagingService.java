@@ -19,10 +19,10 @@ public class SupabaseMessagingService {
     private static final String CONVERSATION_COLUMNS =
             "id,is_group,title,created_by,created_at,"
                     + "members:conversation_members(user_id,joined_at,last_read_at,"
-                    + "profile:profiles!conversation_members_user_id_fkey(id,username,full_name,avatar_url))";
+                    + "profile:profiles!conversation_members_user_id_fkey(id,username,full_name,avatar_url,profile_details_completed))";
     private static final String MESSAGE_COLUMNS =
             "id,conversation_id,sender_id,content,created_at,edited_at,"
-                    + "sender:profiles!messages_sender_id_fkey(id,username,full_name,avatar_url)";
+                    + "sender:profiles!messages_sender_id_fkey(id,username,full_name,avatar_url,profile_details_completed)";
 
     private final SupabaseRestClient supabaseRestClient;
 
