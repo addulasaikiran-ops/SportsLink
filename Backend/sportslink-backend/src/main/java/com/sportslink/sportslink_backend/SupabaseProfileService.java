@@ -10,7 +10,7 @@ import java.util.Map;
 public class SupabaseProfileService {
 
     private static final String PROFILE_COLUMNS =
-            "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at";
+            "id,username,full_name,headline,bio,avatar_url,location,sport,role,skills,created_at,updated_at,profile_details_completed";
 
     private final SupabaseRestClient supabaseRestClient;
 
@@ -24,7 +24,7 @@ public class SupabaseProfileService {
                 jwt,
                 Map.of(
                         "id", "neq." + jwt.getSubject(),
-                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at",
+                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at,profile_details_completed",
                         "order", "created_at.desc",
                         "limit", "100"
                 ));
