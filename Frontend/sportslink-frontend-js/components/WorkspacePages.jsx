@@ -363,6 +363,11 @@ export function MessagesPage() {
       setMessages((current) => current.some((item) => item.id === created.id)
         ? current
         : [...current, created].sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at)));
+      setConversations((current) => sortRecentConversations(current.map((conversation) =>
+        conversation.id === activeConversationId
+          ? { ...conversation, last_message: created, last_message_at: created.created_at }
+          : conversation
+      )));
       setDraft("");
       shouldAutoScrollRef.current = true;
       backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/read`, { method: "PATCH" }).catch(() => {});
@@ -453,7 +458,7 @@ export function MessagesPage() {
                 })}
           </div>
           <form className="chat-composer" onSubmit={sendMessage}>
-            <input ref={null} value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Message" aria-label="Write a message" maxLength={5000} autoComplete="off" autoCapitalize="sentences" spellCheck enterKeyHint="send" disabled={sending}/>
+            <input value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Message" aria-label="Write a message" maxLength={5000} autoComplete="off" autoCapitalize="sentences" spellCheck enterKeyHint="send" enterKeyHint="send" disabled={sending}/>
             <button className="send-message" type="submit" aria-label={sending?"Sending message":"Send message"} title={sending?"Sending message":"Send message"} disabled={sending||!draft.trim()}><Send size={18}/></button>
           </form>
           <p className="sr-only" role="status" aria-live="polite">{sending ? "Sending message" : ""}</p>
