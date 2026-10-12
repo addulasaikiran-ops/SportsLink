@@ -4537,3 +4537,12 @@ body{
 .signup-captcha{min-height:65px;display:flex;justify-content:center;align-items:center;max-width:100%;overflow:hidden}
 .signup-consent a{color:#2f6bff;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:540px){.legal-main{width:min(100% - 22px,980px);padding:20px 0 48px}.legal-document{padding:23px 19px;border-radius:20px}.legal-document h1{letter-spacing:-1.4px}.legal-document section{padding:19px 0}.joined-page{padding:86px 14px 28px;align-items:center}.joined-header{top:18px;left:18px;right:18px}.joined-card{padding:30px 20px;border-radius:23px}.joined-card h1{letter-spacing:-1.4px}.joined-actions{align-items:stretch;flex-direction:column}.joined-actions .button{width:100%}}
+
+
+/* Blue profile-completion star (distinct from identity verification). */
+.profile-completion-badge{display:inline-block;flex:0 0 auto;margin-left:5px;color:#2f74f6;vertical-align:-2px;filter:drop-shadow(0 1px 1px rgba(47,116,246,.12))}
+.profile-reference-identity h1{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.onboarding-action-buttons{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.onboarding-action-buttons .button{min-height:46px}
+.onboarding-skip{background:transparent}
+@media(max-width:620px){.onboarding-action-buttons{display:grid;grid-template-columns:1fr;width:100%}.onboarding-action-buttons .button{width:100%;justify-content:center}}
