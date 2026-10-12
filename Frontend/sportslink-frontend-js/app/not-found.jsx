@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 
 export default function NotFound() {
+  useEffect(() => { document.title = "404 — Page Not Found | SPORTSLINK"; }, []);
   return (
     <main className="system-state card system-state-404">
       <div className="system-state-404-art" aria-hidden="true">

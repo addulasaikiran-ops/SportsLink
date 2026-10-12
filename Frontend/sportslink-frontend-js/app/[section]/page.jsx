@@ -4,7 +4,25 @@ import { BookmarksPage, MessagesPage, NotificationsPage, OpportunitiesPage, Prof
 import { notFound } from "next/navigation";
 
 const allowed = ["network","discover","opportunities","messages","notifications","profile","bookmarks","organizations","settings","events"];
+const sectionTitles = {
+  network: "My Network",
+  discover: "Discover",
+  opportunities: "Opportunities",
+  messages: "Messages",
+  notifications: "Notifications",
+  profile: "My Profile",
+  bookmarks: "Saved Items",
+  organizations: "Organizations",
+  settings: "Settings",
+  events: "Events"
+};
+
 export function generateStaticParams() { return allowed.map((section) => ({section})); }
+
+export async function generateMetadata({ params }) {
+  const { section } = await params;
+  return { title: sectionTitles[section] || "Page Not Found" };
+}
 
 export default async function Page({ params, searchParams }) {
   const { section } = await params;

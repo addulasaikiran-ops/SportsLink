@@ -6,6 +6,7 @@ import { AlertTriangle, ArrowRight, RefreshCw } from "lucide-react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
+    document.title = "Something Went Wrong | SPORTSLINK";
     // Keep the technical detail in diagnostics, not on the public error page.
     if (error) console.error("SPORTSLINK page error:", error);
   }, [error]);

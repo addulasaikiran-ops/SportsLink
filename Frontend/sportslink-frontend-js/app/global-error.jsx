@@ -6,6 +6,7 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 export default function GlobalError({ reset }) {
   return (
     <html lang="en">
+      <head><title>Application Error | SPORTSLINK</title></head>
       <body>
         <main className="system-state card system-state-error" role="alert">
           <span className="system-state-icon system-state-error-icon" aria-hidden="true">
