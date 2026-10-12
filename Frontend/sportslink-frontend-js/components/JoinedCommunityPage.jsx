@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Activity, ArrowRight, CheckCircle2, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, Sparkles, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -54,7 +54,7 @@ export function JoinedCommunityPage() {
 
   return <main className="joined-page">
     <header className="joined-header">
-      <Link href="/" className="joined-brand" aria-label="SPORTSLINK home"><span className="joined-brand-mark"><Activity size={20}/></span><span>SPORTS<span>LINK</span></span></Link>
+      <Link href="/" className="joined-brand" aria-label="SPORTSLINK home"><img className="sportslink-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link>
       <ThemeToggle compact/>
     </header>
     <section className="joined-card">
