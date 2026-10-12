@@ -82,6 +82,14 @@ export function LoginPage() {
   if(params.get("setup")==="supabase") setNotice("Connect your Supabase project first. Copy .env.local.example to .env.local, add your publishable key, and restart the dev server.");
   if(params.get("error")==="confirmation") setError("That confirmation link could not be verified or has expired. Try signing up again.");
  },[]);
+ async function signInWithGoogle(){
+  setError("");setNotice("");
+  const supabase=createClient();
+  if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key first.");return;}
+  setLoading(true);
+  const {error:oauthError}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth/callback?next=/onboarding`}});
+  if(oauthError){setLoading(false);setError(oauthError.message);}
+ }
  async function submit(e){
   e.preventDefault();setError("");setNotice("");
   if(!email.trim()||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setError("Enter a valid email address.");return;}
@@ -95,11 +103,19 @@ export function LoginPage() {
   const params=new URLSearchParams(window.location.search);const next=params.get("next");const target=next&&next.startsWith("/")&&!next.startsWith("//")&&!["/login","/signup","/onboarding"].includes(next.split("?")[0])?next:"/home";
   router.replace(`/onboarding?next=${encodeURIComponent(target)}`);router.refresh();
  }
- return <AuthLayout mode="login"><div className="login-brand-row"><img className="sportslink-logo login-logo-image" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /><span className="login-brand-online"><i/> MEMBER ACCESS</span></div><div className="auth-form-heading"><span className="auth-kicker">WELCOME BACK</span><h2>Log in to SPORTSLINK</h2><p>Good things happen when sport connects.</p></div><form className="auth-form" onSubmit={submit} noValidate><label htmlFor="login-email">Email address</label><input id="login-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/><div className="auth-label-row"><label htmlFor="login-password">Password</label><span>At least 6 characters</span></div><div className="password-field"><input id="login-password" type={show?"text":"password"} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button></div>{notice&&<p className="auth-success" role="status">{notice}</p>}{error&&<p className="auth-error" role="alert">{error}</p>}<button className="button auth-submit" type="submit" disabled={loading}>{loading?"Logging in…":"Log in"} {!loading&&<ArrowRight size={17}/>}</button><p className="auth-demo-note"><ShieldCheck size={15}/> Secure sign-in powered by Supabase. Your password is verified by the authentication service.</p></form><div className="auth-switch">New to SPORTSLINK? <Link href="/signup">Create an account</Link></div></AuthLayout>;
+ return <AuthLayout mode="login"><div className="login-brand-row"><img className="sportslink-logo login-logo-image" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /><span className="login-brand-online"><i/> MEMBER ACCESS</span></div><div className="auth-form-heading"><span className="auth-kicker">WELCOME BACK</span><h2>Log in to SPORTSLINK</h2><p>Good things happen when sport connects.</p></div><button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={loading}><span className="google-auth-mark">G</span> Continue with Google</button><div className="auth-divider"><span>or continue with email</span></div><form className="auth-form" onSubmit={submit} noValidate><label htmlFor="login-email">Email address</label><input id="login-email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e=>setEmail(e.target.value)} required/><div className="auth-label-row"><label htmlFor="login-password">Password</label><span>At least 6 characters</span></div><div className="password-field"><input id="login-password" type={show?"text":"password"} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button></div>{notice&&<p className="auth-success" role="status">{notice}</p>}{error&&<p className="auth-error" role="alert">{error}</p>}<button className="button auth-submit" type="submit" disabled={loading}>{loading?"Logging in…":"Log in"} {!loading&&<ArrowRight size={17}/>}</button><p className="auth-demo-note"><ShieldCheck size={15}/> Secure sign-in powered by Supabase. Your password is verified by the authentication service.</p></form><div className="auth-switch">New to SPORTSLINK? <Link href="/signup">Create an account</Link></div></AuthLayout>;
 }
 export function SignupPage() {
  const router=useRouter();
  const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false);
+ async function signInWithGoogle(){
+  setError("");setNotice("");
+  const supabase=createClient();
+  if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key first.");return;}
+  setLoading(true);
+  const {error:oauthError}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth/callback?next=/onboarding`}});
+  if(oauthError){setLoading(false);setError(oauthError.message);}
+ }
  async function submit(e){
   e.preventDefault();setError("");setNotice("");
   if(name.trim().length<2){setError("Please enter your full name.");return;}
@@ -132,6 +148,8 @@ export function SignupPage() {
    </div>
    {notice&&<p className="auth-success" role="status">{notice}</p>}
    {error&&<p className="auth-error" role="alert">{error}</p>}
+   <button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={loading}><span className="google-auth-mark">G</span> Sign up with Google</button>
+   <div className="auth-divider"><span>or sign up with email</span></div>
    <form className="auth-form signup-form" onSubmit={submit} noValidate>
     <label htmlFor="signup-name">Full name</label>
     <input id="signup-name" autoComplete="name" placeholder="Your full name" value={name} onChange={e=>setName(e.target.value)} required/>
