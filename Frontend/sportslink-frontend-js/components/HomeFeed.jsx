@@ -513,7 +513,7 @@ export function HomeFeed() {
         post_id: post.id,
         author_id: currentUser.id,
         content,
-      }).select("id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url)").single();
+      }).select("id,post_id,author_id,content,created_at,author:profiles!comments_author_id_fkey(id,username,full_name,avatar_url,profile_details_completed)").single();
       if (error) throw error;
       setPosts((current) => current.map((item) => item.id === post.id
         ? { ...item, comments: [...(item.comments || []), data] }
