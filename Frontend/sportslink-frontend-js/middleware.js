@@ -44,6 +44,19 @@ export async function middleware(request) {
     return NextResponse.next();
   }
 
+  // The callback route exchanges the OAuth code for a session itself. Avoid
+  // an extra getUser round trip before the code exchange can complete.
+  if (pathname === '/auth/callback') return NextResponse.next();
+
+  // Public pages do not need a remote auth lookup for visitors without a
+  // Supabase session cookie. Protected paths still always run the auth check.
+  const hasSupabaseAuthCookie = request.cookies.getAll().some(({ name }) =>
+    name.startsWith('sb-') && name.includes('-auth-token')
+  );
+  if (!hasSupabaseAuthCookie && !isProtectedPath(pathname)) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({ request });
   const supabase = createServerClient(url, key, {
     cookies: {
