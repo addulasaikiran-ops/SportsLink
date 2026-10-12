@@ -6,9 +6,9 @@ export const metadata = {
   description: "A professional network for athletes, coaches, scouts, clubs, and sports professionals.",
   applicationName: "SPORTSLINK",
   icons: {
-    icon: [{ url: "/favicon_tag_pro_SL_ghost.png", type: "image/png" }],
-    shortcut: ["/favicon_tag_pro_SL_ghost.png"],
-    apple: [{ url: "/favicon_tag_pro_SL_ghost.png", type: "image/png" }]
+    icon: [{ url: "/Document%20Handshake%20Partnership%20Icon.png", type: "image/png" }],
+    shortcut: ["/Document%20Handshake%20Partnership%20Icon.png"],
+    apple: [{ url: "/Document%20Handshake%20Partnership%20Icon.png", type: "image/png" }]
   },
   keywords: ["sports networking", "athletes", "coaches", "sports careers", "clubs"],
   openGraph: {
