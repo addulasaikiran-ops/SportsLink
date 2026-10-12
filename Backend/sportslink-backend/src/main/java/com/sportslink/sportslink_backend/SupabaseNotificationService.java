@@ -15,7 +15,7 @@ public class SupabaseNotificationService {
 
     private static final String NOTIFICATION_COLUMNS =
             "id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,"
-                    + "actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url)";
+                    + "actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url,profile_details_completed)";
 
     private final SupabaseRestClient supabaseRestClient;
 
