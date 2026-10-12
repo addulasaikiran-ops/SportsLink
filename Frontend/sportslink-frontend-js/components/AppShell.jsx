@@ -18,7 +18,7 @@ function MemberAvatar({ url, name, className }) {
 export function AppShell({children}) {
   const path = usePathname();
   const router = useRouter();
-  const isPublic = path === "/" || path === "/login" || path === "/signup" || path === "/about" || path === "/onboarding";
+  const isPublic = path === "/" || path === "/login" || path === "/signup" || path === "/about" || path === "/onboarding" || path === "/privacy" || path === "/joined";
   const [currentUser, setCurrentUser] = useState(null);
   const logoutInProgress = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -200,7 +200,7 @@ export function AppShell({children}) {
       <main className="main-content" id="main-content" tabIndex="-1">{children}</main>
       <aside className="right-rail">
         <div className="rail-card card"><div className="rail-heading"><h3>Community activity</h3></div><p>Posts and public profiles are shown only when available under your account's access.</p><Link href="/discover" className="rail-more">Discover public profiles →</Link></div>
-        <footer className="site-footer"><div><Link href="/settings">About</Link><Link href="/settings">Help Center</Link><Link href="/settings">Privacy</Link><Link href="/settings">Terms</Link></div><p><b>SPORTSLINK</b> © {new Date().getFullYear()} · Connecting the world of sport.</p></footer>
+        <footer className="site-footer"><div><Link href="/settings">About</Link><Link href="/settings">Help Center</Link><Link href="/privacy">Privacy Policy</Link><Link href="/settings">Terms</Link></div><p><b>SPORTSLINK</b> © {new Date().getFullYear()} · Connecting the world of sport.</p></footer>
       </aside>
     </div>
     <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
