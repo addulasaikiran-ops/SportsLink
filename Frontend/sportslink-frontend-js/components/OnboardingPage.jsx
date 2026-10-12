@@ -171,7 +171,7 @@ export function OnboardingPage() {
         if (saveError.code === "23505") throw new Error("That username is already taken. Please choose another one.");
         throw saveError;
       }
-      router.replace(destination);
+      router.replace(`/joined?next=${encodeURIComponent(destination)}`);
       router.refresh();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "We couldn't save your profile. Please try again.");
