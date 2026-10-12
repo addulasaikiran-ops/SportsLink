@@ -4864,3 +4864,12 @@ body{
   .messages-page .conversation-item .avatar{width:45px;height:45px;flex-basis:45px}
   .messages-page .chat-messages{padding-left:10px;padding-right:10px}
 }
+
+
+/* Desktop keeps the inbox beside the open thread; the back arrow is mobile-only. */
+@media(min-width:761px){.messages-page .chat-back-button{display:none}}
+@media(max-width:760px){
+  .messages-page .chat-back-button{display:grid;place-items:center}
+  .messages-page-chat-open{overscroll-behavior:none}
+  .messages-page .message-bubble>strong{font-size:11px!important;line-height:1.3}
+}
