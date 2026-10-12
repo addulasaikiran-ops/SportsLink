@@ -207,7 +207,7 @@ export function MessagesPage() {
   const activePeer = activeMembers.find((member) => member.user_id !== user?.id) || null;
   const peerReadAt = activePeer?.last_read_at ? Date.parse(activePeer.last_read_at) : 0;
   const activeLastSeenLabel = activePeer?.last_read_at
-    ? `Last active in this chat ${chatTime(activePeer.last_read_at)}`
+    ? `Last read in this chat ${chatTime(activePeer.last_read_at)}`
     : "Messages are private";
   const filteredProfiles = profiles.filter((profile) => {
     const normalized = [profile.full_name, profile.username, profile.headline, profile.sport, profile.role]
