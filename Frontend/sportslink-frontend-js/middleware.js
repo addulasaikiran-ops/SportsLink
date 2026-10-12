@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 
 const protectedRoots = new Set([
   '/home', '/network', '/discover', '/opportunities', '/messages',
-  '/notifications', '/profile', '/organizations', '/settings', '/events', '/onboarding',
+  '/notifications', '/profile', '/organizations', '/settings', '/events', '/onboarding', '/joined',
 ]);
 
 function safeDestination(raw) {
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/home';
   const path = raw.split(/[?#]/)[0];
-  if (path === '/onboarding' || path === '/login' || path === '/signup' || path.startsWith('/auth/')) return '/home';
+  if (path === '/onboarding' || path === '/joined' || path === '/login' || path === '/signup' || path.startsWith('/auth/')) return '/home';
   return raw;
 }
 
