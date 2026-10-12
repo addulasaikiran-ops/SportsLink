@@ -203,6 +203,12 @@ export function MessagesPage() {
     return { profile, name };
   }
   const activeContact = otherParticipant(activeConversation);
+  const activeMembers = Array.isArray(activeConversation?.members) ? activeConversation.members : [];
+  const activePeer = activeMembers.find((member) => member.user_id !== user?.id) || null;
+  const peerReadAt = activePeer?.last_read_at ? Date.parse(activePeer.last_read_at) : 0;
+  const activeLastSeenLabel = activePeer?.last_read_at
+    ? `Last active in this chat ${chatTime(activePeer.last_read_at)}`
+    : "Messages are private";
   const filteredProfiles = profiles.filter((profile) => {
     const normalized = [profile.full_name, profile.username, profile.headline, profile.sport, profile.role]
       .filter(Boolean).join(" ").toLowerCase();
@@ -320,7 +326,7 @@ export function MessagesPage() {
             : contact.name;
           return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
-            <span className="conversation-copy"><b>{memberText}</b><small>{conversation.is_group?"Group conversation":"Tap to open messages"}</small></span>
+            <span className="conversation-copy"><b>{memberText}</b><small>{conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Open conversation" : "Private text chat"}</small></span>
           </button>;
         })}</div>
         {conversations.length===0&&!showPeople&&<div className="empty-state" style={{padding:18}}><MessageCircle size={20}/><p>No conversations yet.</p><button className="button button-secondary" type="button" onClick={()=>setShowPeople(true)}>Find a member</button></div>}
@@ -329,7 +335,7 @@ export function MessagesPage() {
         {activeConversation ? <>
           <header className="chat-header">
             <ConversationAvatar profile={activeContact.profile} name={activeContact.name}/>
-            <div><b>{activeContact.name}</b><small>{activeConversation.is_group ? "Group conversation" : "SPORTSLINK member"}</small></div>
+            <div className="chat-contact-details"><b>{activeContact.name}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
             <button className="button button-secondary" type="button" onClick={()=>setShowPeople((value)=>!value)}><PlusCircle size={15}/> New</button>
           </header>
           <div className="chat-messages" role="log" aria-live="polite" aria-label="Conversation messages">
@@ -343,7 +349,7 @@ export function MessagesPage() {
                   return <article key={message.id} className={`message-bubble ${isOwn?"message-own":""}`}>
                     {!isOwn&&<strong style={{display:"block",fontSize:9,marginBottom:3}}>{senderName}</strong>}
                     <div style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{message.content}</div>
-                    <small>{chatTime(message.created_at)}{isOwn?" · You":""}</small>
+                    <small className="message-meta">{chatTime(message.created_at)}{isOwn && <><span className="message-sender-label">You</span><CheckCheck size={13} className={peerReadAt >= Date.parse(message.created_at) ? "message-read-receipt is-read" : "message-read-receipt"} aria-label={peerReadAt >= Date.parse(message.created_at) ? "Read" : "Sent"} /></>}</small>
                   </article>;
                 })}
           </div>
