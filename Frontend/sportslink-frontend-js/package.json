@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -13,6 +15,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "@supabase/ssr": "0.12.7",
-    "@supabase/supabase-js": "2.117.1"
+    "@supabase/supabase-js": "2.117.1",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/android": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
   }
 }
