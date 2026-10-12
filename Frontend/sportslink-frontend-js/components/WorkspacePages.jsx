@@ -89,16 +89,54 @@ export function BookmarksPage() {
   </div>;
 }
 
+function conversationLastMessage(conversation) {
+  const value = conversation?.last_message ?? conversation?.lastMessage;
+  if (Array.isArray(value)) return value[0] || null;
+  return value && typeof value === "object" ? value : null;
+}
+
+function conversationTimestamp(conversation) {
+  return conversationLastMessage(conversation)?.created_at
+    || conversation?.last_message_at
+    || conversation?.lastMessageAt
+    || conversation?.updated_at
+    || conversation?.created_at
+    || "";
+}
+
+function conversationListTime(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "";
+  const date = new Date(timestamp);
+  const now = new Date();
+  if (date.toDateString() === now.toDateString()) {
+    return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(date);
+  }
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+  const age = now.getTime() - timestamp;
+  if (age < 6 * 24 * 60 * 60 * 1000) {
+    return new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(date);
+  }
+  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date);
+}
+
+function conversationPreview(conversation, currentUserId) {
+  const latest = conversationLastMessage(conversation);
+  const content = latest?.content
+    || (typeof conversation?.last_message === "string" ? conversation.last_message : "")
+    || conversation?.last_message_preview
+    || conversation?.last_message_text
+    || "";
+  if (!content) return conversation?.is_group ? "Group conversation · Say hello" : "No messages yet · Say hello";
+  return latest?.sender_id === currentUserId ? `You: ${content}` : content;
+}
+
 function sortRecentConversations(rows) {
   return [...(Array.isArray(rows) ? rows : [])].sort((a, b) => {
     const recentTime = (conversation) => {
-      const value = conversation?.last_message_at
-        || conversation?.lastMessageAt
-        || conversation?.last_message?.created_at
-        || conversation?.lastMessage?.created_at
-        || conversation?.updated_at
-        || conversation?.created_at;
-      const parsed = value ? Date.parse(value) : 0;
+      const parsed = Date.parse(conversationTimestamp(conversation));
       return Number.isFinite(parsed) ? parsed : 0;
     };
     return recentTime(b) - recentTime(a);
@@ -113,7 +151,10 @@ export function MessagesPage() {
   const [showChatView, setShowChatView] = useState(false);
   const [messages, setMessages] = useState([]);
   const [peopleQuery, setPeopleQuery] = useState("");
+  const [conversationQuery, setConversationQuery] = useState("");
   const [draft, setDraft] = useState("");
+  const messagesViewportRef = useRef(null);
+  const shouldAutoScrollRef = useRef(true);
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -187,6 +228,7 @@ export function MessagesPage() {
     let knownMessageIds = new Set();
     setMessages([]);
     setMessagesLoading(true);
+    shouldAutoScrollRef.current = true;
     const refreshMessages = async () => {
       try {
         const rows = await backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/messages`);
@@ -195,8 +237,11 @@ export function MessagesPage() {
         const hasNewIncoming = !firstLoad && nextRows.some((item) =>
           !knownMessageIds.has(item.id) && item.sender_id !== user.id
         );
+        const hasChanges = firstLoad
+          || nextRows.length !== knownMessageIds.size
+          || nextRows.some((item) => !knownMessageIds.has(item.id));
         knownMessageIds = new Set(nextRows.map((item) => item.id));
-        setMessages(nextRows);
+        if (hasChanges) setMessages(nextRows);
         if (firstLoad || hasNewIncoming) {
           backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/read`, { method: "PATCH" }).catch(() => {});
         }
@@ -214,6 +259,20 @@ export function MessagesPage() {
     return () => { disposed = true; clearInterval(timer); };
   }, [activeConversationId, user?.id]);
 
+  useEffect(() => {
+    const viewport = messagesViewportRef.current;
+    if (!viewport || !shouldAutoScrollRef.current) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      viewport.scrollTo({ top: viewport.scrollHeight, behavior: "smooth" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages, activeConversationId, showChatView]);
+
+  function handleMessagesScroll(event) {
+    const viewport = event.currentTarget;
+    shouldAutoScrollRef.current = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 140;
+  }
+
   const activeConversation = conversations.find((item) => item.id === activeConversationId) || null;
   function otherParticipant(conversation) {
     const participants = Array.isArray(conversation?.members) ? conversation.members : [];
@@ -228,7 +287,14 @@ export function MessagesPage() {
   const peerReadAt = activePeer?.last_read_at ? Date.parse(activePeer.last_read_at) : 0;
   const activeLastSeenLabel = activePeer?.last_read_at
     ? `Last read in this chat ${chatTime(activePeer.last_read_at)}`
-    : "Messages are private";
+    : "Private conversation";
+
+  const filteredConversations = conversations.filter((conversation) => {
+    const contact = otherParticipant(conversation);
+    const query = conversationQuery.trim().toLowerCase();
+    return !query || contact.name.toLowerCase().includes(query)
+      || conversationPreview(conversation, user?.id).toLowerCase().includes(query);
+  });
   const filteredProfiles = profiles.filter((profile) => {
     const normalized = [profile.full_name, profile.username, profile.headline, profile.sport, profile.role]
       .filter(Boolean).join(" ").toLowerCase();
@@ -298,8 +364,9 @@ export function MessagesPage() {
         ? current
         : [...current, created].sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at)));
       setDraft("");
+      shouldAutoScrollRef.current = true;
       backendRequest(`/api/conversations/${encodeURIComponent(activeConversationId)}/read`, { method: "PATCH" }).catch(() => {});
-      setNotice("Message sent. The recipient will see it in this conversation and their notifications.");
+      setNotice("");
     } catch (sendError) {
       setError(sendError instanceof Error ? sendError.message : "Unable to send your message. Please retry.");
     } finally {
@@ -322,7 +389,7 @@ export function MessagesPage() {
     return <div className="page-stack messages-page">{pageHeading}<div className="messages-loading card" role="status"><span className="messages-empty-art"><Activity size={26}/></span><h2>Opening your inbox</h2><p>Loading your conversations and member list…</p></div></div>;
   }
 
-  return <div className="page-stack messages-page">
+  return <div className={`page-stack messages-page ${showChatView ? "messages-page-chat-open" : "messages-page-inbox"}`}>
     {pageHeading}
     {error && <div className="messaging-error" role="alert"><span className="messaging-error-icon"><Activity size={18}/></span><div><b>We couldn’t load your inbox</b><p>{error}</p></div><button className="button button-secondary" type="button" onClick={() => window.location.reload()}>Try again</button></div>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
@@ -341,16 +408,25 @@ export function MessagesPage() {
           })}</div>
           {filteredProfiles.length===0&&<p style={{fontSize:11,color:"var(--muted)",padding:"8px"}}>No members match that search.</p>}
         </div>}
-        <div className="conversation-items">{conversations.map((conversation)=>{
+        <label className="conversation-search" aria-label="Search conversations"><Search size={16}/><input type="search" value={conversationQuery} onChange={(event)=>setConversationQuery(event.target.value)} placeholder="Search chats" autoComplete="off"/></label>
+        <div className="conversation-items">{filteredConversations.map((conversation)=>{
           const contact=otherParticipant(conversation);
           const memberText=conversation.is_group
             ? (conversation.title||"Group conversation")
             : contact.name;
-          return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowChatView(true);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
+          const latest=conversationLastMessage(conversation);
+          const ownMembership=(Array.isArray(conversation.members)?conversation.members:[]).find((member)=>member.user_id===user?.id);
+          const unread=Boolean(latest && latest.sender_id!==user?.id && (!ownMembership?.last_read_at || Date.parse(latest.created_at)>Date.parse(ownMembership.last_read_at)));
+          const preview=conversationPreview(conversation,user?.id);
+          return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowChatView(true);setShowPeople(false);setError("");setNotice("");shouldAutoScrollRef.current=true;}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
-            <span className="conversation-copy"><b>{memberText}{!conversation.is_group && <ProfileCompletionBadge completed={contact.profile.profile_details_completed} size={13} />}</b><small>{conversation.last_message?.content || conversation.lastMessage?.content || conversation.last_message_preview || conversation.last_message_text || (conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Recently opened chat" : "Tap to continue chatting")}</small></span>
+            <span className="conversation-copy">
+              <span className="conversation-row-top"><b>{memberText}{!conversation.is_group && <ProfileCompletionBadge completed={contact.profile.profile_details_completed} size={13} />}</b><time>{conversationListTime(conversationTimestamp(conversation))}</time></span>
+              <span className="conversation-row-bottom"><small>{preview}</small>{unread&&<span className="conversation-unread-dot" aria-label="Unread message"/>}</span>
+            </span>
           </button>;
         })}</div>
+        {conversations.length>0&&filteredConversations.length===0&&<p className="conversation-no-results">No chats match your search.</p>}
         {conversations.length===0&&!showPeople&&<div className="empty-state" style={{padding:18}}><MessageCircle size={20}/><p>No conversations yet.</p><button className="button button-secondary" type="button" onClick={()=>setShowPeople(true)}>Find a member</button></div>}
       </aside>
       <section className="chat-panel" aria-label="Message thread">
@@ -359,9 +435,9 @@ export function MessagesPage() {
             <button className="chat-back-button" type="button" aria-label="Back to inbox" onClick={()=>setShowChatView(false)}><ArrowLeft size={19}/></button>
             <ConversationAvatar profile={activeContact.profile} name={activeContact.name}/>
             <div className="chat-contact-details"><b>{activeContact.name}{!activeConversation.is_group && <ProfileCompletionBadge completed={activeContact.profile.profile_details_completed} size={13} />}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
-            <button className="button button-secondary" type="button" onClick={()=>setShowPeople((value)=>!value)}><PlusCircle size={15}/> New</button>
+            <button className="button button-secondary chat-new-button" type="button" onClick={()=>{setShowPeople(true);setShowChatView(false);setConversationQuery("");setNotice("");}}><PlusCircle size={15}/> New</button>
           </header>
-          <div className="chat-messages" role="log" aria-live="polite" aria-label="Conversation messages">
+          <div className="chat-messages" ref={messagesViewportRef} onScroll={handleMessagesScroll} role="log" aria-live="polite" aria-label="Conversation messages">
             {messagesLoading&&messages.length===0
               ? <div className="empty-state" role="status"><Activity/><p>Loading messages…</p></div>
               : messages.length===0
@@ -377,10 +453,10 @@ export function MessagesPage() {
                 })}
           </div>
           <form className="chat-composer" onSubmit={sendMessage}>
-            <input value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Write a message…" aria-label="Write a message" maxLength={5000} autoComplete="off" disabled={sending}/>
-            <button className="send-message" type="submit" aria-label="Send message" disabled={sending||!draft.trim()}><Send size={16}/></button>
+            <input ref={null} value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Message" aria-label="Write a message" maxLength={5000} autoComplete="off" autoCapitalize="sentences" spellCheck enterKeyHint="send" disabled={sending}/>
+            <button className="send-message" type="submit" aria-label={sending?"Sending message":"Send message"} title={sending?"Sending message":"Send message"} disabled={sending||!draft.trim()}><Send size={18}/></button>
           </form>
-          <p className="demo-disclaimer" style={{padding:"7px 12px 0"}}>Messages are saved to your conversation. Recipients receive an in-app notification.</p>
+          <p className="sr-only" role="status" aria-live="polite">{sending ? "Sending message" : ""}</p>
         </> : <div className="message-empty-screen">
           <div className="message-empty-illustration"><span className="message-empty-orbit message-empty-orbit-one"/><span className="message-empty-orbit message-empty-orbit-two"/><span className="message-empty-icon"><MessageCircle size={34}/></span></div>
           <span className="message-empty-kicker">YOUR NEXT CONNECTION STARTS HERE</span>
