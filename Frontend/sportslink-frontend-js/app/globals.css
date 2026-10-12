@@ -4388,3 +4388,109 @@ body{
  .messages-page .messaging-layout.chat-open .chat-header{padding:0 10px}
  .messages-page .chat-back-button{width:34px;height:34px;flex-basis:34px}
 }
+
+
+/* SPORTSLINK recovery states: not found, unexpected errors, and offline network status. */
+.system-state-404,
+.system-state-error {
+  position: relative;
+  overflow: hidden;
+  min-height: min(610px, 68vh);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid var(--border-subtle, #e1e8f2);
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(47,107,255,.11), transparent 52%),
+    linear-gradient(155deg, var(--surface, #fff), var(--surface-muted, #f8faff));
+  box-shadow: 0 24px 72px rgba(28, 52, 96, .09);
+}
+.system-state-404-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(9px, 2vw, 22px);
+  margin: 0 auto 18px;
+  color: #2563eb;
+  font-size: clamp(62px, 10vw, 104px);
+  font-weight: 900;
+  line-height: .95;
+  letter-spacing: -.09em;
+}
+.system-state-404-art svg {
+  width: clamp(42px, 7vw, 68px);
+  height: clamp(42px, 7vw, 68px);
+  padding: 10px;
+  color: #68bf30;
+  border: 1px solid rgba(104,191,48,.3);
+  border-radius: 20px;
+  background: rgba(104,191,48,.09);
+  transform: rotate(-8deg);
+}
+.system-state-404 .eyebrow,
+.system-state-error .eyebrow { margin: 0 0 12px; }
+.system-state-404 h1,
+.system-state-error h1 {
+  max-width: 540px;
+  margin: 0 0 12px;
+  font-size: clamp(25px, 4vw, 36px);
+  letter-spacing: -.045em;
+}
+.system-state-404 > p:not(.eyebrow),
+.system-state-error > p:not(.eyebrow) {
+  max-width: 440px;
+  margin: 0 auto 24px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.system-state-404 .system-state-actions,
+.system-state-error .system-state-actions { margin: 0 auto; gap: 12px; }
+.system-state-404 .button,
+.system-state-error .button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 0 18px; border-radius: 12px; }
+.system-state-404 .system-state-footnote,
+.system-state-error .system-state-footnote { margin-top: 28px !important; margin-bottom: 0 !important; color: var(--text-muted, #718096); font-size: 11px !important; }
+.system-state-error-icon { display: grid; place-items: center; background: #fff0df; color: #b96013; }
+.system-state-reference { color: var(--text-muted, #718096); font-size: 11px !important; margin-top: -12px !important; }
+.offline-status-banner {
+  position: fixed;
+  z-index: 10000;
+  top: max(12px, env(safe-area-inset-top));
+  left: 50%;
+  width: min(740px, calc(100vw - 24px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid rgba(221, 169, 73, .45);
+  border-radius: 16px;
+  background: #fff9e9;
+  color: #563e12;
+  box-shadow: 0 12px 36px rgba(26, 36, 55, .18);
+  transform: translateX(-50%);
+  font-size: 13px;
+}
+.offline-status-icon { flex: 0 0 auto; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #ffedc2; color: #8b5a07; }
+.offline-status-copy { flex: 1; min-width: 0; line-height: 1.45; }
+.offline-status-copy strong { display: block; margin-bottom: 2px; }
+.offline-status-banner button { flex: 0 0 auto; border: 0; border-radius: 10px; min-height: 36px; padding: 0 12px; background: #172238; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+:root[data-theme="dark"] .system-state-404,
+:root[data-theme="dark"] .system-state-error {
+  border-color: #2a3950;
+  background: radial-gradient(ellipse at 50% 0%, rgba(47,107,255,.17), transparent 52%), linear-gradient(155deg, #151e2c, #101724);
+}
+:root[data-theme="dark"] .system-state-404-art { color: #83aaff; }
+:root[data-theme="dark"] .system-state-error-icon { background: #372818; color: #ffbe75; }
+:root[data-theme="dark"] .offline-status-banner { background: #2b2415; border-color: #604a24; color: #fff0cc; }
+:root[data-theme="dark"] .offline-status-icon { background: #493819; color: #ffd37b; }
+:root[data-theme="dark"] .offline-status-banner button { background: #e7edf8; color: #182236; }
+@media (max-width: 620px) {
+  .system-state-404, .system-state-error { min-height: 65vh; border-radius: 20px; padding: 28px 18px; }
+  .system-state-404 .system-state-actions, .system-state-error .system-state-actions { width: 100%; display: grid; grid-template-columns: 1fr; }
+  .system-state-404 .button, .system-state-error .button { width: 100%; }
+  .offline-status-banner { top: max(8px, env(safe-area-inset-top)); padding: 10px; border-radius: 13px; }
+  .offline-status-icon { width: 30px; height: 30px; }
+  .offline-status-banner button { padding: 0 10px; }
+}

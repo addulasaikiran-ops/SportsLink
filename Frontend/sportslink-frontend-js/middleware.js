@@ -116,7 +116,7 @@ export async function middleware(request) {
 export const config = {
   matcher: [
     {
-      source: '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+      source: '/((?!_next/static|_next/image|favicon.ico|sw\\.js|offline\\.html|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
       // Next.js prefetches visible links in the background. They don't need
       // auth/profile round trips because the real navigation is checked again.
       missing: [

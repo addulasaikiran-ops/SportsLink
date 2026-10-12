@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <title>You're offline · SPORTSLINK</title>
+  <style>
+    :root{color-scheme:light dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;color:#18263c;background:radial-gradient(ellipse at 50% 0%,#e3ecff,transparent 60%),#f5f8fd}
+    main{width:min(560px,100%);padding:clamp(28px,7vw,54px);text-align:center;border:1px solid #dce5f3;border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 24px 72px #243a6018}
+    .mark{display:inline-grid;place-items:center;width:62px;height:62px;margin-bottom:20px;border:1px solid #cfe0ff;border-radius:20px;background:#edf4ff;color:#2563eb}
+    .mark svg{width:30px;height:30px}
+    .eyebrow{font-size:11px;letter-spacing:.15em;font-weight:800;color:#2563eb}
+    h1{font-size:clamp(28px,5vw,38px);line-height:1.12;letter-spacing:-.045em;margin:12px 0}
+    p{color:#687993;line-height:1.7;font-size:14px}
+    button{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;min-height:46px;padding:0 20px;border:0;border-radius:12px;color:#fff;background:#2563eb;font:inherit;font-weight:750;cursor:pointer}
+    .foot{font-size:11px;margin-top:26px}
+    @media(prefers-color-scheme:dark){body{background:radial-gradient(ellipse at 50% 0%,#203353,transparent 60%),#0f1725;color:#f3f6fb}main{border-color:#2b3950;background:rgba(21,30,44,.94);box-shadow:0 24px 72px #0004}.mark{background:#1b2b45;border-color:#36517e;color:#94b8ff}p,.foot{color:#9aabc4}}
+  </style>
+</head>
+<body>
+  <main>
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h4l3 8 4-12 3 8h6"/><path d="M3 3l18 18" opacity=".28"/></svg>
+    </span>
+    <div class="eyebrow">CONNECTION TIMEOUT</div>
+    <h1>Looks like you've gone offline.</h1>
+    <p>SPORTSLINK couldn't reach the internet. Check your Wi-Fi or mobile data, then reconnect to get back to your sporting community.</p>
+    <button type="button" onclick="window.location.reload()">Try again ↻</button>
+    <p class="foot">SPORTSLINK · Your world of sport, connected.</p>
+  </main>
+  <script>window.addEventListener("online",()=>window.location.reload());</script>
+</body>
+</html>
