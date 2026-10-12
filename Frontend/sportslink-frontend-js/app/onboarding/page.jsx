@@ -3,7 +3,8 @@ import { OnboardingPage } from "@/components/OnboardingPage";
 
 export const metadata = {
   title: "Complete Your Profile",
-  description: "Set up your SPORTSLINK profile and connect with the world of sport."
+  description: "Set up your SPORTSLINK profile and connect with the world of sport.",
+  robots: { index: false, follow: false }
 };
 
 function OnboardingFallback() {
