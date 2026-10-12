@@ -1,8 +1,9 @@
  "use client";
 import "./landing.css";
 import Link from "next/link";
+import Script from "next/script";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Activity, ArrowRight, ArrowUpRight, Users, Trophy, BriefcaseBusiness, ShieldCheck, Globe2, HeartHandshake, Menu, X, CheckCircle2, Eye, EyeOff } from "lucide-react";
@@ -22,7 +23,7 @@ function PublicHeader() {
   </div></header>;
 }
 function PublicFooter() {
-  return <footer className="public-footer"><Link href="/" className="public-brand"><img className="sportslink-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link><p>Built for the people who move sport forward.</p><div><Link href="/about">About</Link><Link href="/login">Log in</Link><Link href="/signup">Create account</Link></div><small>© {new Date().getFullYear()} SPORTSLINK. Connecting the world of sport.</small></footer>;
+  return <footer className="public-footer"><Link href="/" className="public-brand"><img className="sportslink-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link><p>Built for the people who move sport forward.</p><div><Link href="/about">About</Link><Link href="/privacy">Privacy Policy</Link><Link href="/login">Log in</Link><Link href="/signup">Create account</Link></div><small>© {new Date().getFullYear()} SPORTSLINK. Connecting the world of sport.</small></footer>;
 }
 function PublicLayout({children}) { return <div className="public-site"><PublicHeader/>{children}<PublicFooter/></div>; }
 
@@ -107,7 +108,18 @@ export function LoginPage() {
 }
 export function SignupPage() {
  const router=useRouter();
- const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false);
+ const [name,setName]=useState(""),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[role,setRole]=useState("athlete"),[terms,setTerms]=useState(false),[show,setShow]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState(""),[loading,setLoading]=useState(false),[website,setWebsite]=useState(""),[captchaToken,setCaptchaToken]=useState("");
+ const captchaSiteKey=process.env.NEXT_PUBLIC_SUPABASE_CAPTCHA_SITE_KEY || "";
+ const signupStartedAt=useRef(Date.now()),lastSubmitAt=useRef(0),signupInFlight=useRef(false),captchaContainer=useRef(null),captchaWidgetId=useRef(null);
+ function mountCaptcha(){
+  if(!captchaSiteKey||!captchaContainer.current||typeof window==="undefined"||!window.turnstile||captchaWidgetId.current!==null)return;
+  captchaWidgetId.current=window.turnstile.render(captchaContainer.current,{sitekey:captchaSiteKey,theme:"auto",callback:(token)=>setCaptchaToken(token),"expired-callback":()=>setCaptchaToken(""),"error-callback":()=>setCaptchaToken("")});
+ }
+ function resetCaptcha(){
+  setCaptchaToken("");
+  if(captchaWidgetId.current!==null&&typeof window!=="undefined"&&window.turnstile)window.turnstile.reset(captchaWidgetId.current);
+ }
+ useEffect(()=>()=>{if(captchaWidgetId.current!==null&&typeof window!=="undefined"&&window.turnstile)window.turnstile.remove(captchaWidgetId.current);},[]);
  async function signInWithGoogle(){
   setError("");setNotice("");
   const supabase=createClient();
@@ -118,25 +130,32 @@ export function SignupPage() {
  }
  async function submit(e){
   e.preventDefault();setError("");setNotice("");
+  if(website.trim()){setNotice("Thanks — your account request has been received.");return;}
+  if(Date.now()-signupStartedAt.current<1800){setError("Please take a moment to review your details and try again.");return;}
+  if(signupInFlight.current)return;
+  if(Date.now()-lastSubmitAt.current<3000){setError("Please wait a few seconds before trying again.");return;}
   if(name.trim().length<2){setError("Please enter your full name.");return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setError("Enter a valid email address.");return;}
   if(password.length<8){setError("Use a password with at least 8 characters.");return;}
   if(!terms){setError("Please confirm your agreement before creating an account.");return;}
+  if(captchaSiteKey&&!captchaToken){setError("Complete the security check before creating your account.");return;}
   const supabase=createClient();
   if(!supabase){setError("Supabase is not configured. Add your project URL and publishable key, then try again.");return;}
-  setLoading(true);
+  signupInFlight.current=true;lastSubmitAt.current=Date.now();setLoading(true);
   try{
    const {data,error:authError}=await supabase.auth.signUp({
     email:email.trim(),password,
-    options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/onboarding`,data:{full_name:name.trim(),role}}
+    options:{emailRedirectTo:`${window.location.origin}/auth/callback?next=/onboarding`,captchaToken:captchaSiteKey?captchaToken:undefined,data:{full_name:name.trim(),role}}
    });
-   if(authError){setError(authError.message.includes("already registered")?"An account with this email already exists. Try logging in.":authError.message);return;}
+   if(authError){setError(authError.message.includes("already registered")?"An account with this email already exists. Try logging in.":authError.message);resetCaptcha();return;}
    if(data.session){router.replace("/onboarding");router.refresh();return;}
+   resetCaptcha();
    setNotice("Your account request was received. Check your email for the confirmation link, then return here to log in.");
   }catch{
+   resetCaptcha();
    setError("We couldn't create your account right now. Please try again.");
   }finally{
-   setLoading(false);
+   setLoading(false);signupInFlight.current=false;
   }
  }
  return <AuthLayout mode="signup">
@@ -164,12 +183,20 @@ export function SignupPage() {
      <input id="signup-password" type={show?"text":"password"} autoComplete="new-password" placeholder="At least 8 characters" value={password} onChange={e=>setPassword(e.target.value)} required/>
      <button type="button" aria-label={show?"Hide password":"Show password"} onClick={()=>setShow(!show)}>{show?<EyeOff size={17}/>:<Eye size={17}/>}</button>
     </div>
+    <div className="signup-honeypot" aria-hidden="true">
+     <label htmlFor="signup-website">Leave this field empty</label>
+     <input id="signup-website" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={e=>setWebsite(e.target.value)}/>
+    </div>
+    {captchaSiteKey&&<>
+     <div className="signup-captcha-wrap"><p>Complete this security check to protect the community from automated signups.</p><div ref={captchaContainer} className="signup-captcha"/></div>
+     <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" strategy="afterInteractive" onReady={mountCaptcha}/>
+    </>}
    <label className="auth-terms signup-consent">
     <input type="checkbox" checked={terms} onChange={e=>setTerms(e.target.checked)} />
-    <span>I agree to create a SPORTSLINK account and confirm my information is accurate.</span>
+    <span>I agree to create a SPORTSLINK account, confirm my information is accurate, and acknowledge the <Link href="/privacy" target="_blank" rel="noreferrer">Privacy Policy</Link>.</span>
    </label>
     <button className="button auth-submit" type="submit" disabled={loading} aria-busy={loading}>{loading?"Creating account…":"Create account"} {!loading&&<ArrowRight size={17}/>}</button>
-    <p className="auth-demo-note"><ShieldCheck size={15}/> Your account is secured by Supabase Auth. Never share your password.</p>
+    <p className="auth-demo-note"><ShieldCheck size={15}/> Protected with signup validation, automated-form traps and Supabase Auth rate limits. Never share your password.</p>
    </form>
    <div className="auth-switch signup-switch">Already a member? <Link href="/login">Log in</Link></div>
   </section>
