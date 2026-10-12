@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { OfflineSupport } from "@/components/OfflineSupport";
 import Script from "next/script";
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sportslink.up.railway.app"),
   title: { default: "SPORTSLINK — Your world of sport, connected", template: "%s | SPORTSLINK" },
   description: "A professional network for athletes, coaches, scouts, clubs, and sports professionals.",
   applicationName: "SPORTSLINK",
@@ -14,11 +15,17 @@ export const metadata = {
   keywords: ["sports networking", "athletes", "coaches", "sports careers", "clubs"],
   openGraph: {
     title: "SPORTSLINK — Your world of sport, connected",
-    description: "Connect with the people moving sport forward.",
+    description: "Connect with athletes, coaches, clubs, scouts and sports professionals. Discover opportunities and build meaningful connections across the sports industry.",
     siteName: "SPORTSLINK",
-    type: "website"
+    type: "website",
+    images: [{ url: "/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png", alt: "SPORTSLINK — the professional network for sport" }]
   },
-  robots: { index: false, follow: false }
+  twitter: {
+    card: "summary_large_image",
+    title: "SPORTSLINK — Your world of sport, connected",
+    description: "Connect with athletes, coaches, clubs, scouts and sports professionals.",
+    images: ["/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png"]
+  }
 };
 export default function RootLayout({ children }) {
   return <html lang="en" suppressHydrationWarning><body><Script id="sportslink-theme-init" strategy="beforeInteractive">{`try{const t=localStorage.getItem("sportslink-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}`}</Script><OfflineSupport /><AppShell>{children}</AppShell></body></html>;
