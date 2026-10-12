@@ -5,6 +5,7 @@ import { Activity, Bell, BriefcaseBusiness, Compass, Home, MessageCircle, Search
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 const nav = [
   ["/home","Home",Home],["/network","My Network",Users],["/discover","Discover",Compass],
   ["/opportunities","Opportunities",BriefcaseBusiness],["/messages","Messaging",MessageCircle],
@@ -33,6 +34,7 @@ export function AppShell({children}) {
           ...current,
           name: detail.name || current.name,
           avatar: detail.avatarUrl !== undefined ? detail.avatarUrl : current.avatar,
+          profileDetailsCompleted: detail.profileDetailsCompleted !== undefined ? detail.profileDetailsCompleted : current.profileDetailsCompleted,
         };
       });
     }
@@ -61,7 +63,7 @@ export function AppShell({children}) {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, role, sport, location, avatar_url")
+        .select("full_name, role, sport, location, avatar_url, profile_details_completed")
         .eq("id", user.id)
         .maybeSingle();
       if (!active) return;
@@ -73,6 +75,7 @@ export function AppShell({children}) {
         sport: profile?.sport || "",
         location: profile?.location || "",
         avatar: profile?.avatar_url || null,
+        profileDetailsCompleted: Boolean(profile?.profile_details_completed),
       });
     };
     loadUser();
@@ -187,11 +190,11 @@ export function AppShell({children}) {
       <Link href="/home" className="brand"><img className="sportslink-logo app-brand-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link>
       <ThemeToggle compact />
       <label className="global-search" aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
-      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label={unreadNotifications ? `Notifications, ${unreadNotifications} unread` : "Notifications"}><Bell size={20}/>{unreadNotifications>0&&<span className="notification-dot" aria-hidden="true"/>}</Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}</b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
+      <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label={unreadNotifications ? `Notifications, ${unreadNotifications} unread` : "Notifications"}><Bell size={20}/>{unreadNotifications>0&&<span className="notification-dot" aria-hidden="true"/>}</Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}<ProfileCompletionBadge completed={currentUser?.profileDetailsCompleted} /></b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
     </div></header>
     <div className="app-layout">
       <aside className={`sidebar ${open?"sidebar-open":""}`}>
-        <div className="sidebar-profile card"><div className="cover-strip"/><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar avatar-lg profile-avatar"/><b className="profile-name">{displayName}</b><p>{[displayRole, currentUser?.sport].filter(Boolean).join(" · ")}</p><small>{currentUser?.location || currentUser?.email || "Complete your professional profile"}</small><Link className="sidebar-link-accent" href="/profile">View your profile →</Link></div>
+        <div className="sidebar-profile card"><div className="cover-strip"/><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar avatar-lg profile-avatar"/><b className="profile-name">{displayName}<ProfileCompletionBadge completed={currentUser?.profileDetailsCompleted} size={16} /></b><p>{[displayRole, currentUser?.sport].filter(Boolean).join(" · ")}</p><small>{currentUser?.location || currentUser?.email || "Complete your professional profile"}</small><Link className="sidebar-link-accent" href="/profile">View your profile →</Link></div>
         <nav className="side-nav" id="primary-navigation" aria-label="Primary navigation"><p className="nav-section-label">YOUR WORKSPACE</p>{nav.map(([href,label,Icon])=><Link key={href} href={href} onClick={()=>setOpen(false)} aria-current={path===href ? "page" : undefined} className={`nav-link ${path===href?"active":""}`}><Icon size={18}/><span>{label}</span>{href==="/notifications"&&unreadNotifications>0&&<span className="nav-count">{unreadNotifications>99?"99+":unreadNotifications}</span>}</Link>)}</nav>
         <div className="sidebar-promo card"><div className="promo-icon"><Trophy size={19}/></div><b>Take your career further</b><p>Discover opportunities built for your sporting journey.</p><Link href="/opportunities">Explore opportunities →</Link></div>
         <div className="sidebar-footer">✓ Built for the world of sport</div>
