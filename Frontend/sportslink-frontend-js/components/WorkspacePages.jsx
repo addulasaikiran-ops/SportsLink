@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Activity, Award, Bell, Bookmark, BriefcaseBusiness, Camera, CheckCheck, GraduationCap, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, Trophy, UserPlus, UserRound } from "lucide-react";
+import { Activity, ArrowLeft, Award, Bell, Bookmark, BriefcaseBusiness, Camera, CheckCheck, GraduationCap, Heart, ImagePlus, MapPin, MessageCircle, Pencil, Save, Search, Send, PlusCircle, ShieldCheck, Trash2, Trophy, UserPlus, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
@@ -109,6 +109,7 @@ export function MessagesPage() {
   const [profiles, setProfiles] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState("");
+  const [showChatView, setShowChatView] = useState(false);
   const [messages, setMessages] = useState([]);
   const [peopleQuery, setPeopleQuery] = useState("");
   const [draft, setDraft] = useState("");
@@ -142,7 +143,8 @@ export function MessagesPage() {
           ? new URLSearchParams(window.location.search).get("conversation")
           : null;
         const requestedConversation = rows.find((item) => item.id === requested);
-        setActiveConversationId(requestedConversation?.id || rows[0]?.id || "");
+        setActiveConversationId(requestedConversation?.id || "");
+        setShowChatView(Boolean(requestedConversation));
         setShowPeople(rows.length === 0);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Unable to load your conversations.");
@@ -254,6 +256,7 @@ export function MessagesPage() {
       });
       if (existing) {
         setActiveConversationId(existing.id);
+        setShowChatView(true);
       } else {
         const created = await backendRequest("/api/conversations", {
           method: "POST",
@@ -261,6 +264,7 @@ export function MessagesPage() {
         });
         if (!created?.id) throw new Error("SPORTSLINK did not return the new conversation.");
         await reloadConversations(created.id);
+        setShowChatView(true);
       }
       setShowPeople(false);
       setPeopleQuery("");
@@ -321,7 +325,7 @@ export function MessagesPage() {
     {pageHeading}
     {error && <div className="messaging-error" role="alert"><span className="messaging-error-icon"><Activity size={18}/></span><div><b>We couldn’t load your inbox</b><p>{error}</p></div><button className="button button-secondary" type="button" onClick={() => window.location.reload()}>Try again</button></div>}
     {notice && <p className="inline-notice" role="status" aria-live="polite">{notice}</p>}
-    <section className="messaging-layout card" aria-label="SPORTSLINK messaging">
+    <section className={`messaging-layout card ${showChatView ? "chat-open" : "inbox-first"}`} aria-label="SPORTSLINK messaging">
       <aside className="conversation-list">
         <div className="conversation-list-head"><div><h2>Your conversations</h2><small>Pick up where you left off</small></div><span className="conversation-total">{conversations.length}</span></div>
         {showPeople && <div style={{padding:"0 12px 12px"}}>
@@ -341,7 +345,7 @@ export function MessagesPage() {
           const memberText=conversation.is_group
             ? (conversation.title||"Group conversation")
             : contact.name;
-          return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
+          return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowChatView(true);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
             <span className="conversation-copy"><b>{memberText}</b><small>{conversation.last_message?.content || conversation.lastMessage?.content || conversation.last_message_preview || conversation.last_message_text || (conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Recently opened chat" : "Tap to continue chatting")}</small></span>
           </button>;
@@ -351,6 +355,7 @@ export function MessagesPage() {
       <section className="chat-panel" aria-label="Message thread">
         {activeConversation ? <>
           <header className="chat-header">
+            <button className="chat-back-button" type="button" aria-label="Back to inbox" onClick={()=>setShowChatView(false)}><ArrowLeft size={19}/></button>
             <ConversationAvatar profile={activeContact.profile} name={activeContact.name}/>
             <div className="chat-contact-details"><b>{activeContact.name}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
             <button className="button button-secondary" type="button" onClick={()=>setShowPeople((value)=>!value)}><PlusCircle size={15}/> New</button>
