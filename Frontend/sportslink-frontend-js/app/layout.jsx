@@ -5,6 +5,11 @@ export const metadata = {
   title: { default: "SPORTSLINK — Your world of sport, connected", template: "%s | SPORTSLINK" },
   description: "A professional network for athletes, coaches, scouts, clubs, and sports professionals.",
   applicationName: "SPORTSLINK",
+  icons: {
+    icon: [{ url: "/favicon_tag_pro_SL_ghost.png", type: "image/png" }],
+    shortcut: ["/favicon_tag_pro_SL_ghost.png"],
+    apple: [{ url: "/favicon_tag_pro_SL_ghost.png", type: "image/png" }]
+  },
   keywords: ["sports networking", "athletes", "coaches", "sports careers", "clubs"],
   openGraph: {
     title: "SPORTSLINK — Your world of sport, connected",
