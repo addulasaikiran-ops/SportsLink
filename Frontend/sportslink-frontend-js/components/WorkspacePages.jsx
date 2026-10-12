@@ -301,6 +301,18 @@ export function MessagesPage() {
     return normalized.includes(peopleQuery.trim().toLowerCase());
   }).slice(0, 8);
 
+  function toggleMemberFinder() {
+    const next = !showPeople;
+    setShowPeople(next);
+    if (next) {
+      setPeopleQuery("");
+      setConversationQuery("");
+      if (typeof window !== "undefined" && window.matchMedia("(max-width: 760px)").matches) {
+        setShowChatView(false);
+      }
+    }
+  }
+
   async function reloadConversations(preferredId) {
     const rows = await backendRequest("/api/conversations");
     const safeRows = Array.isArray(rows) ? rows : [];
@@ -385,7 +397,7 @@ export function MessagesPage() {
       <div className="messages-title-row"><h1>Messages</h1><span className="messages-private-pill"><ShieldCheck size={13}/> Private inbox</span></div>
       <p>Connect directly with athletes, coaches, scouts and the people moving sport forward.</p>
     </div>
-    <button className="button button-primary messages-new-button" type="button" onClick={() => setShowPeople((value) => !value)}>
+    <button className="button button-primary messages-new-button" type="button" onClick={toggleMemberFinder}>
       <PlusCircle size={17}/>{showPeople ? "Close member finder" : "New message"}
     </button>
   </div>;
@@ -440,7 +452,7 @@ export function MessagesPage() {
             <button className="chat-back-button" type="button" aria-label="Back to inbox" onClick={()=>setShowChatView(false)}><ArrowLeft size={19}/></button>
             <ConversationAvatar profile={activeContact.profile} name={activeContact.name}/>
             <div className="chat-contact-details"><b>{activeContact.name}{!activeConversation.is_group && <ProfileCompletionBadge completed={activeContact.profile.profile_details_completed} size={13} />}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
-            <button className="button button-secondary chat-new-button" type="button" onClick={()=>{setShowPeople(true);setShowChatView(false);setConversationQuery("");setNotice("");}}><PlusCircle size={15}/> New</button>
+            <button className="button button-secondary chat-new-button" type="button" onClick={toggleMemberFinder}><PlusCircle size={15}/> New</button>
           </header>
           <div className="chat-messages" ref={messagesViewportRef} onScroll={handleMessagesScroll} role="log" aria-live="polite" aria-label="Conversation messages">
             {messagesLoading&&messages.length===0
