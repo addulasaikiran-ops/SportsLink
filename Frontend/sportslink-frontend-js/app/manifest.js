@@ -8,7 +8,7 @@ export default function manifest() {
     background_color: "#f5f7fb",
     theme_color: "#2563eb",
     icons: [
-      { src: "/favicon_tag_pro_SL_ghost.png", sizes: "any", type: "image/png", purpose: "any" }
+      { src: "/Document%20Handshake%20Partnership%20Icon.png", sizes: "any", type: "image/png", purpose: "any" }
     ]
   };
 }
