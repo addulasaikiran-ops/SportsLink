@@ -4261,30 +4261,107 @@ input,textarea,select{max-width:100%;min-width:0}
 
 /* SPORTSLINK cinematic stadium backdrop. Keep the supplied stadium artwork behind the UI
    while preserving contrast for cards, forms, and navigation in both themes. */
+/* SPORTSLINK cinematic stadium backdrop */
 body{
   background-color:#061328;
-  background-image:linear-gradient(rgba(4,13,29,.70),rgba(4,13,29,.76)),url("/sportslink-stadium.webp?v=20261012-cinematic");
-  background-position:center,center 48%;
-  background-size:cover,cover;
-  background-attachment:fixed,fixed;
+  background-image:
+    linear-gradient(rgba(4,13,29,.70), rgba(4,13,29,.78)),
+    url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center, center 48%;
+  background-size:cover, cover;
+  background-attachment:fixed, fixed;
   background-repeat:no-repeat;
 }
 :root[data-theme="light"] body,
 :root:not([data-theme="dark"]) body{
   background-color:#edf3fc;
-  background-image:linear-gradient(rgba(239,245,255,.88),rgba(239,245,255,.91)),url("/sportslink-stadium.webp?v=20261012-cinematic");
-  background-position:center,center 48%;
-  background-size:cover,cover;
-  background-attachment:fixed,fixed;
+  background-image:
+    linear-gradient(rgba(239,245,255,.88), rgba(239,245,255,.91)),
+    url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center, center 48%;
+  background-size:cover, cover;
+  background-attachment:fixed, fixed;
   background-repeat:no-repeat;
 }
-.landing-hero{
-  background-image:url("/sportslink-stadium.webp?v=20261012-cinematic");
-  background-position:center 52%;
-  background-size:cover;
+
+.app-root,
+.public-site{
+  background:transparent;
 }
-@media(max-width:760px){
-  body{background-attachment:scroll,scroll}
+
+/* SPORTSLINK landing hero: cinematic stadium image with glass styling */
+.landing-hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:clamp(610px, 76vh, 790px);
+  padding:clamp(34px, 5vw, 76px);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:28px;
+  background-color:#07162a;
+  background-image:
+    linear-gradient(90deg, rgba(3,12,27,.84) 0%, rgba(4,15,32,.65) 43%, rgba(5,16,31,.18) 100%),
+    linear-gradient(0deg, rgba(2,10,23,.48), transparent 55%),
+    url("/sportslink-stadium.webp?v=20261012-cinematic");
+  background-position:center, center, center 52%;
+  background-size:cover, cover, cover;
+  box-shadow:0 28px 90px rgba(3,12,28,.22), inset 0 1px 0 rgba(255,255,255,.16);
+}
+.landing-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 78% 20%, rgba(87,165,255,.16), transparent 38%),
+    linear-gradient(115deg, rgba(3,12,27,.20), transparent 65%);
+}
+
+.landing-hero-copy{
+  max-width:650px;
+  padding:clamp(23px, 3.4vw, 46px);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:26px;
+  background:linear-gradient(135deg, rgba(12,29,53,.76), rgba(13,29,50,.42));
+  box-shadow:0 24px 80px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.20);
+}
+.landing-hero h1{
+  color:#f7faff;
+}
+.landing-hero h1 span{
+  color:#8db9ff;
+}
+.landing-hero .public-eyebrow{
+  color:#c3d7ff;
+}
+.landing-lede{
+  color:#d5deed;
+}
+.landing-secondary{
+  color:#d0d9eb;
+}
+.landing-secondary:hover{
+  color:#ffffff;
+}
+.landing-proof b{
+  color:#f7faff;
+}
+.landing-proof small{
+  color:#d0d9eb;
+}
+.landing-proof .proof-avatars{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.28);
+  color:#bad2ff;
+}
+
+@media (max-width:760px){
+  body{
+    background-attachment:scroll, scroll;
+  }
   :root[data-theme="light"] body,
-  :root:not([data-theme="dark"]) body{background-attachment:scroll,scroll}
+  :root:not([data-theme="dark"]) body{
+    background-attachment:scroll, scroll;
+  }
 }
