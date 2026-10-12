@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { backendRequest } from "@/lib/api/backend";
 import { Heading, Notice } from "./shared";
+import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
@@ -47,7 +48,7 @@ export function BookmarksPage() {
         if (authError) throw authError;
         if (!auth.user) throw new Error("Sign in to view your bookmarks.");
         const { data, error: queryError } = await client.from("post_bookmarks")
-          .select("post_id,created_at,post:posts(id,content,created_at,author:profiles!posts_author_id_fkey(id,full_name,username,avatar_url,role,sport))")
+          .select("post_id,created_at,post:posts(id,content,created_at,author:profiles!posts_author_id_fkey(id,full_name,username,avatar_url,role,sport,profile_details_completed))")
           .eq("user_id", auth.user.id)
           .order("created_at", { ascending: false });
         if (queryError) throw queryError;
@@ -71,7 +72,7 @@ export function BookmarksPage() {
         const author = post.author || {};
         const name = author.full_name || author.username || "SPORTSLINK member";
         return <article className="card post-card" key={post.id}>
-          <div className="post-header"><div className="post-author"><div className="post-author-copy"><strong>{name}</strong><small>{author.role || "Member"}{author.sport ? " · " + author.sport : ""}</small><small>{formatWorkspaceTime(post.created_at)}</small></div></div><Bookmark size={18}/></div>
+          <div className="post-header"><div className="post-author"><div className="post-author-copy"><strong>{name}<ProfileCompletionBadge completed={author.profile_details_completed} size={13} /></strong><small>{author.role || "Member"}{author.sport ? " · " + author.sport : ""}</small><small>{formatWorkspaceTime(post.created_at)}</small></div></div><Bookmark size={18}/></div>
           <p className="post-content">{post.content || "Shared a photo or video."}</p>
           <button className="button button-secondary" type="button" onClick={async () => {
             try {
@@ -335,7 +336,7 @@ export function MessagesPage() {
             const name=profile.full_name||profile.username||"SPORTSLINK member";
             return <button type="button" key={profile.id} className="conversation-item" onClick={()=>startConversation(profile)} disabled={Boolean(startingId)}>
               <ConversationAvatar profile={profile} name={name}/>
-              <span className="conversation-copy"><b>{name}</b><small>{profile.headline||profile.sport||profile.role||"SPORTSLINK member"}{startingId===profile.id?" · Opening…":""}</small></span>
+              <span className="conversation-copy"><b>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={13} /></b><small>{profile.headline||profile.sport||profile.role||"SPORTSLINK member"}{startingId===profile.id?" · Opening…":""}</small></span>
             </button>;
           })}</div>
           {filteredProfiles.length===0&&<p style={{fontSize:11,color:"var(--muted)",padding:"8px"}}>No members match that search.</p>}
@@ -347,7 +348,7 @@ export function MessagesPage() {
             : contact.name;
           return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowChatView(true);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
-            <span className="conversation-copy"><b>{memberText}</b><small>{conversation.last_message?.content || conversation.lastMessage?.content || conversation.last_message_preview || conversation.last_message_text || (conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Recently opened chat" : "Tap to continue chatting")}</small></span>
+            <span className="conversation-copy"><b>{memberText}{!conversation.is_group && <ProfileCompletionBadge completed={contact.profile.profile_details_completed} size={13} />}</b><small>{conversation.last_message?.content || conversation.lastMessage?.content || conversation.last_message_preview || conversation.last_message_text || (conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Recently opened chat" : "Tap to continue chatting")}</small></span>
           </button>;
         })}</div>
         {conversations.length===0&&!showPeople&&<div className="empty-state" style={{padding:18}}><MessageCircle size={20}/><p>No conversations yet.</p><button className="button button-secondary" type="button" onClick={()=>setShowPeople(true)}>Find a member</button></div>}
@@ -357,7 +358,7 @@ export function MessagesPage() {
           <header className="chat-header">
             <button className="chat-back-button" type="button" aria-label="Back to inbox" onClick={()=>setShowChatView(false)}><ArrowLeft size={19}/></button>
             <ConversationAvatar profile={activeContact.profile} name={activeContact.name}/>
-            <div className="chat-contact-details"><b>{activeContact.name}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
+            <div className="chat-contact-details"><b>{activeContact.name}{!activeConversation.is_group && <ProfileCompletionBadge completed={activeContact.profile.profile_details_completed} size={13} />}</b><small>{activeConversation.is_group ? "Group conversation" : activeLastSeenLabel}</small></div>
             <button className="button button-secondary" type="button" onClick={()=>setShowPeople((value)=>!value)}><PlusCircle size={15}/> New</button>
           </header>
           <div className="chat-messages" role="log" aria-live="polite" aria-label="Conversation messages">
@@ -369,7 +370,7 @@ export function MessagesPage() {
                   const isOwn=message.sender_id===user?.id;
                   const senderName=message.sender?.full_name||message.sender?.username||(isOwn?"You":activeContact.name);
                   return <article key={message.id} className={`message-bubble ${isOwn?"message-own":""}`}>
-                    {!isOwn&&<strong style={{display:"block",fontSize:9,marginBottom:3}}>{senderName}</strong>}
+                    {!isOwn&&<strong style={{display:"block",fontSize:9,marginBottom:3}}>{senderName}<ProfileCompletionBadge completed={message.sender?.profile_details_completed} size={10} /></strong>}
                     <div style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{message.content}</div>
                     <small className="message-meta">{chatTime(message.created_at)}{isOwn && <><span className="message-sender-label">You</span><CheckCheck size={13} className={peerReadAt >= Date.parse(message.created_at) ? "message-read-receipt is-read" : "message-read-receipt"} aria-label={peerReadAt >= Date.parse(message.created_at) ? "Read" : "Sent"} /></>}</small>
                   </article>;
@@ -426,7 +427,7 @@ export function NotificationsPage() {
   async function refresh(supabase, userId) {
     const { data, error: queryError } = await supabase
       .from("notifications")
-      .select("id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url)")
+      .select("id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url,profile_details_completed)")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -578,7 +579,7 @@ export function NotificationsPage() {
           <button type="button" className="notification-open" onClick={() => openNotification(item)} aria-label={`Open notification from ${actorName}`}>
             <span className={`notification-symbol notification-symbol-${item.type || "default"}`}><NotificationTypeIcon type={item.type}/></span>
             <span className="notification-card-copy">
-              <span className="notification-card-title"><strong>{actorName}</strong>{!item.is_read && <i aria-label="Unread"/>}</span>
+              <span className="notification-card-title"><strong>{actorName}<ProfileCompletionBadge completed={actor.profile_details_completed} size={13} /></strong>{!item.is_read && <i aria-label="Unread"/>}</span>
               <span className="notification-card-message">{message}</span>
               <small>{notificationTime(item.created_at)}</small>
             </span>
@@ -597,7 +598,7 @@ export function OpportunitiesPage() {
   return <EmptyWorkspacePage title="Opportunities" eyebrow="OPPORTUNITIES" subtitle="Roles and opportunities from SPORTSLINK organizations." icon={BriefcaseBusiness} message="No live opportunities available"/>;
 }
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,created_at,updated_at";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,created_at,updated_at,profile_details_completed";
 
 function initials(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -678,7 +679,7 @@ export function ProfilePage() {
           data = await backendRequest("/api/profiles/me");
           const { data: extendedProfile, error: extendedError } = await supabase
             .from("profiles")
-            .select("avatar_url,cover_url,studied_at,skills")
+            .select("avatar_url,cover_url,studied_at,skills,profile_details_completed")
             .eq("id", authData.user.id)
             .maybeSingle();
           if (extendedError) throw extendedError;
@@ -889,7 +890,7 @@ export function ProfilePage() {
         <div className="profile-reference-identity">
           {editing
             ? <label className="profile-reference-edit-field">Name<input required value={draft.full_name} maxLength={120} onChange={(event) => setDraft({ ...draft, full_name: event.target.value })}/></label>
-            : <h1>{name}</h1>}
+            : <h1>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={19} /></h1>}
           {editing
             ? <label className="profile-reference-edit-field">Headline<input value={draft.headline} maxLength={180} onChange={(event) => setDraft({ ...draft, headline: event.target.value })} placeholder="Your sporting role or goal"/></label>
             : <p className="profile-reference-subtitle">{heroHeadline}</p>}
