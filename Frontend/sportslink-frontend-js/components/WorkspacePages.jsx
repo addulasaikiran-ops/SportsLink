@@ -773,12 +773,20 @@ export function ProfilePage() {
       if (avatarFile) avatarUpload = await uploadProfileImage(avatarFile, "avatar");
       if (coverFile) coverUpload = await uploadProfileImage(coverFile, "cover");
 
+      const profileDetailsCompleted = Boolean(
+        draft.full_name.trim().length >= 2
+        && Boolean(profile.role || user.user_metadata?.role)
+        && Boolean(draft.sport.trim())
+        && draft.bio.trim().length >= 20
+        && draft.location.split(",").map((part) => part.trim()).filter(Boolean).length >= 2
+      );
       const mediaUpdates = {};
       if (avatarUpload) mediaUpdates.avatar_url = avatarUpload.url;
       if (coverUpload) mediaUpdates.cover_url = coverUpload.url;
       const supplementalUpdates = {
         studied_at: draft.studied_at.trim() || null,
         skills: [...new Set(draft.skills.split(",").map((skill) => skill.trim()).filter(Boolean))].slice(0, 30),
+        profile_details_completed: profileDetailsCompleted,
       };
       const baseDraft = {
         full_name: draft.full_name.trim(),
@@ -799,7 +807,7 @@ export function ProfilePage() {
           .from("profiles")
           .update({ ...mediaUpdates, ...supplementalUpdates })
           .eq("id", user.id)
-          .select("avatar_url,cover_url,studied_at,skills")
+          .select("avatar_url,cover_url,studied_at,skills,profile_details_completed")
           .single();
         if (extendedSaveError) throw extendedSaveError;
         data = { ...data, ...extendedData };
@@ -835,6 +843,7 @@ export function ProfilePage() {
           id: user.id,
           name: nextProfile.full_name || nextProfile.username || user.email?.split("@")[0] || "SPORTSLINK Member",
           avatarUrl: nextProfile.avatar_url || null,
+          profileDetailsCompleted: Boolean(nextProfile.profile_details_completed),
         },
       }));
       if (avatarUpload && profile.avatar_url && profile.avatar_url !== avatarUpload.url) await removePreviousProfileImage(profile.avatar_url);
