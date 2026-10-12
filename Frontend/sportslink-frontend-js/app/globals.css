@@ -4288,3 +4288,67 @@ body{
   :root[data-theme="light"] body,
   :root:not([data-theme="dark"]) body{background-attachment:scroll,scroll}
 }
+
+
+/* SPORTSLINK landing hero: cinematic stadium image with Apple-inspired glass surfaces. */
+.landing-hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:clamp(610px,76vh,790px);
+  padding:clamp(34px,5vw,76px);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:28px;
+  background-color:#07162a;
+  background-image:linear-gradient(90deg,rgba(3,12,27,.84) 0%,rgba(4,15,32,.65) 43%,rgba(5,16,31,.16) 100%),linear-gradient(0deg,rgba(2,10,23,.48),transparent 55%),url("/sportslink-stadium.webp?v=20261012-glass");
+  background-position:center,center,center 52%;
+  background-size:cover,cover,cover;
+  box-shadow:0 28px 90px rgba(3,12,28,.22),inset 0 1px 0 rgba(255,255,255,.16);
+}
+.landing-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:radial-gradient(ellipse at 78% 20%,rgba(87,165,255,.16),transparent 38%),linear-gradient(115deg,rgba(3,12,27,.20),transparent 65%);
+}
+.landing-hero-copy{
+  max-width:650px;
+  padding:clamp(23px,3.4vw,46px);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:26px;
+  background:linear-gradient(135deg,rgba(12,29,53,.72),rgba(13,29,50,.40));
+  box-shadow:0 24px 80px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.20);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+}
+.landing-hero .public-eyebrow{color:#b9d6ff}
+.landing-hero h1,.landing-hero h1 span{color:#fff;text-shadow:0 3px 28px rgba(0,0,0,.25)}
+.landing-hero h1 span{background:linear-gradient(95deg,#fff 4%,#a8d1ff 52%,#8fe6ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.landing-hero .landing-lede{max-width:520px;color:rgba(241,247,255,.86);line-height:1.8}
+.landing-hero .landing-secondary{color:#f2f7ff}
+.landing-hero .landing-proof{color:#fff}
+.landing-hero .landing-proof small{color:rgba(235,243,255,.72)}
+.landing-hero .landing-visual{filter:drop-shadow(0 20px 40px rgba(0,0,0,.24))}
+.landing-hero .visual-main-card,.landing-hero .float-card{
+  border:1px solid rgba(255,255,255,.28);
+  background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.075));
+  box-shadow:0 22px 70px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.30);
+  -webkit-backdrop-filter:blur(24px) saturate(155%);
+  backdrop-filter:blur(24px) saturate(155%);
+}
+.landing-hero .visual-main-card h2,.landing-hero .visual-main-card p,.landing-hero .float-card b,.landing-hero .visual-index{color:#f7fbff}
+.landing-hero .visual-main-card p,.landing-hero .float-card small{color:rgba(239,246,255,.76)}
+.landing-hero .visual-tags span{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.12);color:#f6f9ff}
+.landing-hero .visual-glow{opacity:.5;filter:blur(18px)}
+.landing-hero .visual-orbit{border-color:rgba(200,225,255,.22)}
+@media(max-width:760px){
+  .landing-hero{min-height:0;padding:16px;border-radius:20px;background-position:center,center,62% center}
+  .landing-hero-copy{padding:24px 20px;border-radius:20px;background:linear-gradient(145deg,rgba(8,22,42,.82),rgba(8,22,42,.58))}
+  .landing-hero h1{letter-spacing:-1.8px}
+  .landing-hero .landing-visual{margin-top:26px}
+}
+@media(prefers-reduced-transparency:reduce){
+  .landing-hero-copy,.landing-hero .visual-main-card,.landing-hero .float-card{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(8,22,42,.92)}
+}
