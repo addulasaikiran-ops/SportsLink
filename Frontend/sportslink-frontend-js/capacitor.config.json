@@ -1,0 +1,10 @@
+{
+  "appId": "com.sportslink.app",
+  "appName": "SPORTSLINK",
+  "webDir": "www",
+  "server": {
+    "url": "https://sportslink.up.railway.app",
+    "cleartext": false,
+    "androidScheme": "https"
+  }
+}
