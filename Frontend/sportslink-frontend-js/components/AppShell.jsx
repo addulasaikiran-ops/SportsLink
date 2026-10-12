@@ -117,9 +117,23 @@ export function AppShell({children}) {
   }, [currentUser?.id]);
   const [open,setOpen] = useState(false);
   const [search,setSearch] = useState("");
+  const [mobileSearchOpen,setMobileSearchOpen] = useState(false);
+  const mobileSearchInputRef = useRef(null);
   const displayName = currentUser?.name || "SPORTSLINK Member";
   const displayRole = currentUser?.role ? currentUser.role.replaceAll("_", " ").replace(/\b\w/g, letter => letter.toUpperCase()) : "";
-  function submitSearch(event) { if (event.key === "Enter" && search.trim()) router.push(`/discover?search=${encodeURIComponent(search.trim())}`); }
+  function submitSearch(event) {
+    if (event.key === "Escape") {
+      setMobileSearchOpen(false);
+      return;
+    }
+    if (event.key === "Enter" && search.trim()) {
+      setMobileSearchOpen(false);
+      router.push(`/discover?search=${encodeURIComponent(search.trim())}`);
+    }
+  }
+  useEffect(() => {
+    if (mobileSearchOpen) mobileSearchInputRef.current?.focus();
+  }, [mobileSearchOpen]);
 
   function openMobileComposer() {
     setOpen(false);
@@ -189,7 +203,16 @@ export function AppShell({children}) {
       <button className="icon-button mobile-menu" onClick={()=>setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation">{open?<X/>:<Menu/>}</button>
       <Link href="/home" className="brand"><img className="sportslink-logo app-brand-logo" src="/sportslink_project_brief_final.png" alt="SPORTSLINK" /></Link>
       <ThemeToggle compact />
-      <label className="global-search" aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
+      <button
+        type="button"
+        className="icon-button mobile-search-toggle"
+        onClick={() => setMobileSearchOpen((value) => !value)}
+        aria-label={mobileSearchOpen ? "Close search" : "Open search"}
+        aria-expanded={mobileSearchOpen}
+        aria-controls="sportslink-global-search"
+        title="Search SPORTSLINK"
+      ><Search size={20}/></button>
+      <label id="sportslink-global-search" className={`global-search ${mobileSearchOpen ? "global-search-mobile-open" : ""}`} aria-label="Search SPORTSLINK"><Search size={17} aria-hidden="true"/><input ref={mobileSearchInputRef} value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={submitSearch} placeholder="Search people, clubs, sports…" aria-label="Search people, clubs, and sports" autoComplete="off"/></label>
       <div className="topbar-actions"><Link href="/notifications" className="icon-button" aria-label={unreadNotifications ? `Notifications, ${unreadNotifications} unread` : "Notifications"}><Bell size={20}/>{unreadNotifications>0&&<span className="notification-dot" aria-hidden="true"/>}</Link><Link href="/profile" className="mini-profile"><MemberAvatar url={currentUser?.avatar} name={displayName} className="avatar mini-profile-avatar"/><span><b>{displayName}<ProfileCompletionBadge completed={currentUser?.profileDetailsCompleted} /></b><small>My profile</small></span></Link><button className="logout-button" onClick={handleLogout} disabled={isLoggingOut} title="Log out" aria-busy={isLoggingOut}>{isLoggingOut ? "Logging out…" : "Log out"}</button></div>
     </div></header>
     <div className="app-layout">
