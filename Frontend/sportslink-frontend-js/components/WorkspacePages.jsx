@@ -458,7 +458,7 @@ export function MessagesPage() {
                 })}
           </div>
           <form className="chat-composer" onSubmit={sendMessage}>
-            <input value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Message" aria-label="Write a message" maxLength={5000} autoComplete="off" autoCapitalize="sentences" spellCheck enterKeyHint="send" enterKeyHint="send" disabled={sending}/>
+            <input value={draft} onChange={(event)=>setDraft(event.target.value)} placeholder="Message" aria-label="Write a message" maxLength={5000} autoComplete="off" autoCapitalize="sentences" spellCheck enterKeyHint="send" disabled={sending}/>
             <button className="send-message" type="submit" aria-label={sending?"Sending message":"Send message"} title={sending?"Sending message":"Send message"} disabled={sending||!draft.trim()}><Send size={18}/></button>
           </form>
           <p className="sr-only" role="status" aria-live="polite">{sending ? "Sending message" : ""}</p>
