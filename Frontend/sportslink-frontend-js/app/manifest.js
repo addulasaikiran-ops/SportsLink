@@ -7,6 +7,8 @@ export default function manifest() {
     display: "standalone",
     background_color: "#f5f7fb",
     theme_color: "#2563eb",
-    icons: []
+    icons: [
+      { src: "/favicon_tag_pro_SL_ghost.png", sizes: "any", type: "image/png", purpose: "any" }
+    ]
   };
 }
