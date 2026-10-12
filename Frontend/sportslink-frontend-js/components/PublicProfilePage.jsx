@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Activity, ArrowLeft, Award, CalendarDays, GraduationCap, Globe, MapPin, Trophy, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
+import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,website_url,created_at";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,website_url,created_at,profile_details_completed";
 
 function initials(name) {
   return name.trim().split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -144,7 +145,7 @@ export function PublicProfilePage({ profileId }) {
           </div>
         </div>
         <div className="profile-reference-identity">
-          <h1>{name}</h1>
+          <h1>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={19} /></h1>
           <p className="profile-reference-subtitle">{heroHeadline}</p>
           {profile.headline && <p className="profile-reference-headline">{profile.headline}</p>}
           {profile.location && <p className="profile-reference-location"><MapPin size={17}/>{profile.location}</p>}
