@@ -69,7 +69,7 @@ export function JoinedCommunityPage() {
       </div>}
       <div className="joined-actions">
         <button type="button" className="button" onClick={() => { router.replace(destination); router.refresh(); }}>Enter your community <ArrowRight size={17}/></button>
-        <Link href="/discover" className="joined-secondary"><Users size={16} style={{display:"inline",verticalAlign:"-3px",marginRight:5}}/> Discover your people</Link>
+        <Link href="/home" className="joined-secondary"><Users size={16} style={{display:"inline",verticalAlign:"-3px",marginRight:5}}/> Explore SPORTSLINK</Link>
       </div>
       <p className="joined-footnote">Your next move starts with a connection. Let’s make it count.</p>
     </section>
