@@ -63,11 +63,13 @@ export function JoinedCommunityPage() {
       <div className="joined-symbol"><CheckCircle2 size={38} strokeWidth={2.3}/></div>
       <p className="joined-kicker"><Sparkles size={14} style={{display:"inline",verticalAlign:"-2px"}}/> YOU’RE OFFICIALLY IN</p>
       <h1>Welcome to the <span>SPORTSLINK</span> community{member.name ? <>{`, ${greeting}`}<ProfileCompletionBadge completed={member.profileDetailsCompleted} size={19} /></> : ""}.</h1>
-      <p className="joined-message">Your profile is ready. You’ve taken the first step toward meeting the people, teams and opportunities that can move your sporting journey forward.</p>
+      <p className="joined-message">{member.profileDetailsCompleted
+        ? "Your profile is ready. You’ve taken the first step toward meeting the people, teams and opportunities that can move your sporting journey forward."
+        : "Your account is ready. You can complete your profile details later to earn your blue profile star and help the community get to know you."}</p>
       {(member.role || member.sport) && <div className="joined-member-details">
         {member.role && <span>{member.role.replaceAll("_"," ")}</span>}
         {member.sport && <span>{member.sport}</span>}
-        <span><CheckCircle2 size={13} style={{display:"inline",verticalAlign:"-2px",marginRight:5}}/> Profile complete</span>
+        <span><CheckCircle2 size={13} style={{display:"inline",verticalAlign:"-2px",marginRight:5}}/> {member.profileDetailsCompleted ? "Profile complete" : "Account ready"}</span>
       </div>}
       <div className="joined-actions">
         <button type="button" className="button" onClick={() => { router.replace(destination); router.refresh(); }}>Enter your community <ArrowRight size={17}/></button>
