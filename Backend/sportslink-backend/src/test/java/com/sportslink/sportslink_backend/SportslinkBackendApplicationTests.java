@@ -298,7 +298,7 @@ class SportslinkBackendApplicationTests {
                 any(Jwt.class),
                 eq(Map.of(
                         "id", "neq.user-123",
-                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at",
+                        "select", "id,username,full_name,headline,avatar_url,sport,role,created_at,profile_details_completed",
                         "order", "created_at.desc",
                         "limit", "100"
                 )));
@@ -438,7 +438,7 @@ class SportslinkBackendApplicationTests {
                 eq("/rest/v1/notifications"), any(Jwt.class),
                 eq(Map.of(
                         "user_id", "eq.user-123",
-                        "select", "id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url)",
+                        "select", "id,user_id,actor_id,type,entity_type,entity_id,message,is_read,created_at,actor:profiles!notifications_actor_id_fkey(id,username,full_name,avatar_url,profile_details_completed)",
                         "order", "created_at.desc",
                         "limit", "100",
                         "is_read", "eq.false"
@@ -556,7 +556,7 @@ class SportslinkBackendApplicationTests {
 
         verify(supabaseRestClient).post(
                 eq("/rest/v1/messages"), any(Jwt.class),
-                eq(Map.of("select", "id,conversation_id,sender_id,content,created_at,edited_at,sender:profiles!messages_sender_id_fkey(id,username,full_name,avatar_url)")),
+                eq(Map.of("select", "id,conversation_id,sender_id,content,created_at,edited_at,sender:profiles!messages_sender_id_fkey(id,username,full_name,avatar_url,profile_details_completed)")),
                 eq(Map.of(
                         "conversation_id", conversationId.toString(),
                         "sender_id", "user-123",
