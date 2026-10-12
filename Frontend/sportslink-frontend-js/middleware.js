@@ -84,10 +84,11 @@ export async function middleware(request) {
   if (user && pathname !== '/auth/callback') {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('onboarding_completed_at')
+      .select('onboarding_completed_at,profile_details_completed')
       .eq('id', user.id)
       .maybeSingle();
     const onboardingComplete = Boolean(profile?.onboarding_completed_at);
+    const profileDetailsComplete = Boolean(profile?.profile_details_completed);
 
     if (!onboardingComplete && pathname !== '/onboarding') {
       const onboardingUrl = request.nextUrl.clone();
@@ -99,7 +100,7 @@ export async function middleware(request) {
       return redirectTo(onboardingUrl, response);
     }
 
-    if (onboardingComplete && pathname === '/onboarding') {
+    if (profileDetailsComplete && pathname === '/onboarding') {
       const next = safeDestination(request.nextUrl.searchParams.get('next'));
       return redirectTo(new URL(next, request.url), response);
     }
