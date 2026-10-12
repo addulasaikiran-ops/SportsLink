@@ -25,6 +25,9 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
+      - name: Install Capacitor tooling for this CI build
+        run: npm install --no-save @capacitor/core@^7.4.3 @capacitor/android@^7.4.3 @capacitor/cli@^7.4.3
+
       - name: Generate Android project
         run: npx cap add android
 
