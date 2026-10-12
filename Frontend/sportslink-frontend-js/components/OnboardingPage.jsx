@@ -86,13 +86,13 @@ export function OnboardingPage() {
 
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("id,username,full_name,headline,bio,location,sport,role,studied_at,onboarding_completed_at,website_url")
+          .select("id,username,full_name,headline,bio,location,sport,role,studied_at,onboarding_completed_at,profile_details_completed,website_url")
           .eq("id", authData.user.id)
           .maybeSingle();
         if (profileError) throw profileError;
         if (!active) return;
 
-        if (profile?.onboarding_completed_at) {
+        if (profile?.profile_details_completed) {
           router.replace(destination);
           return;
         }
@@ -163,6 +163,7 @@ export function OnboardingPage() {
         headline: draft.headline.trim(),
         bio,
         onboarding_completed_at: new Date().toISOString(),
+        profile_details_completed: true,
       };
       const { error: saveError } = await client
         .from("profiles")
@@ -175,6 +176,37 @@ export function OnboardingPage() {
       router.refresh();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "We couldn't save your profile. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function skipForNow() {
+    setError("");
+    if (!client || !user) {
+      setError("Your session has expired. Please sign in again.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const fullName = draft.full_name.trim()
+        || user.user_metadata?.full_name
+        || user.user_metadata?.name
+        || user.email?.split("@")[0]
+        || "SPORTSLINK Member";
+      const allowedRole = ROLE_OPTIONS.some(([value]) => value === draft.role) ? draft.role : "athlete";
+      const { error: skipError } = await client.from("profiles").upsert({
+        id: user.id,
+        full_name: fullName,
+        role: allowedRole,
+        onboarding_completed_at: new Date().toISOString(),
+        profile_details_completed: false,
+      }, { onConflict: "id" });
+      if (skipError) throw skipError;
+      router.replace(destination);
+      router.refresh();
+    } catch (skipError) {
+      setError(skipError instanceof Error ? skipError.message : "We couldn't skip profile setup. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -260,8 +292,11 @@ export function OnboardingPage() {
         </section>
 
         <div className="onboarding-actions">
-          <div className="onboarding-private-note"><CheckCircle2 size={16}/><span>You’re in control. Profile details can be edited later in Settings.</span></div>
-          <button type="submit" className="button onboarding-primary" disabled={saving} aria-busy={saving}>{saving ? "Saving your profile…" : "Save profile & continue"} {!saving && <ArrowRight size={17}/>}</button>
+          <div className="onboarding-private-note"><CheckCircle2 size={16}/><span>Complete these details to earn a blue profile star. You can finish later from your profile.</span></div>
+          <div className="onboarding-action-buttons">
+            <button type="button" className="button button-secondary onboarding-skip" onClick={skipForNow} disabled={saving}>{saving ? "Saving…" : "Skip for now"}</button>
+            <button type="submit" className="button onboarding-primary" disabled={saving} aria-busy={saving}>{saving ? "Saving your profile…" : "Save profile & continue"} {!saving && <ArrowRight size={17}/>}</button>
+          </div>
         </div>
         <p className="onboarding-account-note">Signed in as <strong>{user?.email}</strong></p>
       </form>}
