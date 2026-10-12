@@ -16,12 +16,24 @@ const sectionTitles = {
   settings: "Settings",
   events: "Events"
 };
+const sectionDescriptions = {
+  network: "Manage your SPORTSLINK connections and grow your professional sports network.",
+  discover: "Discover athletes, coaches, clubs, scouts and other professionals across sport.",
+  opportunities: "Explore sporting careers, roles, internships and collaborations on SPORTSLINK.",
+  messages: "Manage your private conversations with your SPORTSLINK connections.",
+  notifications: "View updates and activity from your SPORTSLINK network.",
+  profile: "Manage your SPORTSLINK member profile and professional sporting details.",
+  bookmarks: "Review the SPORTSLINK posts and opportunities you have saved.",
+  organizations: "Discover and manage sports clubs and organizations on SPORTSLINK.",
+  settings: "Manage your SPORTSLINK account and preferences.",
+  events: "Discover and manage events shared with the SPORTSLINK community."
+};
 
 export function generateStaticParams() { return allowed.map((section) => ({section})); }
 
 export async function generateMetadata({ params }) {
   const { section } = await params;
-  return { title: sectionTitles[section] || "Page Not Found" };
+  return { title: sectionTitles[section] || "Page Not Found", description: sectionDescriptions[section] || "Your SPORTSLINK member workspace.", robots: { index: false, follow: false } };
 }
 
 export default async function Page({ params, searchParams }) {
