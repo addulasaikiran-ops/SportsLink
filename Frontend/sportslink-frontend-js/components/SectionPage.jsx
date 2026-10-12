@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { CalendarDays, Settings, PlusCircle, RefreshCw, Save, XCircle, LockKeyhole, MapPin, UserRound, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
+import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 
 const EVENT_COLUMNS = "id,created_by,title,description,event_type,sport,location,starts_at,ends_at,status,created_at";
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,location,sport,website_url,role";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,location,sport,website_url,role,profile_details_completed";
 
 function formatDate(value) {
   if (!value) return "";
@@ -52,7 +53,7 @@ export function SectionPage({ section }) {
     if (creatorIds.length) {
       const { data: creators, error: creatorsError } = await supabase
         .from("profiles")
-        .select("id,username,full_name")
+        .select("id,username,full_name,profile_details_completed")
         .in("id", creatorIds);
       if (creatorsError) throw creatorsError;
       profilesById = new Map((creators || []).map((creator) => [creator.id, creator]));
@@ -193,6 +194,12 @@ export function SectionPage({ section }) {
       setError("Website URL must start with http:// or https://.");
       return;
     }
+    const profileDetailsCompleted = Boolean(
+      profileDraft.full_name.trim().length >= 2
+      && profileDraft.sport.trim()
+      && profileDraft.bio.trim().length >= 20
+      && profileDraft.location.split(",").map((part) => part.trim()).filter(Boolean).length >= 2
+    );
     setSaving(true);
     try {
       const payload = {
@@ -204,6 +211,7 @@ export function SectionPage({ section }) {
         location: profileDraft.location.trim() || null,
         sport: profileDraft.sport.trim() || null,
         website_url: website || null,
+        profile_details_completed: profileDetailsCompleted,
       };
       const { data, error: saveError } = await client
         .from("profiles")
@@ -307,7 +315,7 @@ export function SectionPage({ section }) {
               <span className="badge">{item.status === "cancelled" ? "Cancelled" : "Published"}</span>
             </div>
             <p><CalendarDays size={15} style={{ verticalAlign: "middle", marginRight: 6 }}/>{formatDate(item.starts_at)}{item.ends_at ? ` – ${formatDate(item.ends_at)}` : ""}</p>
-            <p>{item.location} · Posted by {creatorName}</p>
+            <p>{item.location} · Posted by {creatorName}{item.created_by !== user?.id && <ProfileCompletionBadge completed={item.creator?.profile_details_completed} size={13} />}</p>
             {item.status === "published" && item.created_by === user?.id && <button className="button button-secondary" type="button" onClick={() => cancelEvent(item.id)} disabled={saving}><XCircle size={15}/> Cancel event</button>}
           </article>;
         })}</div>}
