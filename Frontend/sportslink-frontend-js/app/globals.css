@@ -4289,3 +4289,22 @@ body{
 .public-site{
   background:transparent;
 }
+
+
+/* Official SPORTSLINK logo image used consistently across public and member UI. */
+.sportslink-logo{display:block;width:164px;height:44px;max-width:100%;object-fit:contain;object-position:left center;flex:0 1 auto}
+.public-brand{gap:0}
+.public-footer .sportslink-logo{width:145px;height:38px}
+.login-brand-row .sportslink-logo{width:180px;height:52px}
+.app-root .brand{gap:0}
+.app-root .app-brand-logo{width:150px;height:44px}
+@media(max-width:620px){
+ .sportslink-logo{width:130px;height:38px}
+ .public-footer .sportslink-logo{width:130px;height:35px}
+ .login-brand-row .sportslink-logo{width:155px;height:45px}
+ .app-root .app-brand-logo{width:118px;height:36px}
+}
+@media(max-width:420px){
+ .app-root .app-brand-logo{width:100px;height:32px}
+ .topbar-inner>.brand{min-width:0}
+}
