@@ -397,8 +397,8 @@ export function MessagesPage() {
       <div className="messages-title-row"><h1>Messages</h1><span className="messages-private-pill"><ShieldCheck size={13}/> Private inbox</span></div>
       <p>Connect directly with athletes, coaches, scouts and the people moving sport forward.</p>
     </div>
-    <button className="button button-primary messages-new-button" type="button" onClick={toggleMemberFinder}>
-      <PlusCircle size={17}/>{showPeople ? "Close member finder" : "New message"}
+    <button className="messages-new-button" type="button" onClick={toggleMemberFinder} aria-label={showPeople ? "Close new chat" : "New message"} title={showPeople ? "Close new chat" : "New message"}>
+      {showPeople ? <ArrowLeft size={20}/> : <PlusCircle size={20}/>}
     </button>
   </div>;
 
@@ -413,17 +413,22 @@ export function MessagesPage() {
     <section className={`messaging-layout card ${showChatView ? "chat-open" : "inbox-first"}`} aria-label="SPORTSLINK messaging">
       <aside className="conversation-list">
         <div className="conversation-list-head"><div><h2>Your conversations</h2><small>Pick up where you left off</small></div><span className="conversation-total">{conversations.length}</span></div>
-        {showPeople && <div style={{padding:"0 12px 12px"}}>
-          <label className="search-field" aria-label="Search people to message"><Search size={16}/><input value={peopleQuery} onChange={(event)=>setPeopleQuery(event.target.value)} placeholder="Find a member…" autoComplete="off"/></label>
-          <p style={{fontSize:10,color:"var(--muted)",lineHeight:1.5,margin:"9px 2px"}}>Choose a real member to start a private text conversation.</p>
-          <div className="conversation-items">{filteredProfiles.map((profile)=>{
+        {showPeople && <div className="new-chat-picker" role="dialog" aria-modal="true" aria-label="Start a new conversation">
+          <div className="new-chat-picker-header">
+            <button type="button" className="new-chat-back" onClick={toggleMemberFinder} aria-label="Back to conversations"><ArrowLeft size={20}/></button>
+            <div><h2>New chat</h2><p>Message a sports professional</p></div>
+          </div>
+          <label className="search-field new-chat-search" aria-label="Search people to message"><Search size={17}/><input value={peopleQuery} onChange={(event)=>setPeopleQuery(event.target.value)} placeholder="Search name, sport or role…" autoComplete="off" autoFocus/></label>
+          <p className="new-chat-section-label">CONTACTS ON SPORTSLINK</p>
+          <div className="new-chat-contacts">{filteredProfiles.map((profile)=>{
             const name=profile.full_name||profile.username||"SPORTSLINK member";
-            return <button type="button" key={profile.id} className="conversation-item" onClick={()=>startConversation(profile)} disabled={Boolean(startingId)}>
+            return <button type="button" key={profile.id} className="new-chat-contact" onClick={()=>startConversation(profile)} disabled={Boolean(startingId)}>
               <ConversationAvatar profile={profile} name={name}/>
-              <span className="conversation-copy"><b>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={13} /></b><small>{profile.headline||profile.sport||profile.role||"SPORTSLINK member"}{startingId===profile.id?" · Opening…":""}</small></span>
+              <span className="new-chat-contact-copy"><b>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={13} /></b><small>{profile.headline||profile.sport||profile.role||"SPORTSLINK member"}{startingId===profile.id?" · Opening…":""}</small></span>
+              <MessageCircle size={18} className="new-chat-contact-icon"/>
             </button>;
           })}</div>
-          {filteredProfiles.length===0&&<p style={{fontSize:11,color:"var(--muted)",padding:"8px"}}>No members match that search.</p>}
+          {filteredProfiles.length===0&&<div className="new-chat-empty"><UserRound size={26}/><b>No members found</b><p>Try another name, sport or role.</p></div>}
         </div>}
         <label className="conversation-search" aria-label="Search conversations"><Search size={16}/><input type="search" value={conversationQuery} onChange={(event)=>setConversationQuery(event.target.value)} placeholder="Search chats" autoComplete="off"/></label>
         <div className="conversation-items">{filteredConversations.map((conversation)=>{

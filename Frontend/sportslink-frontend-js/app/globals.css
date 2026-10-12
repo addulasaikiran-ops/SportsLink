@@ -4933,3 +4933,50 @@ body{
   .app-root .topbar-inner>.topbar-actions{grid-area:actions;justify-self:end}
   .app-root .global-search.global-search-mobile-open{top:calc(100% + 7px);right:10px;left:10px}
 }
+
+
+/* WhatsApp-inspired new chat/contact picker for SPORTSLINK messaging. */
+.messages-new-button{
+  display:grid;place-items:center;width:44px;height:44px;min-height:44px;flex:0 0 44px;
+  padding:0;border:1px solid var(--line,#dce4f0);border-radius:14px;
+  background:var(--surface,#fff);color:var(--blue,#2563eb);
+  box-shadow:0 5px 16px rgba(39,94,217,.10);cursor:pointer;
+}
+.messages-new-button:hover{background:var(--surface-soft,#f1f5ff)}
+.new-chat-picker{padding:0 12px 14px}
+.new-chat-picker-header{display:flex;align-items:center;gap:12px;padding:10px 2px 16px}
+.new-chat-back{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line,#dce4f0);border-radius:12px;background:var(--surface,#fff);color:var(--ink,#172033)}
+.new-chat-picker-header h2{margin:0;font:800 17px/1.3 Manrope,sans-serif;color:var(--ink,#172033)}
+.new-chat-picker-header p{margin:3px 0 0;font-size:11px;color:var(--muted,#778196)}
+.new-chat-search{min-height:44px;margin-bottom:16px}
+.new-chat-search input{width:100%;min-width:0}
+.new-chat-section-label{margin:0 3px 8px;font-size:9px;font-weight:800;letter-spacing:1.25px;color:var(--muted,#778196)}
+.new-chat-contacts{display:flex;flex-direction:column;gap:2px}
+.new-chat-contact{display:flex;align-items:center;gap:12px;width:100%;min-height:70px;padding:10px;border:0;border-bottom:1px solid var(--line,#e8edf5);border-radius:11px;background:transparent;text-align:left;color:var(--ink,#172033);cursor:pointer}
+.new-chat-contact:hover{background:var(--surface-soft,#f3f6fc)}
+.new-chat-contact:disabled{opacity:.65;cursor:wait}
+.new-chat-contact .avatar{width:44px;height:44px;min-width:44px;flex:0 0 44px}
+.new-chat-contact-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+.new-chat-contact-copy b{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:750}
+.new-chat-contact-copy small{overflow:hidden;color:var(--muted,#778196);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.new-chat-contact-icon{flex:0 0 auto;color:var(--blue,#2563eb);opacity:.8}
+.new-chat-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:38px 12px;text-align:center;color:var(--muted,#778196)}
+.new-chat-empty b{color:var(--ink,#172033);font-size:12px}
+.new-chat-empty p{margin:0;font-size:11px}
+:root[data-theme="dark"] .messages-new-button,:root[data-theme="dark"] .new-chat-back{background:#101d31;border-color:rgba(145,165,200,.22);color:#dbe8ff}
+:root[data-theme="dark"] .new-chat-contact{color:#edf4ff;border-bottom-color:rgba(145,165,200,.13)}
+:root[data-theme="dark"] .new-chat-contact:hover{background:#172740}
+:root[data-theme="dark"] .new-chat-picker-header h2,:root[data-theme="dark"] .new-chat-empty b{color:#edf4ff}
+@media(max-width:760px){
+  .messages-page-heading{align-items:center;gap:10px}
+  .messages-page-heading-copy>p:last-child{display:none}
+  .messages-page-heading .eyebrow{margin-bottom:5px;font-size:8px}
+  .messages-page-heading h1{font-size:25px}
+  .messages-new-button{width:42px;height:42px;min-height:42px;flex-basis:42px;border-radius:13px}
+  .messages-page .new-chat-picker{position:fixed;z-index:120;inset:60px 0 64px;overflow-y:auto;padding:12px 15px 24px;background:var(--bg,#f5f7fb)}
+  .messages-page .new-chat-picker-header{position:sticky;top:-12px;z-index:2;margin:0 -15px 12px;padding:12px 15px;background:var(--bg,#f5f7fb);border-bottom:1px solid var(--line,#e4e9f2)}
+  .messages-page .new-chat-search{position:sticky;top:58px;z-index:2;padding:0 12px;border:1px solid var(--line,#dce4f0);border-radius:13px;background:var(--surface,#fff)}
+  .new-chat-contact{min-height:76px;padding:12px 7px}
+  :root[data-theme="dark"] .messages-page .new-chat-picker,:root[data-theme="dark"] .messages-page .new-chat-picker-header{background:#0d192b}
+  :root[data-theme="dark"] .messages-page .new-chat-search{background:#101d31;border-color:rgba(145,165,200,.22)}
+}
