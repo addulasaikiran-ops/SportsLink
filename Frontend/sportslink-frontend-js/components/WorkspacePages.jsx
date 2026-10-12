@@ -88,6 +88,22 @@ export function BookmarksPage() {
   </div>;
 }
 
+function sortRecentConversations(rows) {
+  return [...(Array.isArray(rows) ? rows : [])].sort((a, b) => {
+    const recentTime = (conversation) => {
+      const value = conversation?.last_message_at
+        || conversation?.lastMessageAt
+        || conversation?.last_message?.created_at
+        || conversation?.lastMessage?.created_at
+        || conversation?.updated_at
+        || conversation?.created_at;
+      const parsed = value ? Date.parse(value) : 0;
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+    return recentTime(b) - recentTime(a);
+  });
+}
+
 export function MessagesPage() {
   const [user, setUser] = useState(null);
   const [profiles, setProfiles] = useState([]);
@@ -120,7 +136,7 @@ export function MessagesPage() {
         if (!active) return;
         setUser(data.user);
         setProfiles(Array.isArray(profileRows) ? profileRows : []);
-        const rows = Array.isArray(conversationRows) ? conversationRows : [];
+        const rows = sortRecentConversations(conversationRows);
         setConversations(rows);
         const requested = typeof window !== "undefined"
           ? new URLSearchParams(window.location.search).get("conversation")
@@ -145,8 +161,9 @@ export function MessagesPage() {
       try {
         const rows = await backendRequest("/api/conversations");
         if (active && Array.isArray(rows)) {
-          setConversations(rows);
-          setActiveConversationId((current) => current || rows[0]?.id || "");
+          const recentRows = sortRecentConversations(rows);
+          setConversations(recentRows);
+          setActiveConversationId((current) => current || recentRows[0]?.id || "");
         }
       } catch {
         // Keep the current conversation list visible during short network interruptions.
@@ -326,7 +343,7 @@ export function MessagesPage() {
             : contact.name;
           return <button type="button" key={conversation.id} className={`conversation-item ${activeConversationId===conversation.id?"conversation-active":""}`} onClick={()=>{setActiveConversationId(conversation.id);setShowPeople(false);setError("");setNotice("");}} aria-pressed={activeConversationId===conversation.id}>
             <ConversationAvatar profile={contact.profile} name={memberText}/>
-            <span className="conversation-copy"><b>{memberText}</b><small>{conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Open conversation" : "Private text chat"}</small></span>
+            <span className="conversation-copy"><b>{memberText}</b><small>{conversation.last_message?.content || conversation.lastMessage?.content || conversation.last_message_preview || conversation.last_message_text || (conversation.is_group?"Group conversation":conversation.id===activeConversationId ? "Recently opened chat" : "Tap to continue chatting")}</small></span>
           </button>;
         })}</div>
         {conversations.length===0&&!showPeople&&<div className="empty-state" style={{padding:18}}><MessageCircle size={20}/><p>No conversations yet.</p><button className="button button-secondary" type="button" onClick={()=>setShowPeople(true)}>Find a member</button></div>}
