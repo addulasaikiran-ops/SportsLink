@@ -13,7 +13,7 @@ public class SupabasePostService {
 
     private static final String POST_COLUMNS =
             "id,author_id,content,visibility,created_at,"
-                    + "author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role),"
+                    + "author:profiles!posts_author_id_fkey(id,username,full_name,headline,avatar_url,sport,role,profile_details_completed),"
                     + "media:post_media(id,media_url,media_type,created_at)";
 
     private final SupabaseRestClient supabaseRestClient;
