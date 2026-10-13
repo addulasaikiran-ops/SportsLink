@@ -28,5 +28,29 @@ export const metadata = {
   }
 };
 export default function RootLayout({ children }) {
-  return <html lang="en" suppressHydrationWarning><body><Script id="sportslink-theme-init" strategy="beforeInteractive">{`try{const t=localStorage.getItem("sportslink-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}`}</Script><OfflineSupport /><AppShell>{children}</AppShell></body></html>;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://sportslink.up.railway.app/#organization",
+        name: "SPORTSLINK",
+        url: "https://sportslink.up.railway.app/",
+        description: "A professional network connecting athletes, coaches, scouts, clubs and sports professionals.",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://sportslink.up.railway.app/Document%20Handshake%20Partnership%20Icon.png"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://sportslink.up.railway.app/#website",
+        name: "SPORTSLINK",
+        url: "https://sportslink.up.railway.app/",
+        description: "Connect with athletes, coaches, clubs, scouts and sports professionals.",
+        publisher: { "@id": "https://sportslink.up.railway.app/#organization" }
+      }
+    ]
+  };
+  return <html lang="en" suppressHydrationWarning><head><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} /></head><body><Script id="sportslink-theme-init" strategy="beforeInteractive">{`try{const t=localStorage.getItem("sportslink-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}`}</Script><OfflineSupport /><AppShell>{children}</AppShell></body></html>;
 }
