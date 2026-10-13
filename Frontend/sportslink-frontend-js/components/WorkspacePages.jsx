@@ -33,6 +33,15 @@ function chatTime(value) {
   return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(timestamp);
 }
 
+function formatWorkspaceTime(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "Recently";
+  const date = new Date(timestamp);
+  const now = new Date();
+  const options = { month: "short", day: "numeric" };
+  if (date.getFullYear() !== now.getFullYear()) options.year = "numeric";
+  return new Intl.DateTimeFormat(undefined, options).format(date);
+}
 
 export function BookmarksPage() {
   const [items, setItems] = useState([]);
