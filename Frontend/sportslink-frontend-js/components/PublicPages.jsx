@@ -35,8 +35,7 @@ export function LandingPage() {
  const [liked,setLiked]=useState([]);
  const [commentsOpen,setCommentsOpen]=useState([]);
  const [shared,setShared]=useState([]);
- const [cursor,setCursor]=useState({x:0,y:0});
- const [sceneTilt,setSceneTilt]=useState({x:0,y:0});
+ const tiltFrameRef=useRef(0);
  const visibleOpportunities=[
   {id:1,type:"Roles",icon:"🏃‍♂️",label:"FULL TIME",title:"Performance Analyst",company:"Velocity Performance",location:"Hybrid · London",tags:["Analysis","Football"],tone:"blue"},
   {id:2,type:"Internships",icon:"🎓",label:"INTERNSHIP",title:"Sports Marketing Intern",company:"Northstar Athletics",location:"On-site · Bengaluru",tags:["Marketing","Growth"],tone:"gold"},
@@ -44,11 +43,17 @@ export function LandingPage() {
  ];
  const filteredOpportunities=visibleOpportunities.filter(item=>opportunityFilter==="All"||item.type===opportunityFilter);
  function tiltScene(event){
-  const rect=event.currentTarget.getBoundingClientRect();
+  const node=event.currentTarget;
+  const rect=node.getBoundingClientRect();
   const x=(event.clientX-rect.left)/rect.width-.5;
   const y=(event.clientY-rect.top)/rect.height-.5;
-  setSceneTilt({x:x*10,y:y*-10});
-  setCursor({x:(event.clientX-rect.left)/rect.width*100,y:(event.clientY-rect.top)/rect.height*100});
+  if(tiltFrameRef.current) cancelAnimationFrame(tiltFrameRef.current);
+  tiltFrameRef.current=requestAnimationFrame(()=>{
+   node.style.setProperty("--tilt-x",(x*10)+"deg");
+   node.style.setProperty("--tilt-y",(y*-10)+"deg");
+   node.style.setProperty("--cursor-x",(((event.clientX-rect.left)/rect.width)*100)+"%");
+   node.style.setProperty("--cursor-y",(((event.clientY-rect.top)/rect.height)*100)+"%");
+  });
  }
  return <><SportsLinkIntro /><PublicLayout><main className="sl-landing">
   <section className="landing-hero sl-hero">
@@ -59,7 +64,7 @@ export function LandingPage() {
     <div className="landing-actions"><Link href="/signup" className="button landing-primary">Create your free profile <ArrowRight size={17}/></Link><Link href="/login" className="landing-secondary">Already a member? Log in</Link></div>
     <div className="landing-proof"><span className="proof-avatars"><Users size={24}/></span><span><b>A community built around sport</b><small>Athletes · Coaches · Clubs · Creators</small></span></div>
    </div>
-   <div className="landing-visual sl-visual" onMouseMove={tiltScene} onMouseLeave={()=>setSceneTilt({x:0,y:0})} style={{"--tilt-x":sceneTilt.x+"deg","--tilt-y":sceneTilt.y+"deg","--cursor-x":cursor.x+"%","--cursor-y":cursor.y+"%"}} aria-label="Interactive sports community illustration">
+   <div className="landing-visual sl-visual" onMouseMove={tiltScene} onMouseLeave={(event)=>{if(tiltFrameRef.current)cancelAnimationFrame(tiltFrameRef.current);event.currentTarget.style.setProperty("--tilt-x","0deg");event.currentTarget.style.setProperty("--tilt-y","0deg");}} aria-label="Interactive sports community illustration">
     <div className="visual-glow"/><div className="visual-orbit orbit-one"/><div className="visual-orbit orbit-two"/>
     <div className="sl-sport-float sl-tennis" aria-label="Tennis ball">🎾</div><div className="sl-sport-float sl-basketball" aria-label="Basketball">🏀</div><div className="sl-sport-float sl-football" aria-label="Football">⚽</div><div className="sl-sport-float sl-cricket" aria-label="Cricket">🏏</div><div className="sl-sport-float sl-badminton" aria-label="Badminton">🏸</div><div className="sl-sport-float sl-trophy" aria-label="Trophy">🏆</div>
     <div className="visual-main-card sl-opportunity-card"><div className="visual-card-top"><span className="live-dot"/> YOUR SPORT. YOUR PEOPLE.</div><div className="visual-ball">✦</div><h2>Opportunity<br/>is a team sport.</h2><p>Make connections that move you forward.</p><div className="visual-tags"><span>Career growth</span><span>Community</span><span>Performance</span></div></div>
