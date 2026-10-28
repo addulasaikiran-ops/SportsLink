@@ -96,9 +96,9 @@
 .sl-landing .landing-lede{max-width:520px;color:#d0d9eb;font-size:clamp(14px,1.2vw,16px);line-height:1.85}
 .sl-landing .landing-secondary{color:#c9d7f1;transition:color .25s,transform .25s}
 .sl-landing .landing-secondary:hover{color:#fff;transform:translateX(3px)}
-.sl-landing .landing-primary,.sl-landing .public-nav-cta{position:relative;overflow:hidden;border:1px solid rgba(150,190,255,.45);background:linear-gradient(110deg,#2f6bff,#477dff 60%,#2455db);color:#fff;border-radius:13px;box-shadow:0 10px 28px rgba(47,107,255,.25);transition:transform .25s,box-shadow .25s,filter .25s}
+.sl-landing .landing-primary,.sl-landing .public-nav-cta{position:relative;overflow:hidden;border:1px solid rgba(112,213,34,.55);background:linear-gradient(110deg,var(--sl-brand-lime),#8ae94c 60%,var(--sl-brand-lime-strong));color:#07162a;border-radius:13px;box-shadow:0 10px 28px rgba(112,213,34,.22);transition:transform .25s,box-shadow .25s,filter .25s}
 .sl-landing .landing-primary:before,.sl-landing .public-nav-cta:before{content:"";position:absolute;inset:-20% auto -20% -45%;width:30%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);transition:left .55s}
-.sl-landing .landing-primary:hover,.sl-landing .public-nav-cta:hover{transform:translateY(-3px);box-shadow:0 15px 38px rgba(47,107,255,.42);filter:saturate(1.14)}
+.sl-landing .landing-primary:hover,.sl-landing .public-nav-cta:hover{transform:translateY(-3px);box-shadow:0 15px 38px rgba(112,213,34,.34);filter:saturate(1.08)}
 .sl-landing .landing-primary:hover:before,.sl-landing .public-nav-cta:hover:before{left:125%}
 .sl-landing .landing-primary svg,.sl-landing .public-nav-cta svg{transition:transform .22s}
 .sl-landing .landing-primary:hover svg,.sl-landing .public-nav-cta:hover svg{transform:translateX(4px)}
