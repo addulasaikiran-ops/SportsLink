@@ -2,7 +2,7 @@
 :root[data-theme="dark"] { --sl-intro-sports: #f7fbff; }
 .sl-intro-lock { scroll-behavior: auto !important; }
 .sl-intro-overlay {
-  --sl-ball-x: -12vw; --sl-ball-y: 0px; --sl-ball-rotation: 0deg; --sl-ball-scale: .92; --sl-ball-progress: 0;
+  --sl-ball-x: -12vw; --sl-ball-y: 0px; --sl-ball-rotation: 0deg; --sl-ball-scale: .92; --sl-ball-progress: 0; --sl-trail-scale: 0;
   position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; overflow: hidden;
   isolation: isolate; background: #fbfcff; color: #102d50; cursor: default;
   animation: sl-intro-overlay-in .38s ease-out both;
@@ -15,7 +15,7 @@
 .sl-intro-logo-wrap { width:min(56vw, 640px); min-width:280px; position:relative; z-index:2; opacity:0; transform:translateY(8px) scale(.985); animation:sl-intro-logo-in .55s cubic-bezier(.2,.8,.2,1) .08s forwards; }
 .sl-intro-wordmark { display:block; width:100%; height:auto; overflow:visible; filter:none; }
 .sl-intro-ribbon { stroke-dasharray:520; stroke-dashoffset:520; animation:sl-intro-ribbon-in .65s ease-out .3s forwards; }
-.sl-intro-trail { position:absolute; z-index:1; left:0; top:50%; width:100vw; height:14px; pointer-events:none; opacity:var(--sl-trail-opacity, 0); transform:translateY(calc(-50% + var(--sl-ball-y))); width:var(--sl-trail-width, 0px); background:linear-gradient(90deg, transparent 0%, rgba(112,213,34,.12) 25%, rgba(112,213,34,.42) 70%, rgba(112,213,34,.7) 100%); filter:blur(7px); }
+.sl-intro-trail { position:absolute; z-index:1; left:0; top:50%; width:100vw; height:14px; pointer-events:none; opacity:var(--sl-trail-opacity, 0); transform:translateY(calc(-50% + var(--sl-ball-y))) scaleX(var(--sl-trail-scale, 0)); transform-origin:left center; background:linear-gradient(90deg, transparent 0%, rgba(112,213,34,.12) 25%, rgba(112,213,34,.42) 70%, rgba(112,213,34,.7) 100%); filter:blur(7px); }
 .sl-intro-ball { position:absolute; z-index:3; left:0; top:50%; width:clamp(72px, 10vw, 132px); aspect-ratio:1; transform:translate3d(var(--sl-ball-x), calc(-50% + var(--sl-ball-y)), 0) rotate(var(--sl-ball-rotation)) scale(var(--sl-ball-scale)); will-change:transform; filter:drop-shadow(0 14px 15px rgba(7,20,40,.2)); }
 .sl-intro-ball-art { display:block; width:100%; height:100%; overflow:visible; }
 .sl-intro-ball-seams { transform-origin:70px 70px; animation:sl-intro-ball-seams-spin 1.7s linear infinite; }
@@ -23,6 +23,9 @@
 .sl-intro-skip span { margin-left:5px; color:#70b927; }
 .sl-intro-skip:focus-visible { outline:3px solid #70d522; outline-offset:3px; }
 :root[data-theme="dark"] .sl-intro-skip { color:#f5f9ff; background:rgba(9,24,43,.8); border-color:rgba(255,255,255,.2); }
+.sl-intro-low-power .sl-intro-ball { filter:none; }
+.sl-intro-low-power .sl-intro-trail { filter:none; }
+.sl-intro-low-power .sl-intro-grain { display:none; }
 .sl-intro-is-exiting { animation:sl-intro-overlay-out .18s ease-in forwards !important; pointer-events:none; }
 .sl-intro-reduced { animation:sl-intro-overlay-in .4s ease-out both; }
 .sl-intro-reduced .sl-intro-logo-wrap { animation:sl-intro-reduced-logo 1.25s ease-in-out both; }
