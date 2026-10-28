@@ -297,7 +297,7 @@ export function OnboardingPage() {
           <div className="onboarding-private-note"><CheckCircle2 size={16}/><span>Complete these details to earn a blue profile star. You can finish later from your profile.</span></div>
           <div className="onboarding-action-buttons">
             <button type="button" className="button button-secondary onboarding-skip" onClick={skipForNow} disabled={saving}>{saving ? "Saving…" : "Skip for now"}</button>
-            <button type="submit" className="button onboarding-primary" disabled={saving} aria-busy={saving}>{saving ? "Saving your profile…" : "Save profile & continue"} {!saving && <ArrowRight size={17}/>}</button>
+            <button type="button" className="button onboarding-primary" disabled={saving || !ready} aria-busy={saving} onClick={(event) => { event.preventDefault(); void submit(event); }}>{saving ? "Saving your profile…" : "Save profile & continue"} {!saving && <ArrowRight size={17}/>}</button>
           </div>
         </div>
         <p className="onboarding-account-note">Signed in as <strong>{user?.email}</strong></p>
