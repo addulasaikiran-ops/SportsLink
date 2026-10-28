@@ -69,7 +69,10 @@ export default function SportsLinkIntro() {
   const [visible, setVisible] = useState(false);
   const [skipVisible, setSkipVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const overlayRef = useRef(null);\n  const skipButtonRef = useRef(null);\n  const previousFocusRef = useRef(null);\n  const publicSiteRef = useRef(null);
+  const overlayRef = useRef(null);
+  const skipButtonRef = useRef(null);
+  const previousFocusRef = useRef(null);
+  const publicSiteRef = useRef(null);
   const frameRef = useRef(0);
   const startRef = useRef(0);
   const doneRef = useRef(false);
@@ -89,6 +92,13 @@ export default function SportsLinkIntro() {
     document.documentElement.classList.remove("sl-intro-lock");
     document.body.style.overflow = "";
     document.body.style.paddingRight = "";
+    if (publicSiteRef.current) {
+      publicSiteRef.current.removeAttribute("aria-hidden");
+      publicSiteRef.current.inert = false;
+      publicSiteRef.current = null;
+    }
+    const priorFocus = previousFocusRef.current;
+    if (priorFocus && typeof priorFocus.focus === "function") priorFocus.focus({ preventScroll: true });
   }, []);
 
   useEffect(() => {
@@ -100,7 +110,13 @@ export default function SportsLinkIntro() {
     setReducedMotion(motionPreference);
     setVisible(true);
     try { window.sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
-    previousFocusRef.current = document.activeElement;\n    publicSiteRef.current = document.querySelector(".public-site");\n    if (publicSiteRef.current) {\n      publicSiteRef.current.setAttribute("aria-hidden", "true");\n      publicSiteRef.current.inert = true;\n    }\n    const previousOverflow = document.body.style.overflow;
+    previousFocusRef.current = document.activeElement;
+    publicSiteRef.current = document.querySelector(".public-site");
+    if (publicSiteRef.current) {
+      publicSiteRef.current.setAttribute("aria-hidden", "true");
+      publicSiteRef.current.inert = true;
+    }
+    const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.documentElement.classList.add("sl-intro-lock");
@@ -155,13 +171,19 @@ export default function SportsLinkIntro() {
         overlayRef.current.style.setProperty("--sl-ball-y", arc + "px");
         overlayRef.current.style.setProperty("--sl-ball-rotation", rotation + "deg");
         overlayRef.current.style.setProperty("--sl-ball-scale", String(scale));
-        overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));\n        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
+        overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));
+        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
+        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
       }
       if (elapsed < INTRO_DURATION) frameRef.current = requestAnimationFrame(tick);
     };
     frameRef.current = requestAnimationFrame(tick);
     return () => { cancelled = true; cancelAnimationFrame(frameRef.current); };
   }, [visible, reducedMotion]);
+
+  useEffect(() => {
+    if (visible && skipVisible) skipButtonRef.current?.focus({ preventScroll: true });
+  }, [visible, skipVisible]);
 
   useEffect(() => {
     if (!visible) return;
@@ -187,6 +209,7 @@ export default function SportsLinkIntro() {
       {!reducedMotion && <div className="sl-intro-trail" aria-hidden="true" />}
       {!reducedMotion && <div className="sl-intro-ball"><GlassFootball /></div>}
       <button
+        ref={skipButtonRef}
         type="button"
         className="sl-intro-skip"
         style={{ visibility: skipVisible ? "visible" : "hidden" }}
