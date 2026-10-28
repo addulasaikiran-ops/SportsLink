@@ -172,8 +172,9 @@ export function OnboardingPage() {
         if (saveError.code === "23505") throw new Error("That username is already taken. Please choose another one.");
         throw saveError;
       }
-      router.replace(`/joined?next=${encodeURIComponent(destination)}`);
-      router.refresh();
+      // Use a full navigation after the profile is persisted so the
+      // post-onboarding welcome page always opens with a fresh auth/profile state.
+      window.location.assign(`/joined?next=${encodeURIComponent(destination)}`);
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "We couldn't save your profile. Please try again.");
     } finally {
@@ -203,8 +204,9 @@ export function OnboardingPage() {
         profile_details_completed: false,
       }, { onConflict: "id" });
       if (skipError) throw skipError;
-      router.replace(destination);
-      router.refresh();
+      // Reload the destination after saving the skip state so middleware sees
+      // the latest onboarding completion timestamp.
+      window.location.assign(destination);
     } catch (skipError) {
       setError(skipError instanceof Error ? skipError.message : "We couldn't skip profile setup. Please try again.");
     } finally {
