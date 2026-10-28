@@ -17,6 +17,8 @@ export default function SportsLinkIntro() {
     let cancelled = false;
     let finished = false;
     const animations = [];
+    const timers = new Set();
+    const schedule = (fn, delay) => { const id = window.setTimeout(() => { timers.delete(id); fn(); }, delay); timers.add(id); return id; };
     const content = document.querySelector(".public-site");
     const headerLogo = document.querySelector(".public-header .public-brand .sportslink-logo");
     const hero = document.querySelector(".sl-landing .landing-hero");
@@ -27,8 +29,6 @@ export default function SportsLinkIntro() {
     ].filter(Boolean) : [];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const lowPower = (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4) || Boolean(connection?.saveData);
-    const forced = new URLSearchParams(window.location.search).get("intro") === "1";
     const previousOverflow = document.body.style.overflow;
     const previousPadding = document.body.style.paddingRight;
     const previousFocus = document.activeElement;
@@ -52,9 +52,12 @@ export default function SportsLinkIntro() {
     const cleanup = () => {
       if (finished) return;
       finished = true;
+      window.clearTimeout(failSafe);
+      timers.forEach((id) => window.clearTimeout(id));
+      timers.clear();
       animations.forEach((animation) => { try { animation.cancel(); } catch {} });
       overlay.classList.add("sl-intro-is-exiting");
-      window.setTimeout(() => {
+      schedule(() => {
         if (cancelled) return;
         root.dataset.intro = "skip";
         root.classList.remove("sl-intro-lock");
@@ -82,7 +85,7 @@ export default function SportsLinkIntro() {
       if (cancelled) return;
       if (reduced) {
         animate(mark, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: "ease-out" });
-        window.setTimeout(cleanup, 600);
+        schedule(cleanup, 600);
         return;
       }
 
@@ -90,10 +93,6 @@ export default function SportsLinkIntro() {
         { transform: "translateX(-50%) scaleX(0)", opacity: 0.4 },
         { transform: "translateX(-50%) scaleX(1)", opacity: 1 }
       ], { duration: 680, delay: 120, easing: "cubic-bezier(.16,1,.3,1)" });
-      animate(overlay.querySelectorAll(".sl-intro-frame"), [
-        { strokeDashoffset: 500, opacity: 0.5 },
-        { strokeDashoffset: 0, opacity: 1 }
-      ], { duration: 760, delay: 100, easing: "cubic-bezier(.16,1,.3,1)" });
       animate(mark, [
         { opacity: 0, transform: "translateY(10px) scale(.985)" },
         { opacity: 1, transform: "translateY(0) scale(1)" }
@@ -104,7 +103,7 @@ export default function SportsLinkIntro() {
         { opacity: 0, transform: "translateX(120%)" }
       ], { duration: 520, delay: 1000, easing: "ease-in-out" });
 
-      await new Promise((resolve) => window.setTimeout(resolve, 1650));
+      await new Promise((resolve) => schedule(resolve, 1320));
       if (cancelled || finished) return;
       if (headerLogo) {
         const from = mark.getBoundingClientRect();
@@ -129,7 +128,7 @@ export default function SportsLinkIntro() {
           { opacity: 1, transform: "translateY(0)" }
         ], { duration: 360, delay: 100 + index * 65, easing: "cubic-bezier(.16,1,.3,1)" });
       });
-      window.setTimeout(cleanup, 850);
+      schedule(cleanup, 520);
     };
 
     const onKey = (event) => {
@@ -158,6 +157,8 @@ export default function SportsLinkIntro() {
     return () => {
       cancelled = true;
       window.clearTimeout(failSafe);
+      timers.forEach((id) => window.clearTimeout(id));
+      timers.clear();
       window.removeEventListener("keydown", onKey);
       overlay.removeEventListener("pointerdown", onPointer);
       skipRef.current?.removeEventListener("click", cleanup);
