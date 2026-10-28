@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Activity, ArrowRight, ArrowUpRight, Users, Trophy, BriefcaseBusiness, ShieldCheck, Globe2, HeartHandshake, Menu, X, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Activity, ArrowRight, ArrowUpRight, Users, Trophy, BriefcaseBusiness, ShieldCheck, Globe2, HeartHandshake, Menu, X, CheckCircle2, Eye, EyeOff, CircleDot, Dribbble, Goal, Activity, Zap } from "lucide-react";
 
 function PublicHeader() {
   const [menuOpen,setMenuOpen] = useState(false);
@@ -66,7 +66,7 @@ export function LandingPage() {
    </div>
    <div className="landing-visual sl-visual" onMouseMove={tiltScene} onMouseLeave={(event)=>{if(tiltFrameRef.current)cancelAnimationFrame(tiltFrameRef.current);event.currentTarget.style.setProperty("--tilt-x","0deg");event.currentTarget.style.setProperty("--tilt-y","0deg");}} aria-label="Interactive sports community illustration">
     <div className="visual-glow"/><div className="visual-orbit orbit-one"/><div className="visual-orbit orbit-two"/>
-    <div className="sl-sport-float sl-tennis" aria-label="Tennis ball">🎾</div><div className="sl-sport-float sl-basketball" aria-label="Basketball">🏀</div><div className="sl-sport-float sl-football" aria-label="Football">⚽</div><div className="sl-sport-float sl-cricket" aria-label="Cricket">🏏</div><div className="sl-sport-float sl-badminton" aria-label="Badminton">🏸</div><div className="sl-sport-float sl-trophy" aria-label="Trophy">🏆</div>
+    <div className="sl-sport-float sl-tennis" role="img" aria-label="Tennis"><CircleDot aria-hidden="true"/></div><div className="sl-sport-float sl-basketball" role="img" aria-label="Basketball"><Dribbble aria-hidden="true"/></div><div className="sl-sport-float sl-football" role="img" aria-label="Football"><Goal aria-hidden="true"/></div><div className="sl-sport-float sl-cricket" role="img" aria-label="Cricket"><Activity aria-hidden="true"/></div><div className="sl-sport-float sl-badminton" role="img" aria-label="Badminton"><Zap aria-hidden="true"/></div><div className="sl-sport-float sl-trophy" role="img" aria-label="Trophy"><Trophy aria-hidden="true"/></div>
     <div className="visual-main-card sl-opportunity-card"><div className="visual-card-top"><span className="live-dot"/> YOUR SPORT. YOUR PEOPLE.</div><div className="visual-ball">✦</div><h2>Opportunity<br/>is a team sport.</h2><p>Make connections that move you forward.</p><div className="visual-tags"><span>Career growth</span><span>Community</span><span>Performance</span></div></div>
     <div className="float-card float-network"><span className="float-icon"><Users size={18}/></span><span><b>Find your people</b><small>Grow your network</small></span><ArrowUpRight size={17}/></div>
     <div className="float-card float-jobs"><span className="float-icon orange-icon"><BriefcaseBusiness size={18}/></span><span><b>New opportunities</b><small>Made for your next move</small></span></div>
