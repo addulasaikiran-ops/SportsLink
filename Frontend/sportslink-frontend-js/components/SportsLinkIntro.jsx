@@ -73,6 +73,8 @@ export default function SportsLinkIntro() {
   const skipButtonRef = useRef(null);
   const previousFocusRef = useRef(null);
   const publicSiteRef = useRef(null);
+  const previousOverflowRef = useRef("");
+  const previousPaddingRightRef = useRef("");
   const frameRef = useRef(0);
   const startRef = useRef(0);
   const doneRef = useRef(false);
@@ -90,8 +92,8 @@ export default function SportsLinkIntro() {
       setVisible(false);
     }
     document.documentElement.classList.remove("sl-intro-lock");
-    document.body.style.overflow = "";
-    document.body.style.paddingRight = "";
+    document.body.style.overflow = previousOverflowRef.current;
+    document.body.style.paddingRight = previousPaddingRightRef.current;
     if (publicSiteRef.current) {
       publicSiteRef.current.removeAttribute("aria-hidden");
       publicSiteRef.current.inert = false;
@@ -116,8 +118,8 @@ export default function SportsLinkIntro() {
       publicSiteRef.current.setAttribute("aria-hidden", "true");
       publicSiteRef.current.inert = true;
     }
-    const previousOverflow = document.body.style.overflow;
-    const previousPaddingRight = document.body.style.paddingRight;
+    previousOverflowRef.current = document.body.style.overflow;
+    previousPaddingRightRef.current = document.body.style.paddingRight;
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.documentElement.classList.add("sl-intro-lock");
     document.body.style.overflow = "hidden";
@@ -173,6 +175,7 @@ export default function SportsLinkIntro() {
         overlayRef.current.style.setProperty("--sl-ball-scale", String(scale));
         overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));
         overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
+        overlayRef.current.style.setProperty("--sl-trail-opacity", String(progress * .48));
         overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
       }
       if (elapsed < INTRO_DURATION) frameRef.current = requestAnimationFrame(tick);
