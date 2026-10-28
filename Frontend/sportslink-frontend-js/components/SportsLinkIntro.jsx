@@ -21,7 +21,6 @@ export default function SportsLinkIntro() {
     let exitTween = null;
     let decodeTimer = 0;
     let failSafe = 0;
-    let skipTapTimer = 0;
     const content = document.querySelector(".public-site");
     const headerLogo = document.querySelector(".public-header .public-brand .sportslink-logo");
     const hero = document.querySelector(".sl-landing .landing-hero");
@@ -68,7 +67,6 @@ export default function SportsLinkIntro() {
       finished = true;
       window.clearTimeout(failSafe);
       window.clearTimeout(decodeTimer);
-      window.clearTimeout(skipTapTimer);
       timeline?.kill();
       exitTween?.kill();
       exitTween = gsap.to(overlay, {
@@ -121,22 +119,22 @@ export default function SportsLinkIntro() {
         ease: "power3.out"
       }, 0.08);
 
-      timeline.add(() => {
-        if (finished || !headerLogo) return;
+      if (headerLogo) {
         const from = mark.getBoundingClientRect();
         const to = headerLogo.getBoundingClientRect();
-        if (!from.width || !from.height || !to.width || !to.height) return;
-        const dx = to.left + to.width / 2 - (from.left + from.width / 2);
-        const dy = to.top + to.height / 2 - (from.top + from.height / 2);
-        timeline.to(mark, {
-          x: dx,
-          y: dy,
-          scaleX: to.width / from.width,
-          scaleY: to.height / from.height,
-          duration: 0.5,
-          ease: "power3.inOut"
-        }, timeline.time());
-      }, 1.08);
+        if (from.width && from.height && to.width && to.height) {
+          const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+          const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+          timeline.to(mark, {
+            x: dx,
+            y: dy,
+            scaleX: to.width / from.width,
+            scaleY: to.height / from.height,
+            duration: 0.5,
+            ease: "power3.inOut"
+          }, 1.08);
+        }
+      }
 
       heroTargets.forEach((element, index) => {
         timeline.fromTo(element,
