@@ -1,21 +1,12 @@
 .sl-intro-lock{scroll-behavior:auto!important}
-#sportslink-intro-overlay[hidden],html:not([data-intro="play"]) #sportslink-intro-overlay{display:none!important}html[data-intro="play"]{overflow:hidden}
-.sl-intro-overlay{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 42%,#0a2252 0%,#07152d 50%,#050d22 100%);color:#f4f8fc;touch-action:manipulation}
-html[data-theme="light"] .sl-intro-overlay{background:radial-gradient(ellipse at 50% 50%,#fff 0%,#fbfcff 72%,#f0f4fa 100%);color:#102d50}
-.sl-intro-stadium{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,13,34,.1),rgba(5,13,34,.8)),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 55%/cover;opacity:.09}
-html[data-theme="light"] .sl-intro-stadium{display:none}
-.sl-intro-overlay:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.sl-intro-line-art{position:absolute;width:min(82vw,1120px);height:auto;overflow:visible}
-.sl-intro-link-line{transform-box:fill-box;transform-origin:left center;transform:translateX(-50%) scaleX(0);opacity:.4}
-.sl-intro-frame{stroke-dasharray:500;stroke-dashoffset:500}
-.sl-intro-logo-wrap{position:relative;z-index:2;width:min(56vw,640px);min-width:280px;opacity:0;transform:translateY(10px) scale(.985);will-change:transform,opacity}
-.sl-intro-logo-wrap img{display:block;width:100%;height:auto}
-.sl-intro-sweep{position:absolute;z-index:3;inset:0;pointer-events:none;opacity:0;transform:translateX(-120%);background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.4) 49%,rgba(112,213,34,.14) 52%,transparent 59%);mix-blend-mode:screen;will-change:transform,opacity}
-.sl-intro-skip{position:absolute;z-index:5;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));min-width:76px;min-height:44px;padding:0 16px;border:1px solid rgba(143,180,255,.36);border-radius:999px;background:rgba(5,13,34,.6);color:#f4f8fc;font:700 12px/1 system-ui,sans-serif;letter-spacing:.02em;cursor:pointer}
-html[data-theme="light"] .sl-intro-skip{background:rgba(255,255,255,.85);color:#102d50;border-color:rgba(16,45,80,.2)}
+#sportslink-intro-overlay[hidden],html:not([data-intro="play"]) #sportslink-intro-overlay{display:none!important}
+.sl-intro-overlay{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;isolation:isolate;background:#fff;color:#102d50;touch-action:manipulation}
+.sl-intro-logo-wrap{position:relative;z-index:2;width:min(88vw,1120px);opacity:0;transform:translateY(10px) scale(.985);will-change:transform,opacity}
+.sl-intro-logo-wrap img{display:block;width:100%;height:auto;object-fit:contain}
+.sl-intro-skip{position:absolute;z-index:5;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));min-width:76px;min-height:44px;padding:0 16px;border:1px solid rgba(16,45,80,.22);border-radius:999px;background:rgba(255,255,255,.94);color:#102d50;font:700 12px/1 system-ui,sans-serif;letter-spacing:.02em;cursor:pointer}
 .sl-intro-skip span{margin-left:5px;color:#70D522}
 .sl-intro-skip:focus-visible{outline:3px solid #70D522;outline-offset:3px}
 .sl-intro-is-exiting{opacity:0;pointer-events:none;transition:opacity .18s ease}
-@media(max-width:760px){.sl-intro-logo-wrap{width:78vw;min-width:0}.sl-intro-line-art{width:96vw}.sl-intro-skip{right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px))}}
-@media(orientation:landscape) and (max-height:500px){.sl-intro-logo-wrap{width:min(60vh,640px)}}
-@media(prefers-reduced-motion:reduce){.sl-intro-stadium{display:none}}
+@media(max-width:760px){.sl-intro-logo-wrap{width:94vw}.sl-intro-skip{right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px))}}
+@media(orientation:landscape) and (max-height:500px){.sl-intro-logo-wrap{width:min(80vw,90vh,1120px)}}
+@media(prefers-reduced-motion:reduce){.sl-intro-logo-wrap{will-change:auto}}
