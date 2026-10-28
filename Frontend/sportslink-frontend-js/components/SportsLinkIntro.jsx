@@ -89,19 +89,10 @@ export default function SportsLinkIntro() {
         return;
       }
 
-      animate(overlay.querySelector(".sl-intro-link-line"), [
-        { transform: "translateX(-50%) scaleX(0)", opacity: 0.4 },
-        { transform: "translateX(-50%) scaleX(1)", opacity: 1 }
-      ], { duration: 680, delay: 120, easing: "cubic-bezier(.16,1,.3,1)" });
       animate(mark, [
         { opacity: 0, transform: "translateY(10px) scale(.985)" },
         { opacity: 1, transform: "translateY(0) scale(1)" }
       ], { duration: 480, delay: 420, easing: "cubic-bezier(.16,1,.3,1)" });
-      animate(overlay.querySelector(".sl-intro-sweep"), [
-        { opacity: 0, transform: "translateX(-120%)" },
-        { opacity: .55, offset: .3, transform: "translateX(-15%)" },
-        { opacity: 0, transform: "translateX(120%)" }
-      ], { duration: 520, delay: 1000, easing: "ease-in-out" });
 
       await new Promise((resolve) => schedule(resolve, 1320));
       if (cancelled || finished) return;
@@ -176,15 +167,9 @@ export default function SportsLinkIntro() {
 
   return (
     <div id="sportslink-intro-overlay" ref={overlayRef} className="sl-intro-overlay" role="status" aria-label="SPORTSLINK brand introduction">
-      <div className="sl-intro-stadium" aria-hidden="true" />
-      <svg className="sl-intro-line-art" viewBox="0 0 1000 220" aria-hidden="true">
-        <defs><linearGradient id="sl-intro-link-gradient"><stop stopColor="#2F6BFF"/><stop offset=".55" stopColor="#8FB4FF"/><stop offset="1" stopColor="#70D522"/></linearGradient></defs>
-        <path className="sl-intro-link-line" d="M55 110H945" fill="none" stroke="url(#sl-intro-link-gradient)" strokeWidth="4" strokeLinecap="round"/>
-      </svg>
       <div className="sl-intro-logo-wrap" ref={markRef}>
-        <img src="/sportslink-intro-mark.svg" width="1120" height="240" alt="SPORTSLINK" fetchPriority="high" />
+        <img src="/sportslink_project_brief_final.png" width="1568" height="523" alt="SPORTSLINK" fetchPriority="high" />
       </div>
-      <div className="sl-intro-sweep" aria-hidden="true" />
       <button ref={skipRef} type="button" className="sl-intro-skip" aria-label="Skip SPORTSLINK introduction">Skip <span aria-hidden="true">↗</span></button>
     </div>
   );
