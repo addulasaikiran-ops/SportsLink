@@ -132,11 +132,12 @@ export default function SportsLinkIntro() {
       // than expected, its 1.2s timeout releases this visual-reveal checkpoint.
       decodeGate.then(() => {
         if (finished || !timeline) return;
+        const revealAt = Math.max(1.2, timeline.time() + 0.01);
         heroTargets.forEach((element, index) => {
           timeline.fromTo(element,
             { autoAlpha: 0, y: 18 },
             { autoAlpha: 1, y: 0, duration: 0.34, ease: "power3.out", immediateRender: false },
-            1.2 + index * 0.055
+            revealAt + index * 0.055
           );
         });
       });
