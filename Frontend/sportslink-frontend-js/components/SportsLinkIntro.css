@@ -1,5 +1,5 @@
 .sl-intro-lock{scroll-behavior:auto!important}
-#sportslink-intro-overlay[hidden],html[data-intro="skip"] #sportslink-intro-overlay{display:none!important}
+#sportslink-intro-overlay[hidden],html:not([data-intro="play"]) #sportslink-intro-overlay{display:none!important}html[data-intro="play"]{overflow:hidden}
 .sl-intro-overlay{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 42%,#0a2252 0%,#07152d 50%,#050d22 100%);color:#f4f8fc;touch-action:manipulation}
 html[data-theme="light"] .sl-intro-overlay{background:radial-gradient(ellipse at 50% 50%,#fff 0%,#fbfcff 72%,#f0f4fa 100%);color:#102d50}
 .sl-intro-stadium{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,13,34,.1),rgba(5,13,34,.8)),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 55%/cover;opacity:.09}
