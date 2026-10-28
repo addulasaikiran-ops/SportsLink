@@ -109,7 +109,7 @@ export default function SportsLinkIntro() {
     failSafe = window.setTimeout(cleanup, 4000);
 
     const heroImage = new Image();
-    heroImage.src = "/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png";
+    heroImage.src = "/sportslink-stadium.webp";
     const decodeGate = new Promise((resolve) => {
       decodeTimer = window.setTimeout(resolve, 1200);
       if (typeof heroImage.decode === "function") {
