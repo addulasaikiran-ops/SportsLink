@@ -1,5 +1,6 @@
  "use client";
 import "./landing.css";
+import SportsLinkIntro from "@/components/SportsLinkIntro";
 import Link from "next/link";
 import Script from "next/script";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,7 @@ export function LandingPage() {
   setSceneTilt({x:x*10,y:y*-10});
   setCursor({x:(event.clientX-rect.left)/rect.width*100,y:(event.clientY-rect.top)/rect.height*100});
  }
- return <PublicLayout><main className="sl-landing">
+ return <><SportsLinkIntro /><PublicLayout><main className="sl-landing">
   <section className="landing-hero sl-hero">
    <div className="sl-network-canvas" aria-hidden="true"><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/></div>
    <div className="landing-hero-copy sl-hero-copy"><div className="public-eyebrow"><span className="eyebrow-pulse"/> THE PROFESSIONAL NETWORK FOR SPORT</div>
@@ -69,7 +70,7 @@ export function LandingPage() {
   </section>
   <section className="landing-features sl-feature-section" id="features"><div className="section-intro"><p className="public-eyebrow">MORE THAN A PROFILE</p><h2>Everything to help<br/>you <span>move forward.</span></h2><p>One connected space to grow your career, discover possibilities, and build relationships that matter.</p></div><div className="feature-grid"><article className="feature-card feature-blue sl-feature-tilt"><span className="feature-icon"><Users/></span><small>01 / NETWORK</small><h3>Connections that count.</h3><p>Connect with athletes, coaches, recruiters, and professionals who understand your world.</p><Link href="/signup">Build your network <ArrowRight size={15}/></Link></article><article className="feature-card feature-green sl-feature-tilt"><span className="feature-icon"><Trophy/></span><small>02 / OPPORTUNITY</small><h3>Your next move, closer.</h3><p>Explore roles, internships, collaborations, and new pathways across the sports industry.</p><Link href="/signup">Explore possibilities <ArrowRight size={15}/></Link></article><article className="feature-card feature-orange sl-feature-tilt"><span className="feature-icon"><HeartHandshake/></span><small>03 / COMMUNITY</small><h3>Move forward together.</h3><p>Share your journey, learn from peers, and find the support to keep growing.</p><Link href="/about">Our mission <ArrowRight size={15}/></Link></article></div></section>
   <section className="landing-cta sl-final-cta"><div><p className="public-eyebrow">YOUR SPORTING JOURNEY, CONNECTED</p><h2>Make your next move<br/>a team effort.</h2><p>Start with a profile. Leave room for what's possible.</p></div><Link href="/signup" className="button landing-primary">Join SPORTSLINK <ArrowUpRight size={18}/></Link></section>
- </main></PublicLayout>;
+ </main></PublicLayout></>;
 }
 
 function AuthLayout({mode,children}) {
