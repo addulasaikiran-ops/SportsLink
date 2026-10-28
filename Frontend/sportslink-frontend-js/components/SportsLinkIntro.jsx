@@ -148,8 +148,13 @@ export default function SportsLinkIntro() {
       window.removeEventListener("keydown", handleKey);
       cancelAnimationFrame(frameRef.current);
       document.documentElement.classList.remove("sl-intro-lock");
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
+      document.body.style.overflow = previousOverflowRef.current;
+      document.body.style.paddingRight = previousPaddingRightRef.current;
+      if (publicSiteRef.current) {
+        publicSiteRef.current.removeAttribute("aria-hidden");
+        publicSiteRef.current.inert = false;
+        publicSiteRef.current = null;
+      }
     };
   }, [finish]);
 
