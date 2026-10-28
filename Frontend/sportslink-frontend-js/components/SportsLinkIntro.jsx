@@ -127,9 +127,9 @@ export default function SportsLinkIntro() {
         animate(element, [
           { opacity: 0, transform: "translateY(18px)" },
           { opacity: 1, transform: "translateY(0)" }
-        ], { duration: 360, delay: 1750 + index * 65, easing: "cubic-bezier(.16,1,.3,1)" });
+        ], { duration: 360, delay: 100 + index * 65, easing: "cubic-bezier(.16,1,.3,1)" });
       });
-      window.setTimeout(cleanup, 2450);
+      window.setTimeout(cleanup, 850);
     };
 
     const onKey = (event) => {
