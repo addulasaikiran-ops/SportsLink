@@ -54,11 +54,22 @@ function GlassFootball() {
       </defs>
       <circle cx="70" cy="74" r="61" fill="#020b18" opacity=".24" />
       <circle cx="70" cy="70" r="62" fill="url(#sl-ball-glass)" stroke="url(#sl-ball-rim)" strokeWidth="2.5" />
+      <g className="sl-intro-lens" clipPath="url(#sl-ball-clip)">
+        <svg x="-144" y="20" width="430" height="102" viewBox="0 0 760 180" preserveAspectRatio="none" overflow="hidden">
+          <g fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontStyle="italic" letterSpacing="-8">
+            <text x="18" y="126" fontSize="122" fill="#102D50" fillOpacity=".72">SPORTS</text>
+            <text x="407" y="126" fontSize="122" fill="#70D522" fillOpacity=".9">LINK</text>
+          </g>
+        </svg>
+        <path d="M7 70 Q70 38 133 69" fill="none" stroke="#70D522" strokeWidth="2" strokeOpacity=".62" />
+        <path d="M18 91 Q68 115 120 86" fill="none" stroke="#fff" strokeWidth="1.5" strokeOpacity=".75" />
+      </g>
       <g className="sl-intro-ball-seams" clipPath="url(#sl-ball-clip)" fill="none" stroke="#fff" strokeOpacity=".8" strokeWidth="2">
         <path d="M70 8 91 23 84 47 59 48 47 27Z" fill="#fff" fillOpacity=".15" />
         <path d="m8 54 24-9 15 18-8 24-25 5M91 23l26 12 15 27-19 13-29-8-16-19M39 87l24 8 8 25-18 18M84 47l-7 20 18 22-8 31M47 27 32 45M62 95l22-28M38 87l-5 25 20 26M112 75l7 24-22 18" />
       </g>
-      <ellipse cx="49" cy="34" rx="23" ry="11" fill="#fff" opacity=".54" transform="rotate(-35 49 34)" />
+      <ellipse cx="49" cy="34" rx="23" ry="11" fill="#fff" opacity=".64" transform="rotate(-35 49 34)" />
+      <path d="M19 78 Q44 98 65 121" fill="none" stroke="#70D522" strokeWidth="2" strokeLinecap="round" opacity=".46" />
       <path d="M23 51C37 20 70 6 98 20" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity=".75" />
       <circle cx="104" cy="41" r="5" fill="#fff" opacity=".75" />
     </svg>
@@ -217,6 +228,7 @@ export default function SportsLinkIntro() {
     >
       <div className="sl-intro-grain" aria-hidden="true" />
       <div className="sl-intro-logo-wrap"><SportLinkWordmark /></div>
+      {!reducedMotion && <div className="sl-intro-caustic" aria-hidden="true" />}
       {!reducedMotion && <div className="sl-intro-trail" aria-hidden="true" />}
       {!reducedMotion && <div className="sl-intro-ball"><GlassFootball /></div>}
       <button
