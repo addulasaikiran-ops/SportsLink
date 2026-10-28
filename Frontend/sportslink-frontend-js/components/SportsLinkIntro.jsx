@@ -69,7 +69,7 @@ export default function SportsLinkIntro() {
   const [visible, setVisible] = useState(false);
   const [skipVisible, setSkipVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const overlayRef = useRef(null);
+  const overlayRef = useRef(null);\n  const skipButtonRef = useRef(null);\n  const previousFocusRef = useRef(null);\n  const publicSiteRef = useRef(null);
   const frameRef = useRef(0);
   const startRef = useRef(0);
   const doneRef = useRef(false);
@@ -100,7 +100,7 @@ export default function SportsLinkIntro() {
     setReducedMotion(motionPreference);
     setVisible(true);
     try { window.sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
-    const previousOverflow = document.body.style.overflow;
+    previousFocusRef.current = document.activeElement;\n    publicSiteRef.current = document.querySelector(".public-site");\n    if (publicSiteRef.current) {\n      publicSiteRef.current.setAttribute("aria-hidden", "true");\n      publicSiteRef.current.inert = true;\n    }\n    const previousOverflow = document.body.style.overflow;
     const previousPaddingRight = document.body.style.paddingRight;
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.documentElement.classList.add("sl-intro-lock");
@@ -155,7 +155,7 @@ export default function SportsLinkIntro() {
         overlayRef.current.style.setProperty("--sl-ball-y", arc + "px");
         overlayRef.current.style.setProperty("--sl-ball-rotation", rotation + "deg");
         overlayRef.current.style.setProperty("--sl-ball-scale", String(scale));
-        overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));
+        overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));\n        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
       }
       if (elapsed < INTRO_DURATION) frameRef.current = requestAnimationFrame(tick);
     };
