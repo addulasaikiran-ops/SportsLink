@@ -80,7 +80,7 @@
    SPORTSLINK cinematic landing system — responsive + motion-safe
    ========================================================== */
 .sl-landing{
-  --sl-bg:#050d22;--sl-bg2:#0a2252;--sl-blue:#2f6bff;--sl-sky:#8fb4ff;--sl-gold:#ffc93c;--sl-green:#2bd48a;
+  --sl-bg:#050d22;--sl-bg2:#0a2252;--sl-blue:#2f6bff;--sl-sky:#8fb4ff;--sl-gold:#ffc93c;--sl-green:#2bd48a;--sl-brand-navy:#12305a;--sl-brand-lime:#70d522;
   position:relative;isolation:isolate;overflow:hidden;padding:24px clamp(16px,4vw,64px) 70px;
   color:#f4f7ff;background:linear-gradient(145deg,rgba(5,13,34,.94),rgba(7,24,59,.94) 55%,rgba(10,34,82,.91));
   font-family:'Plus Jakarta Sans','DM Sans',sans-serif;
@@ -335,3 +335,8 @@
   .google-auth-button{transition:none}
   .google-auth-button:hover{transform:none}
 }
+
+/* Brand bridge: carry the logo lime into the hero without overpowering the blue system. */
+.sl-landing .landing-hero h1 span{color:var(--sl-brand-lime);text-shadow:0 0 28px rgba(112,213,34,.18)}
+.sl-landing .eyebrow-pulse{background:var(--sl-brand-lime);box-shadow:0 0 12px rgba(112,213,34,.42)}
+.sl-landing .landing-primary:hover,.sl-landing .public-nav-cta:hover{border-color:rgba(112,213,34,.48)}
