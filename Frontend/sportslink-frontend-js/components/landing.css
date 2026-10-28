@@ -11,7 +11,7 @@
   background-image:
     linear-gradient(90deg, rgba(3,12,27,.84) 0%, rgba(4,15,32,.65) 43%, rgba(5,16,31,.18) 100%),
     linear-gradient(0deg, rgba(2,10,23,.48), transparent 55%),
-    url("/sportslink-stadium.webp");
+    image-set(url("/sportslink-stadium.avif") type("image/avif"),url("/sportslink-stadium.webp") type("image/webp"));
   background-position:center, center, center 52%;
   background-size:cover, cover, cover;
   box-shadow:0 28px 90px rgba(3,12,28,.22), inset 0 1px 0 rgba(255,255,255,.16);
@@ -80,7 +80,7 @@
    SPORTSLINK cinematic landing system — responsive + motion-safe
    ========================================================== */
 .sl-landing{
-  --sl-bg:var(--sl-brand-navy-deep);--sl-bg2:var(--sl-brand-navy-mid);--sl-blue:var(--sl-brand-blue);--sl-sky:var(--sl-brand-lime);--sl-gold:var(--sl-brand-lime);--sl-green:var(--sl-brand-lime);--sl-brand-navy:var(--sl-brand-navy);--sl-brand-lime:var(--sl-brand-lime);
+  --sl-bg:var(--sl-brand-navy-deep);--sl-bg2:var(--sl-brand-navy-mid);--sl-blue:var(--sl-brand-blue);--sl-sky:var(--sl-brand-lime);--sl-gold:var(--sl-brand-lime);--sl-green:var(--sl-brand-lime);--sl-brand-navy:#12305a;--sl-brand-lime:#70d522;
   position:relative;isolation:isolate;overflow:hidden;padding:24px clamp(16px,4vw,64px) 70px;
   color:#f4f7ff;background:linear-gradient(145deg,rgba(5,13,34,.94),rgba(7,24,59,.94) 55%,rgba(10,34,82,.91));
   font-family:'Plus Jakarta Sans','DM Sans',sans-serif;
