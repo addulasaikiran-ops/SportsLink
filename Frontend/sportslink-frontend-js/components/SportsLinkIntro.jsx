@@ -179,8 +179,6 @@ export default function SportsLinkIntro() {
       <svg className="sl-intro-line-art" viewBox="0 0 1000 220" aria-hidden="true">
         <defs><linearGradient id="sl-intro-link-gradient"><stop stopColor="#2F6BFF"/><stop offset=".55" stopColor="#8FB4FF"/><stop offset="1" stopColor="#70D522"/></linearGradient></defs>
         <path className="sl-intro-link-line" d="M55 110H945" fill="none" stroke="url(#sl-intro-link-gradient)" strokeWidth="4" strokeLinecap="round"/>
-        <rect className="sl-intro-frame" x="15" y="24" width="145" height="172" rx="25" fill="#07152D" stroke="#4F8CFF" strokeWidth="8" strokeDasharray="500" strokeDashoffset="500"/>
-        <rect className="sl-intro-frame" x="840" y="24" width="145" height="172" rx="25" fill="#071A24" stroke="#70D522" strokeWidth="8" strokeDasharray="500" strokeDashoffset="500"/>
       </svg>
       <div className="sl-intro-logo-wrap" ref={markRef}>
         <img src="/sportslink-intro-mark.svg" width="1120" height="240" alt="SPORTSLINK" fetchPriority="high" />
