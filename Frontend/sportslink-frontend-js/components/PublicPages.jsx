@@ -37,9 +37,9 @@ export function LandingPage() {
  const [shared,setShared]=useState([]);
  const tiltFrameRef=useRef(0);
  const visibleOpportunities=[
-  {id:1,type:"Roles",icon:"🏃‍♂️",label:"FULL TIME",title:"Performance Analyst",company:"Velocity Performance",location:"Hybrid · London",tags:["Analysis","Football"],tone:"blue"},
-  {id:2,type:"Internships",icon:"🎓",label:"INTERNSHIP",title:"Sports Marketing Intern",company:"Northstar Athletics",location:"On-site · Bengaluru",tags:["Marketing","Growth"],tone:"gold"},
-  {id:3,type:"Collaborations",icon:"🤝",label:"COLLABORATION",title:"Creator Partnership",company:"Playmaker Studio",location:"Remote · Global",tags:["Content","Community"],tone:"green"}
+  {id:1,type:"Roles",icon:"running",label:"FULL TIME",title:"Performance Analyst",company:"Velocity Performance",location:"Hybrid · London",tags:["Analysis","Football"],tone:"blue"},
+  {id:2,type:"Internships",icon:"graduation-cap",label:"INTERNSHIP",title:"Sports Marketing Intern",company:"Northstar Athletics",location:"On-site · Bengaluru",tags:["Marketing","Growth"],tone:"gold"},
+  {id:3,type:"Collaborations",icon:"handshake",label:"COLLABORATION",title:"Creator Partnership",company:"Playmaker Studio",location:"Remote · Global",tags:["Content","Community"],tone:"green"}
  ];
  const filteredOpportunities=visibleOpportunities.filter(item=>opportunityFilter==="All"||item.type===opportunityFilter);
  function tiltScene(event){
