@@ -59,7 +59,7 @@ export function LandingPage() {
   <section className="landing-hero sl-hero">
    <div className="sl-network-canvas" aria-hidden="true"><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/></div>
    <div className="landing-hero-copy sl-hero-copy"><div className="public-eyebrow"><span className="eyebrow-pulse"/> THE PROFESSIONAL NETWORK FOR SPORT</div>
-    <h1>Your next chapter<br/>in sport <span>starts here.</span></h1>
+    <h1 className="sl-hero-heading"><span className="sl-heading-line"><span className="sl-heading-line-inner">Your next chapter</span></span><span className="sl-heading-line"><span className="sl-heading-line-inner">in sport <span>starts here.</span></span></span></h1>
     <p className="landing-lede">Meet the people, discover the opportunities, and build the career you want in the world of sport.</p>
     <div className="landing-actions"><Link href="/signup" className="button landing-primary">Create your free profile <ArrowRight size={17}/></Link><Link href="/login" className="landing-secondary">Already a member? Log in</Link></div>
     <div className="landing-proof"><span className="proof-avatars"><Users size={24}/></span><span><b>A community built around sport</b><small>Athletes · Coaches · Clubs · Creators</small></span></div>
