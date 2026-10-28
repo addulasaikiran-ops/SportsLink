@@ -5,10 +5,10 @@ export default function manifest() {
     description: "Your world of sport, connected.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f5f7fb",
-    theme_color: "#2563eb",
+    background_color: "#050d22",
+    theme_color: "#12305a",
     icons: [
-      { src: "/Document%20Handshake%20Partnership%20Icon.png", sizes: "any", type: "image/png", purpose: "any" }
+      { src: "/sportslink-icon.png", sizes: "any", type: "image/png", purpose: "any" }
     ]
   };
 }
