@@ -15,7 +15,7 @@ html[data-theme="light"] .sl-intro-stadium{display:none}
 html[data-theme="light"] .sl-intro-skip{background:rgba(255,255,255,.85);color:#102d50;border-color:rgba(16,45,80,.2)}
 .sl-intro-skip span{margin-left:5px;color:#70D522}
 .sl-intro-skip:focus-visible{outline:3px solid #70D522;outline-offset:3px}
-.sl-intro-is-exiting{pointer-events:none}
+.sl-intro-is-exiting{opacity:0;pointer-events:none;transition:opacity .18s ease}
 @media(max-width:760px){.sl-intro-logo-wrap{width:78vw;min-width:0}.sl-intro-line-art{width:96vw}.sl-intro-skip{right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px))}}
 @media(orientation:landscape) and (max-height:500px){.sl-intro-logo-wrap{width:min(60vh,640px)}}
 @media(prefers-reduced-motion:reduce){.sl-intro-stadium{display:none}}
