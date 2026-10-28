@@ -69,6 +69,7 @@ export default function SportsLinkIntro() {
   const [visible, setVisible] = useState(false);
   const [skipVisible, setSkipVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [lowPower, setLowPower] = useState(false);
   const overlayRef = useRef(null);
   const skipButtonRef = useRef(null);
   const previousFocusRef = useRef(null);
@@ -110,6 +111,8 @@ export default function SportsLinkIntro() {
       motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch {}
     setReducedMotion(motionPreference);
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    setLowPower((navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4) || Boolean(connection?.saveData));
     setVisible(true);
     try { window.sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
     previousFocusRef.current = document.activeElement;
@@ -161,6 +164,7 @@ export default function SportsLinkIntro() {
   useEffect(() => {
     if (!visible || reducedMotion) return;
     let cancelled = false;
+    startRef.current = 0;
     const tick = (now) => {
       if (cancelled || doneRef.current) return;
       if (!startRef.current) startRef.current = now;
@@ -179,9 +183,8 @@ export default function SportsLinkIntro() {
         overlayRef.current.style.setProperty("--sl-ball-rotation", rotation + "deg");
         overlayRef.current.style.setProperty("--sl-ball-scale", String(scale));
         overlayRef.current.style.setProperty("--sl-ball-progress", String(progress));
-        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
+        overlayRef.current.style.setProperty("--sl-trail-scale", String(progress));
         overlayRef.current.style.setProperty("--sl-trail-opacity", String(progress * .48));
-        overlayRef.current.style.setProperty("--sl-trail-width", (window.innerWidth * progress) + "px");
       }
       if (elapsed < INTRO_DURATION) frameRef.current = requestAnimationFrame(tick);
     };
@@ -207,7 +210,7 @@ export default function SportsLinkIntro() {
     <div
       id="sportslink-intro-overlay"
       ref={overlayRef}
-      className={"sl-intro-overlay" + (reducedMotion ? " sl-intro-reduced" : "")}
+      className={"sl-intro-overlay" + (reducedMotion ? " sl-intro-reduced" : "") + (lowPower ? " sl-intro-low-power" : "")}
       role="dialog"
       aria-label="SPORTSLINK introduction"
       aria-modal="true"
