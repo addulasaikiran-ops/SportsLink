@@ -340,3 +340,10 @@
 .sl-landing .landing-hero h1 span{color:var(--sl-brand-lime);text-shadow:0 0 28px rgba(112,213,34,.18)}
 .sl-landing .eyebrow-pulse{background:var(--sl-brand-lime);box-shadow:0 0 12px rgba(112,213,34,.42)}
 .sl-landing .landing-primary:hover,.sl-landing .public-nav-cta:hover{border-color:rgba(112,213,34,.48)}
+
+
+/* Cinematic intro: each hero heading line is clipped independently for a true mask reveal. */
+.sl-landing .landing-hero h1 .sl-heading-line{display:block;overflow:hidden;color:inherit;text-shadow:none}
+.sl-landing .landing-hero h1 .sl-heading-line-inner{display:block;color:inherit;text-shadow:none;will-change:transform,opacity}
+.sl-landing .landing-hero h1 .sl-heading-line-inner>span{color:var(--sl-brand-lime);text-shadow:0 0 28px rgba(112,213,34,.18)}
+@media(prefers-reduced-motion:reduce){.sl-landing .landing-hero h1 .sl-heading-line-inner{will-change:auto}}
