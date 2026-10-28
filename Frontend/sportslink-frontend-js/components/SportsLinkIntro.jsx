@@ -124,6 +124,10 @@ export default function SportsLinkIntro() {
     gsap.set(headingLines, { yPercent: 110, autoAlpha: 0 });
     gsap.set(heroTargets, { autoAlpha: 0, y: 18 });
 
+    window.addEventListener("keydown", onKey);
+    overlay.addEventListener("pointerdown", onPointer);
+    skipRef.current?.addEventListener("click", cleanup);
+
     if (connection?.saveData) {
       cleanup();
     } else if (reduced) {
@@ -174,10 +178,6 @@ export default function SportsLinkIntro() {
       }, 1.82);
       timeline.to(overlay, { autoAlpha: 0, duration: 0.01 }, 2.36);
     }
-
-    window.addEventListener("keydown", onKey);
-    overlay.addEventListener("pointerdown", onPointer);
-    skipRef.current?.addEventListener("click", cleanup);
 
     return () => {
       finished = true;
