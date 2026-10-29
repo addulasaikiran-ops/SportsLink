@@ -4933,3 +4933,7 @@ body{
   .app-root .topbar-inner>.topbar-actions{grid-area:actions;justify-self:end}
   .app-root .global-search.global-search-mobile-open{top:calc(100% + 7px);right:10px;left:10px}
 }
+
+
+/* Clearly identify synthetic demo accounts across discovery and public profiles. */
+.demo-bot-badge{display:inline-flex;align-items:center;vertical-align:middle;margin-left:8px;padding:4px 8px;border:1px solid #b9d6ff;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:800;letter-spacing:.04em;line-height:1.2;white-space:nowrap}.profile-reference-identity .demo-bot-badge{margin-top:5px}.directory-person-card .demo-bot-badge{margin-top:4px}
