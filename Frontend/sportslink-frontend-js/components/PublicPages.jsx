@@ -171,7 +171,6 @@ export function SignupPage() {
     <h2 id="signup-title">Create your account</h2>
     <p>Your world of sport, connected.</p>
    </div>
-   {notice&&<p className="auth-success" role="status">{notice}</p>}
    {error&&<p className="auth-error" role="alert">{error}</p>}
    <button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={loading}><span className="google-auth-mark" aria-hidden="true"><svg className="google-auth-logo" viewBox="0 0 48 48" focusable="false"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11c-.5 2.5-2 4.6-4.2 6v5.1h6.8c4-3.7 6-9 6-14.8z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.8-5.1c-1.9 1.3-4.3 2.1-6.7 2.1-5.2 0-9.6-3.5-11.2-8.2H5.8v5.2C9.2 39.6 16.1 44 24 44z"/><path fill="#FBBC05" d="M12.8 28c-.4-1.2-.7-2.6-.7-4s.2-2.8.7-4v-5.2H5.8C4.6 17.3 4 20.6 4 24s.6 6.7 1.8 9.2L12.8 28z"/><path fill="#EA4335" d="M24 11.8c3 0 5.7 1 7.8 3l5.8-5.8C34.1 5.7 29.5 4 24 4 16.1 4 9.2 8.4 5.8 14.8l7 5.2c1.6-4.7 6-8.2 11.2-8.2z"/></svg></span><span className="google-auth-label">{loading?"Connecting to Google…":"Sign up with Google"}</span></button>
    <div className="auth-divider"><span>or sign up with email</span></div>
@@ -202,6 +201,7 @@ export function SignupPage() {
     <span>I agree to create a SPORTSLINK account, confirm my information is accurate, and acknowledge the <Link href="/privacy" target="_blank" rel="noreferrer">Privacy Policy</Link>.</span>
    </label>
     <button className="button auth-submit" type="submit" disabled={loading} aria-busy={loading}>{loading?"Creating account…":"Create account"} {!loading&&<ArrowRight size={17}/>}</button>
+    {notice&&<p className="auth-success signup-submit-notice" role="status">{notice}</p>}
     <p className="auth-demo-note"><ShieldCheck size={15}/> Protected with signup validation, automated-form traps and Supabase Auth rate limits. Never share your password.</p>
    </form>
    <div className="auth-switch signup-switch">Already a member? <Link href="/login">Log in</Link></div>
