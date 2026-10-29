@@ -1,4 +1,5 @@
 import "./globals.css";
+import "../components/invite-members.css";
 import { AppShell } from "@/components/AppShell";
 import { OfflineSupport } from "@/components/OfflineSupport";
 import Script from "next/script";
