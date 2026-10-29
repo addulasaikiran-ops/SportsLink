@@ -8,7 +8,7 @@ export default function manifest() {
     background_color: "#050d22",
     theme_color: "#12305a",
     icons: [
-      { src: "/sportslink-icon.png", sizes: "any", type: "image/png", purpose: "any" }
+      { src: "/Document%20Handshake%20Partnership%20Icon.png", sizes: "any", type: "image/png", purpose: "any" }
     ]
   };
 }
