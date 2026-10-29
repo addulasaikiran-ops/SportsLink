@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Copy, Mail, ShieldCheck, Users } from "lucide-react";
 
@@ -12,7 +12,7 @@ export function InviteMembersPage() {
   const [copied, setCopied] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  useMemo(() => { if (typeof window !== "undefined") setOrigin(window.location.origin); return null; }, []);
+  useEffect(() => { setOrigin(window.location.origin); }, []);
   const signupUrl = origin ? origin + SIGNUP_PATH : SIGNUP_PATH;
   const validEmails = [...new Set(emails.split(/[\s,;]+/).map(v => v.trim().toLowerCase()).filter(Boolean))];
   const invalidEmails = validEmails.filter(v => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
