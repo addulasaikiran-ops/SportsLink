@@ -115,6 +115,8 @@ function getErrorMessage(error, fallback) {
 export function HomeFeed() {
   const [supabase, setSupabase] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [feedMode, setFeedMode] = useState("for-you");
+  const [followingIds, setFollowingIds] = useState([]);
   const [draft, setDraft] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -213,6 +215,11 @@ export function HomeFeed() {
       if (error || !data.user || !active) return;
 
       const user = data.user;
+      const { data: follows, error: followsError } = await client
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", user.id);
+      if (active && !followsError) setFollowingIds((follows || []).map((row) => row.following_id).filter(Boolean));
       const { data: bookmarks } = await client.from("post_bookmarks").select("post_id").eq("user_id", user.id);
       if (active && Array.isArray(bookmarks)) setSavedPostIds(bookmarks.map((item) => item.post_id));
       const { data: profile, error: profileError } = await client
@@ -556,6 +563,26 @@ export function HomeFeed() {
     }
   }
 
+  const visiblePosts = (() => {
+    if (feedMode === "following") {
+      if (!currentUser) return [];
+      const followed = new Set(followingIds);
+      return posts.filter((post) => followed.has(post.author_id));
+    }
+    if (feedMode === "trending") {
+      const now = Date.now();
+      return [...posts].sort((a, b) => {
+        const score = (post) => {
+          const ageHours = Math.max(1, (now - Date.parse(post.created_at || now)) / 3600000);
+          const engagement = (post.reactions || []).length + (post.comments || []).length * 2;
+          return engagement / Math.pow(ageHours + 2, 0.65);
+        };
+        return score(b) - score(a);
+      });
+    }
+    return posts;
+  })();
+
   async function retryFeed() {
     if (!supabase) return;
     setLoading(true);
@@ -573,9 +600,9 @@ export function HomeFeed() {
 
   return <div className="feed-page">
     <section ref={composerRef} className="composer card"><input ref={photoInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose photos"/><input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" multiple onChange={handleMediaSelection} style={{ display: "none" }} aria-label="Choose videos"/><div className="composer-top"><Avatar url={currentUser?.avatar} name={currentUser?.name || "SPORTSLINK Member"}/><textarea ref={composerTextareaRef} value={draft} onChange={event => { setDraft(event.target.value); setSubmitError(""); setNotice(""); }} placeholder="Share an update with your sports community…" aria-label="Write a community post" maxLength={5000} rows={2}/></div>{selectedMedia.length>0&&<div style={{display:"grid",gap:10,padding:"0 16px 14px"}}><strong>Preview attachments ({selectedMedia.length}/5)</strong><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10}}>{mediaPreviews.map((preview,index)=><div key={preview.url} style={{position:"relative",minWidth:0,border:"1px solid var(--border,#e2e8f0)",borderRadius:12,overflow:"hidden",background:"var(--surface-muted,#f8fafc)"}}>{preview.file.type.startsWith("video/")?<video src={preview.url} controls preload="metadata" style={{width:"100%",height:150,objectFit:"contain",display:"block",background:"#0b1220"}}/>:<img src={preview.url} alt={preview.file.name} style={{width:"100%",height:150,objectFit:"cover",display:"block"}}/>}<div style={{padding:8,display:"flex",gap:8,alignItems:"center",justifyContent:"space-between"}}><span style={{fontSize:12,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{preview.file.name}</span><button className="button button-secondary" style={{padding:"4px 8px",fontSize:12}} type="button" onClick={()=>setSelectedMedia(current=>current.filter((_,i)=>i!==index))}>Remove</button></div></div>)}</div><small>Private uploads · up to 50 MB each. Previews are local until you publish.</small></div>}{submitError&&<p className="auth-error" role="alert">{submitError}</p>}{notice&&<p className="inline-notice" role="status" aria-live="polite">{notice}</p>}<div className="composer-bottom"><span className="character-count" aria-live="polite">{draft.length}/5000</span><div className="composer-tools"><button type="button" onClick={()=>photoInputRef.current?.click()}><ImageIcon/>Photo</button><button type="button" onClick={()=>videoInputRef.current?.click()}><Video/>Video</button><button type="button" onClick={()=>router.push("/events")}><CalendarDays/>Event</button></div><button className="button button-primary" type="button" onClick={createPost} disabled={submitting}>{submitting?"Posting…":<>＋ Create post</>}</button></div></section>
-    <div className="feed-toolbar"><div><h2>Community feed</h2><p>What’s happening across your network</p></div><div className="feed-filters"><button className="filter-active" type="button">For you</button><button type="button" disabled title="Following posts are not connected yet">Following</button><button type="button" disabled title="Trending is not connected yet">Trending</button></div></div>
+    <div className="feed-toolbar"><div><h2>Community feed</h2><p>What’s happening across your network</p></div><div className="feed-filters" role="tablist" aria-label="Community feed"><button className={feedMode === "for-you" ? "filter-active" : ""} type="button" role="tab" aria-selected={feedMode === "for-you"} onClick={() => setFeedMode("for-you")}>For you</button><button className={feedMode === "following" ? "filter-active" : ""} type="button" role="tab" aria-selected={feedMode === "following"} onClick={() => setFeedMode("following")}>Following</button><button className={feedMode === "trending" ? "filter-active" : ""} type="button" role="tab" aria-selected={feedMode === "trending"} onClick={() => setFeedMode("trending")}>Trending</button></div></div>
     {feedError&&<div className="inline-notice" role="alert"><p>{feedError}</p><button className="button button-secondary" type="button" onClick={retryFeed} disabled={loading}>{loading?"Loading…":"Retry"}</button></div>}
-    {loading?<div className="empty-state card" role="status"><Activity/><h3>Loading the community feed…</h3></div>:feedError?null:posts.length===0?<div className="empty-state card"><Users/><h3>No posts yet</h3><p>Be the first to share an update with your sports community.</p></div>:<div className="posts-list">{posts.map(post=>{
+    {loading?<div className="empty-state card" role="status"><Activity/><h3>Loading the community feed…</h3></div>:feedError?null:visiblePosts.length===0?<div className="empty-state card"><Users/><h3>{feedMode === "following" ? (!currentUser ? "Sign in to see your following feed" : followingIds.length ? "No posts from people you follow yet" : "You are not following anyone yet") : feedMode === "trending" ? "No trending posts yet" : "No posts yet"}</h3><p>{feedMode === "following" ? "Follow athletes, coaches, clubs, and other sports professionals to see their posts here." : feedMode === "trending" ? "Posts with recent likes and comments will appear here as the community gets active." : "Be the first to share an update with your sports community."}</p></div>:<div className="posts-list">{visiblePosts.map(post=>{
       const author = post.author || {};
       const authorName = author.full_name || author.username || "SPORTSLINK Member";
       const authorRole = author.headline || [author.sport, author.role].filter(Boolean).join(" · ") || "SPORTSLINK Member";
