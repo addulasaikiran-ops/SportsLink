@@ -32,6 +32,8 @@ export function DirectoryPage({ section, initialQuery = "" }) {
   const [client, setClient] = useState(null);
   const [followingIds, setFollowingIds] = useState(new Set());
   const [followBusyId, setFollowBusyId] = useState("");
+  const [currentUserId, setCurrentUserId] = useState("");
+  const [connectionRequests, setConnectionRequests] = useState(new Map());
 
   async function loadProfiles(supabase) {
     setLoading(true);
@@ -39,6 +41,19 @@ export function DirectoryPage({ section, initialQuery = "" }) {
     try {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError) throw authError;
+      setCurrentUserId(user?.id || "");
+      if (user?.id) {
+        const { data: requests, error: requestsError } = await supabase.from("connection_requests")
+          .select("id,requester_id,recipient_id,status,created_at")
+          .or(`requester_id.eq.${user.id},recipient_id.eq.${user.id}`);
+        if (requestsError && requestsError.code !== "42P01") throw requestsError;
+        const requestMap = new Map();
+        for (const request of requests || []) {
+          const otherId = request.requester_id === user.id ? request.recipient_id : request.requester_id;
+          requestMap.set(otherId, request);
+        }
+        setConnectionRequests(requestMap);
+      }
 
       let data;
       if (USE_SPRING_API) {
@@ -98,6 +113,40 @@ export function DirectoryPage({ section, initialQuery = "" }) {
     }
   }
 
+  async function sendConnectionRequest(profileId) {
+    if (!client || !currentUserId || followBusyId) return;
+    setFollowBusyId(profileId); setError("");
+    try {
+      const existing = connectionRequests.get(profileId);
+      if (existing?.recipient_id === currentUserId && existing.status === "pending") {
+        const { error: updateError } = await client.from("connection_requests").update({ status: "accepted" }).eq("id", existing.id);
+        if (updateError) throw updateError;
+        setConnectionRequests((current) => new Map(current).set(profileId, { ...existing, status: "accepted" }));
+      } else if (!existing) {
+        const { data, error: insertError } = await client.from("connection_requests")
+          .insert({ requester_id: currentUserId, recipient_id: profileId, status: "pending" })
+          .select("id,requester_id,recipient_id,status,created_at").single();
+        if (insertError) throw insertError;
+        setConnectionRequests((current) => new Map(current).set(profileId, data));
+      }
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unable to update this connection request.");
+    } finally { setFollowBusyId(""); }
+  }
+
+  async function declineConnectionRequest(profileId) {
+    if (!client || followBusyId) return;
+    const existing = connectionRequests.get(profileId);
+    if (!existing || existing.recipient_id !== currentUserId || existing.status !== "pending") return;
+    setFollowBusyId(profileId); setError("");
+    try {
+      const { error: updateError } = await client.from("connection_requests").update({ status: "declined" }).eq("id", existing.id);
+      if (updateError) throw updateError;
+      setConnectionRequests((current) => new Map(current).set(profileId, { ...existing, status: "declined" }));
+    } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Unable to decline this request."); }
+    finally { setFollowBusyId(""); }
+  }
+
   const normalizedQuery = query.trim().toLowerCase();
   const visibleProfiles = profiles.filter((profile) =>
     [profile.full_name, profile.username, profile.headline, profile.sport, profile.role]
@@ -114,14 +163,14 @@ export function DirectoryPage({ section, initialQuery = "" }) {
       eyebrow={isNetwork ? "BUILD YOUR CIRCLE" : "EXPAND YOUR HORIZON"}
       title={isNetwork ? "My Network" : "Discover"}
       subtitle={isNetwork
-        ? (USE_SPRING_API ? "Discover public profiles and follow people in the SPORTSLINK community." : "Public profiles visible to your account. Connection requests are not connected yet.")
-        : "Search public SPORTSLINK profiles."}
+        ? "Discover athletes, coaches, scouts and sports professionals, then build your network."
+        : "Search public SPORTSLINK profiles and send connection invitations."}
     />
     <div className="toolbar-row directory-toolbar"><SearchBox value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isNetwork ? "Search public profiles" : "Search by name, sport, or expertise"}/>
       {isNetwork && <button className="button button-secondary directory-clear" type="button" onClick={() => setQuery("")}>Clear</button>}
     </div>
     <div className="chip-row directory-sport-chips" role="group" aria-label="Filter by sport">{sports.map((item) => <button key={item} type="button" className={`chip ${sport === item ? "chip-active" : ""}`} aria-pressed={sport === item} onClick={() => setSport(item)}>{item}</button>)}</div>
-    {isNetwork && <p className="inline-notice" role="status">{USE_SPRING_API ? "Following uses the existing follows feature. Connection invitations are a separate feature and are not implemented yet." : "Connection and invitation records are not available in the current database schema."}</p>}
+
     {error && <div className="inline-notice directory-error" role="alert"><p>{error}</p><button className="button button-secondary" type="button" disabled={!client || loading} onClick={() => client && loadProfiles(client)}>{loading ? "Loading…" : "Retry"}</button></div>}
     {loading ? <div className="empty-state card" role="status"><Activity/><h3>Loading public profiles…</h3></div>
       : error ? null
@@ -136,9 +185,18 @@ export function DirectoryPage({ section, initialQuery = "" }) {
                 {profile.headline && <p className="directory-member-headline">{profile.headline}</p>}
                 {(profile.sport || profile.role) && <small className="directory-member-meta">{[profile.sport, profile.role].filter(Boolean).join(" · ")}</small>}
                 <Link className="button button-primary button-full directory-view-profile" href={`/members/${encodeURIComponent(profile.id)}`}>View profile</Link>
-                {USE_SPRING_API
-                  ? <button className="button button-outline button-full directory-follow" type="button" disabled={followBusyId === profile.id} onClick={() => toggleFollow(profile.id)}><UserPlus size={15}/>{followBusyId === profile.id ? "Saving…" : followingIds.has(profile.id) ? "Following" : "Follow"}</button>
-                  : <button className="button button-outline button-full directory-follow" type="button" disabled title="Connection requests are not backed by a database table yet"><UserPlus size={15}/>Connect</button>}
+                {(() => {
+                  const request = connectionRequests.get(profile.id);
+                  const incoming = request?.recipient_id === currentUserId && request.status === "pending";
+                  const outgoing = request?.requester_id === currentUserId && request.status === "pending";
+                  const connected = request?.status === "accepted";
+                  return <div style={{display:"grid",gap:6}}>
+                    <button className="button button-outline button-full directory-follow" type="button" disabled={followBusyId === profile.id || outgoing || connected || (request && request.status === "declined")} onClick={() => sendConnectionRequest(profile.id)}>
+                      <UserPlus size={15}/>{followBusyId === profile.id ? "Saving…" : incoming ? "Accept request" : outgoing ? "Request sent" : connected ? "Connected" : request?.status === "declined" ? "Request declined" : "Connect"}
+                    </button>
+                    {incoming && <button className="button button-secondary button-full" type="button" disabled={followBusyId === profile.id} onClick={() => declineConnectionRequest(profile.id)}>Decline request</button>}
+                  </div>;
+                })()}
               </div>
             </article>;
           })}</div>}
