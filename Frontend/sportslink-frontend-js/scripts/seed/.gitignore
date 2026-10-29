@@ -1,0 +1,6 @@
+.env
+.env.*
+!README.md
+!SCHEMA_NOTES.md
+seed_manifest.json
+*.log
