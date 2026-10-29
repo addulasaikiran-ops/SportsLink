@@ -1,6 +1,8 @@
 import { SectionPage } from "@/components/SectionPage";
 import { DirectoryPage } from "@/components/DirectoryPage";
-import { BookmarksPage, MessagesPage, NotificationsPage, OpportunitiesPage, ProfilePage } from "@/components/WorkspacePages";
+import { BookmarksPage, MessagesPage, NotificationsPage, ProfilePage } from "@/components/WorkspacePages";
+import { OpportunitiesPage } from "@/components/OpportunitiesPage";
+import { OrganizationsPage } from "@/components/OrganizationsPage";
 import { notFound } from "next/navigation";
 
 const allowed = ["network","discover","opportunities","messages","notifications","profile","bookmarks","organizations","settings","events"];
@@ -46,6 +48,7 @@ export default async function Page({ params, searchParams }) {
     case "discover":
       return <DirectoryPage key={section} section={section} initialQuery={section === "discover" ? (search?.search || "") : ""} />;
     case "opportunities": return <OpportunitiesPage key={section} />;
+    case "organizations": return <OrganizationsPage key={section} />;
     case "messages": return <MessagesPage key={section} />;
     case "notifications": return <NotificationsPage key={section} />;
     case "profile": return <ProfilePage key={section} />;
