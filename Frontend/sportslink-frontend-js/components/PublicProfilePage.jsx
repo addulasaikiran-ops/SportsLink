@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,website_url,created_at,profile_details_completed";
+const PROFILE_COLUMNS = "id,username,full_name,headline,bio,avatar_url,cover_url,location,sport,role,skills,studied_at,website_url,created_at,profile_details_completed,is_seed";
 
 function initials(name) {
   return name.trim().split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -137,7 +137,7 @@ export function PublicProfilePage({ profileId }) {
     <section className="profile-hero-card card">
       {profile.cover_url && <img className="profile-cover-image" src={profile.cover_url} alt="" />}
       <div className="profile-hero-shade" aria-hidden="true" />
-      <div className="profile-reference-kicker"><UserRound size={16}/><span>PUBLIC PROFILE</span></div>
+      <div className="profile-reference-kicker"><UserRound size={16}/><span>{profile.is_seed ? "DEMO BOT PROFILE" : "PUBLIC PROFILE"}</span></div>
       <div className="profile-hero-content">
         <div className="profile-reference-avatar-wrap">
           <div className="profile-reference-avatar-ring">
@@ -145,7 +145,7 @@ export function PublicProfilePage({ profileId }) {
           </div>
         </div>
         <div className="profile-reference-identity">
-          <h1>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={19} /></h1>
+          <h1>{name}<ProfileCompletionBadge completed={profile.profile_details_completed} size={19} />{profile.is_seed && <span className="demo-bot-badge">Demo Bot</span>}</h1>
           <p className="profile-reference-subtitle">{heroHeadline}</p>
           {profile.headline && <p className="profile-reference-headline">{profile.headline}</p>}
           {profile.location && <p className="profile-reference-location"><MapPin size={17}/>{profile.location}</p>}
