@@ -315,7 +315,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
   padding:78px max(30px,calc((100vw - 1180px)/2)) 64px;
   color:#f7faff;
   background-color:#07162b;
-  background-image:image-set(url("/sportslink-stadium.avif") type("image/avif"),url("/sportslink-stadium.webp") type("image/webp"));
+  background-image:url("/sportslink-stadium.webp");
   background-position:center 54%;
   background-size:cover;
   background-repeat:no-repeat;
