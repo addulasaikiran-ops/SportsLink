@@ -11,7 +11,7 @@
   background-image:
     linear-gradient(90deg, rgba(3,12,27,.84) 0%, rgba(4,15,32,.65) 43%, rgba(5,16,31,.18) 100%),
     linear-gradient(0deg, rgba(2,10,23,.48), transparent 55%),
-    url("/sportslink-stadium.webp");
+    url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png");
   background-position:center, center, center 52%;
   background-size:cover, cover, cover;
   box-shadow:0 28px 90px rgba(3,12,28,.22), inset 0 1px 0 rgba(255,255,255,.16);
@@ -85,10 +85,10 @@
   color:#f4f7ff;background:linear-gradient(145deg,rgba(5,13,34,.94),rgba(7,24,59,.94) 55%,rgba(10,34,82,.91));
   font-family:'Plus Jakarta Sans','DM Sans',sans-serif;
 }
-.sl-landing:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 82% 4%,rgba(47,107,255,.24),transparent 30%),radial-gradient(ellipse at 10% 42%,rgba(20,76,166,.14),transparent 38%),url("/sportslink-stadium.webp") center 38%/cover fixed;opacity:.24}
+.sl-landing:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 82% 4%,rgba(47,107,255,.24),transparent 30%),radial-gradient(ellipse at 10% 42%,rgba(20,76,166,.14),transparent 38%),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 38%/cover fixed;opacity:.24}
 .sl-landing:after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,13,34,.78),rgba(5,13,34,.93) 46%,#050d22)}
 .sl-landing h1,.sl-landing h2,.sl-landing h3,.sl-landing p{font-family:'Plus Jakarta Sans','DM Sans',sans-serif}
-.sl-landing .landing-hero{min-height:clamp(610px,76vh,790px);border:1px solid rgba(143,180,255,.24);border-radius:30px;background:linear-gradient(90deg,rgba(5,13,34,.94),rgba(5,13,34,.72) 48%,rgba(5,13,34,.30)),linear-gradient(0deg,rgba(5,13,34,.35),transparent 60%),url("/sportslink-stadium.webp") center 48%/cover;box-shadow:0 32px 100px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.1);gap:clamp(20px,4vw,55px)}
+.sl-landing .landing-hero{min-height:clamp(610px,76vh,790px);border:1px solid rgba(143,180,255,.24);border-radius:30px;background:linear-gradient(90deg,rgba(5,13,34,.94),rgba(5,13,34,.72) 48%,rgba(5,13,34,.30)),linear-gradient(0deg,rgba(5,13,34,.35),transparent 60%),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 48%/cover;box-shadow:0 32px 100px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.1);gap:clamp(20px,4vw,55px)}
 .sl-landing .landing-hero-copy{background:linear-gradient(135deg,rgba(5,17,42,.76),rgba(6,24,58,.42));border:1px solid rgba(143,180,255,.20);border-radius:28px;padding:clamp(25px,4vw,48px);box-shadow:0 24px 80px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.09);backdrop-filter:blur(12px)}
 .sl-landing .landing-hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(43px,5.2vw,72px);line-height:1.08;letter-spacing:-3.5px;color:#f7f9ff}
 .sl-landing .landing-hero h1 span,.sl-landing .section-intro h2 span,.sl-landing .sl-sports-section h2 span,.sl-landing .sl-network-intro h2 span,.sl-landing .sl-opportunity-heading h2 span{color:var(--sl-sky);text-shadow:0 0 32px rgba(143,180,255,.26)}
@@ -192,7 +192,7 @@
 }
 :root[data-theme="light"] .sl-landing .landing-hero,
 :root:not([data-theme="dark"]) .sl-landing .landing-hero{
-  background-image:linear-gradient(90deg,rgba(255,255,255,.94),rgba(255,255,255,.78) 48%,rgba(255,255,255,.48)),linear-gradient(0deg,rgba(255,255,255,.28),transparent 60%),url("/sportslink-stadium.webp");
+  background-image:linear-gradient(90deg,rgba(255,255,255,.94),rgba(255,255,255,.78) 48%,rgba(255,255,255,.48)),linear-gradient(0deg,rgba(255,255,255,.28),transparent 60%),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png");
   border-color:rgba(135,153,181,.28);
   box-shadow:0 24px 70px rgba(30,50,80,.10),inset 0 1px 0 rgba(255,255,255,.9);
 }
