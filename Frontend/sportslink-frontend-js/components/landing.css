@@ -83,14 +83,14 @@
   --sl-bg:var(--sl-brand-navy-deep);--sl-bg2:var(--sl-brand-navy-mid);--sl-blue:var(--sl-brand-blue);--sl-sky:var(--sl-brand-lime);--sl-gold:var(--sl-brand-lime);--sl-green:var(--sl-brand-lime);--sl-brand-navy:#12305a;--sl-brand-lime:#70d522;
   position:relative;isolation:isolate;overflow:hidden;padding:24px clamp(16px,4vw,64px) 70px;
   color:#f4f7ff;background:linear-gradient(145deg,rgba(5,13,34,.94),rgba(7,24,59,.94) 55%,rgba(10,34,82,.91));
-  font-family:'Plus Jakarta Sans','DM Sans',sans-serif;
+  font-family:var(--font-plus-jakarta),var(--font-dm-sans),sans-serif;
 }
 .sl-landing:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 82% 4%,rgba(47,107,255,.24),transparent 30%),radial-gradient(ellipse at 10% 42%,rgba(20,76,166,.14),transparent 38%),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 38%/cover fixed;opacity:.24}
 .sl-landing:after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,13,34,.78),rgba(5,13,34,.93) 46%,#050d22)}
-.sl-landing h1,.sl-landing h2,.sl-landing h3,.sl-landing p{font-family:'Plus Jakarta Sans','DM Sans',sans-serif}
+.sl-landing h1,.sl-landing h2,.sl-landing h3,.sl-landing p{font-family:var(--font-plus-jakarta),var(--font-dm-sans),sans-serif}
 .sl-landing .landing-hero{min-height:clamp(610px,76vh,790px);border:1px solid rgba(143,180,255,.24);border-radius:30px;background:linear-gradient(90deg,rgba(5,13,34,.94),rgba(5,13,34,.72) 48%,rgba(5,13,34,.30)),linear-gradient(0deg,rgba(5,13,34,.35),transparent 60%),url("/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png") center 48%/cover;box-shadow:0 32px 100px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.1);gap:clamp(20px,4vw,55px)}
 .sl-landing .landing-hero-copy{background:linear-gradient(135deg,rgba(5,17,42,.76),rgba(6,24,58,.42));border:1px solid rgba(143,180,255,.20);border-radius:28px;padding:clamp(25px,4vw,48px);box-shadow:0 24px 80px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.09);backdrop-filter:blur(12px)}
-.sl-landing .landing-hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(43px,5.2vw,72px);line-height:1.08;letter-spacing:-3.5px;color:#f7f9ff}
+.sl-landing .landing-hero h1{font-family:var(--font-plus-jakarta),sans-serif;font-size:clamp(43px,5.2vw,72px);line-height:1.08;letter-spacing:-3.5px;color:#f7f9ff}
 .sl-landing .landing-hero h1 span,.sl-landing .section-intro h2 span,.sl-landing .sl-sports-section h2 span,.sl-landing .sl-network-intro h2 span,.sl-landing .sl-opportunity-heading h2 span{color:var(--sl-sky);text-shadow:0 0 32px rgba(143,180,255,.26)}
 .sl-landing .public-eyebrow{color:#a9c8ff;letter-spacing:1.55px;font-size:10px;font-weight:800}
 .sl-landing .landing-lede{max-width:520px;color:#d0d9eb;font-size:clamp(14px,1.2vw,16px);line-height:1.85}
@@ -109,7 +109,7 @@
 @keyframes sl-drift{0%,100%{transform:translate3d(0,0,0);opacity:.4}50%{transform:translate3d(13px,-20px,0);opacity:1}}
 .sl-visual{perspective:1100px;transform-style:preserve-3d;transition:transform .25s ease;transform:rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg))}
 .sl-visual .visual-main-card{background:linear-gradient(145deg,rgba(47,107,255,.95),rgba(9,34,84,.94) 72%);border:1px solid rgba(175,207,255,.56);border-radius:28px;box-shadow:0 30px 85px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.3);backdrop-filter:blur(18px)}
-.sl-visual .visual-main-card h2{color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(27px,3vw,40px);letter-spacing:-1.8px;line-height:1.08}
+.sl-visual .visual-main-card h2{color:#fff;font-family:var(--font-plus-jakarta),sans-serif;font-size:clamp(27px,3vw,40px);letter-spacing:-1.8px;line-height:1.08}
 .sl-visual .visual-main-card p{color:#dbe7ff;line-height:1.7}
 .sl-visual .visual-tags span{background:rgba(5,16,43,.3);border:1px solid rgba(203,223,255,.24);color:#e7efff;border-radius:999px;transition:transform .2s,background .2s}
 .sl-visual .visual-tags span:hover{transform:translateY(-3px);background:rgba(255,255,255,.14)}
