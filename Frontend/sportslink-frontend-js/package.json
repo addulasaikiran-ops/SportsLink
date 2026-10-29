@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seed:demo": "node scripts/seed/seed.mjs",
+    "seed:cleanup": "node scripts/seed/cleanup.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
