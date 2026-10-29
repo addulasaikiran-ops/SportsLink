@@ -1,0 +1,39 @@
+name: Seed SPORTSLINK demo members
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_live_demo_seed:
+        description: 'Type SEED_20_DEMO_BOTS to confirm this writes to the live SPORTSLINK database'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  seed-demo-members:
+    if: ${{ inputs.confirm_live_demo_seed == 'SEED_20_DEMO_BOTS' }}
+    runs-on: ubuntu-latest
+    environment: sportslink-demo-seed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
+      - name: Install dependencies
+        working-directory: Frontend/sportslink-frontend-js
+        run: npm ci
+      - name: Create 20 clearly labelled demo accounts and profiles
+        working-directory: Frontend/sportslink-frontend-js
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SEED_ALLOW_PROD: 'true'
+          SEED_BATCH_ID: sportslink-demo-20
+        run: npm run seed:demo -- --count 20 --write --i-know-this-is-production
+      - name: Seed labelled demo posts, follows, comments, and reactions
+        working-directory: Frontend/sportslink-frontend-js
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/seed/seed-activity.mjs
