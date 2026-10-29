@@ -10,7 +10,7 @@ import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
 
 const USE_SPRING_API = process.env.NEXT_PUBLIC_USE_SPRING_API === "true";
 
-const PROFILE_COLUMNS = "id,username,full_name,headline,avatar_url,sport,role,created_at,profile_details_completed";
+const PROFILE_COLUMNS = "id,username,full_name,headline,avatar_url,sport,role,created_at,profile_details_completed,is_seed";
 
 function initials(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "SL";
@@ -132,7 +132,7 @@ export function DirectoryPage({ section, initialQuery = "" }) {
               <div className="person-cover directory-person-cover" />
               <ProfileAvatar profile={profile} name={name} />
               <div className="person-card-body">
-                <h3><Link href={`/members/${encodeURIComponent(profile.id)}`} className="author-profile-link">{name}<ProfileCompletionBadge completed={profile.profile_details_completed} /></Link></h3>
+                <h3><Link href={`/members/${encodeURIComponent(profile.id)}`} className="author-profile-link">{name}<ProfileCompletionBadge completed={profile.profile_details_completed} />{profile.is_seed && <span className="demo-bot-badge">Demo Bot</span>}</Link></h3>
                 {profile.headline && <p className="directory-member-headline">{profile.headline}</p>}
                 {(profile.sport || profile.role) && <small className="directory-member-meta">{[profile.sport, profile.role].filter(Boolean).join(" · ")}</small>}
                 <Link className="button button-primary button-full directory-view-profile" href={`/members/${encodeURIComponent(profile.id)}`}>View profile</Link>
