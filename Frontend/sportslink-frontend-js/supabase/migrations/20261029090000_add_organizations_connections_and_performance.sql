@@ -40,6 +40,7 @@ create index if not exists organizations_owner_idx on public.organizations(owner
 create index if not exists organization_members_user_status_idx on public.organization_members(user_id, status);
 create index if not exists connection_requests_recipient_status_idx on public.connection_requests(recipient_id, status, created_at desc);
 create index if not exists connection_requests_requester_status_idx on public.connection_requests(requester_id, status, created_at desc);
+create unique index if not exists opportunity_applications_unique_applicant_idx on public.opportunity_applications(opportunity_id, applicant_id);
 
 -- Add indexes only for the foreign keys reported unindexed by the Supabase advisor.
 create index if not exists comments_author_id_idx on public.comments(author_id);
@@ -49,6 +50,18 @@ create index if not exists notifications_actor_id_idx on public.notifications(ac
 create index if not exists opportunities_created_by_idx on public.opportunities(created_by);
 create index if not exists post_media_post_id_idx on public.post_media(post_id);
 create index if not exists post_reposts_user_id_idx on public.post_reposts(user_id);
+
+-- Advisor-confirmed duplicate indexes on notifications; keep the shorter equivalent index.
+drop index if exists public.notifications_user_created_at_idx;
+
+-- Fix per-row auth.uid() evaluation flagged by the Supabase advisor.
+drop policy if exists profiles_insert_self on public.profiles;
+create policy profiles_insert_self on public.profiles
+  for insert to authenticated with check ((select auth.uid()) = id);
+drop policy if exists profiles_update_self on public.profiles;
+create policy profiles_update_self on public.profiles
+  for update to authenticated using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
 
 alter table public.organizations enable row level security;
 alter table public.organization_members enable row level security;
