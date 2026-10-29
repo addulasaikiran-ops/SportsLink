@@ -13,9 +13,9 @@ export const metadata = {
   description: "A professional network for athletes, coaches, scouts, clubs, and sports professionals.",
   applicationName: "SPORTSLINK",
   icons: {
-    icon: [{ url: "/sportslink-icon.png", type: "image/png" }],
-    shortcut: ["/sportslink-icon.png"],
-    apple: [{ url: "/sportslink-icon.png", type: "image/png" }]
+    icon: [{ url: "/Document%20Handshake%20Partnership%20Icon.png", type: "image/png" }],
+    shortcut: ["/Document%20Handshake%20Partnership%20Icon.png"],
+    apple: [{ url: "/Document%20Handshake%20Partnership%20Icon.png", type: "image/png" }]
   },
   keywords: ["sports networking", "athletes", "coaches", "sports careers", "clubs"],
   openGraph: {
@@ -23,13 +23,13 @@ export const metadata = {
     description: "Connect with athletes, coaches, clubs, scouts and sports professionals. Discover opportunities and build meaningful connections across the sports industry.",
     siteName: "SPORTSLINK",
     type: "website",
-    images: [{ url: "/og-sportslink.jpg", width: 1200, height: 630, alt: "SPORTSLINK — the professional network for sport" }]
+    images: [{ url: "/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png", width: 1200, height: 630, alt: "SPORTSLINK — the professional network for sport" }]
   },
   twitter: {
     card: "summary_large_image",
     title: "SPORTSLINK — Your world of sport, connected",
     description: "Connect with athletes, coaches, clubs, scouts and sports professionals.",
-    images: ["/og-sportslink.jpg"]
+    images: ["/Cinematic%20Sports%20Stadium%20Silhouettes%20at%20Dusk.png"]
   }
 };
 export default function RootLayout({ children }) {
@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         description: "A professional network connecting athletes, coaches, scouts, clubs and sports professionals.",
         logo: {
           "@type": "ImageObject",
-          url: "https://sportslink.up.railway.app/sportslink-icon.png"
+          url: "https://sportslink.up.railway.app/Document%20Handshake%20Partnership%20Icon.png"
         }
       },
       {
