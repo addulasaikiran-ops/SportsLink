@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+<title id="title">SPORTSLINK mascot, Pip</title>
+<desc id="desc">A cute cream fox-kitty mascot with golden ears, charcoal sports hoodie, yellow goggles, and a football, waving hello.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF9E8"/><stop offset="1" stop-color="#F7EDE0"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE477"/><stop offset="1" stop-color="#F4B900"/></linearGradient>
+  <linearGradient id="fur" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7DDE2"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#55545C" flood-opacity=".13"/></filter>
+  <style>
+    .float{transform-box:fill-box;transform-origin:center;animation:float 3s ease-in-out infinite}
+    .wave{transform-box:fill-box;transform-origin:20% 80%;animation:wave 1.8s ease-in-out infinite}
+    .spark{transform-box:fill-box;transform-origin:center;animation:spark 2.3s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes wave{0%,100%{transform:rotate(0)}45%{transform:rotate(-13deg)}70%{transform:rotate(5deg)}}
+    @keyframes spark{0%,100%{opacity:.45;transform:scale(.88) rotate(-8deg)}50%{opacity:1;transform:scale(1.08) rotate(8deg)}}
+    @media(prefers-reduced-motion:reduce){.float,.wave,.spark{animation:none}}
+  </style>
+</defs>
+<rect x="8" y="8" width="1184" height="414" rx="30" fill="url(#bg)" stroke="#E7DDE2" stroke-width="2"/>
+<circle cx="100" cy="86" r="34" fill="#FFD84D" opacity=".18"/><circle cx="1082" cy="330" r="54" fill="#F7B8D0" opacity=".24"/>
+<g class="spark" fill="#F4B900"><path d="M240 85l8 19 20 8-20 8-8 20-8-20-20-8 20-8z"/><path d="M690 70l6 14 15 6-15 6-6 15-6-15-15-6 15-6z"/></g>
+<g class="float" filter="url(#shadow)">
+  <!-- tail -->
+  <path d="M360 287c-68 4-87 57-57 83 27 24 74 0 94-36" fill="#FFF" stroke="#55545C" stroke-width="7" stroke-linecap="round"/>
+  <path d="M309 352c-8 15 7 27 24 24 16-2 27-16 31-28-20 11-37 11-55 4z" fill="#FFD84D"/>
+  <!-- ears -->
+  <path d="M344 160 330 76Q327 55 346 69l65 58M474 126l53-59q19-18 20 8l-3 87" fill="url(#fur)" stroke="#55545C" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M351 119l-5-35 35 32M490 119l31-34-1 39" fill="#FFD84D"/>
+  <!-- body hoodie -->
+  <path d="M357 250c-12 26-26 60-20 94 6 29 34 39 82 39h64c49 0 71-18 69-47-1-34-17-66-36-88z" fill="#55545C" stroke="#44434A" stroke-width="7"/>
+  <path d="M392 263c13 14 28 19 48 19s37-6 49-20l-5 96h-88z" fill="#FFD84D"/>
+  <path d="M420 291l12 11 12-11-4 22 17 8-22 2-3 21-8-18-20 4 15-15z" fill="#FFF9E8"/>
+  <!-- head -->
+  <path d="M326 177c0-55 42-91 96-91h31c57 0 96 37 96 91v36c0 63-48 101-111 101s-112-38-112-101z" fill="url(#fur)" stroke="#55545C" stroke-width="8"/>
+  <path d="M339 207c-4 43 19 70 45 79-9-24-8-47 1-68zM533 207c4 43-19 70-45 79 9-24 8-47-1-68z" fill="#F7B8D0" opacity=".8"/>
+  <!-- goggles strap and lenses -->
+  <path d="M329 156c58-27 153-28 212 0" fill="none" stroke="#55545C" stroke-width="15" stroke-linecap="round"/>
+  <g fill="url(#gold)" stroke="#55545C" stroke-width="7">
+    <rect x="353" y="126" width="75" height="47" rx="17" transform="rotate(-7 390 150)"/>
+    <rect x="444" y="126" width="75" height="47" rx="17" transform="rotate(7 481 150)"/>
+  </g>
+  <g fill="#55545C"><rect x="364" y="137" width="52" height="25" rx="10" transform="rotate(-7 390 150)"/><rect x="455" y="137" width="52" height="25" rx="10" transform="rotate(7 481 150)"/></g>
+  <path d="M428 148h16" stroke="#55545C" stroke-width="8" stroke-linecap="round"/>
+  <!-- face -->
+  <ellipse cx="384" cy="207" rx="14" ry="20" fill="#55545C"/><ellipse cx="478" cy="207" rx="14" ry="20" fill="#55545C"/>
+  <circle cx="389" cy="201" r="5" fill="#FFF"/><circle cx="483" cy="201" r="5" fill="#FFF"/>
+  <ellipse cx="354" cy="229" rx="16" ry="9" fill="#F7B8D0"/><ellipse cx="508" cy="229" rx="16" ry="9" fill="#F7B8D0"/>
+  <path d="M411 228q15 14 30 0" fill="none" stroke="#55545C" stroke-width="6" stroke-linecap="round"/>
+  <path d="M428 221l-7 6 7 5 7-5z" fill="#55545C"/>
+  <!-- waving arm -->
+  <g class="wave"><path d="M500 279q29-21 35-48" fill="none" stroke="#55545C" stroke-width="24" stroke-linecap="round"/><path d="M531 234q-8-20 3-29 9-5 13 11 2-22 13-19 10 4 4 25 12-16 19-7 8 12-16 33-19 15-36-14z" fill="url(#fur)" stroke="#55545C" stroke-width="6" stroke-linejoin="round"/></g>
+  <!-- feet -->
+  <ellipse cx="397" cy="375" rx="32" ry="13" fill="#55545C"/><ellipse cx="478" cy="375" rx="32" ry="13" fill="#55545C"/>
+</g>
+<!-- football -->
+<g transform="translate(600 307)" filter="url(#shadow)">
+  <circle r="51" fill="#FFF" stroke="#55545C" stroke-width="6"/>
+  <path d="M0-22l21-7 14 18-8 22H-8l-8-22z" fill="#55545C"/>
+  <path d="M-16-22l-19-10M21-29l8-18M27 11l22 5M-8 11l-9 27M-35-32l-14 3M-8-22l8-29" stroke="#55545C" stroke-width="5" stroke-linecap="round" fill="none"/>
+</g>
+<!-- wordmark and message -->
+<g font-family="Arial,Helvetica,sans-serif">
+  <text x="700" y="157" fill="#55545C" font-size="19" font-weight="700" letter-spacing="4">MEET YOUR NEW TEAMMATE</text>
+  <text x="695" y="220" fill="#55545C" font-size="66" font-weight="900" letter-spacing="-2">PIP</text>
+  <rect x="698" y="241" width="92" height="7" rx="4" fill="#FFD84D"/>
+  <text x="697" y="286" fill="#55545C" font-size="24" font-weight="700">Small mascot. Big sports energy.</text>
+  <text x="697" y="325" fill="#77717A" font-size="18">Here to cheer you on, connect the team,</text>
+  <text x="697" y="351" fill="#77717A" font-size="18">and celebrate every little win.</text>
+</g>
+<g class="spark" fill="#FFD84D"><path d="M1050 93l7 17 18 7-18 7-7 18-7-18-18-7 18-7z"/><path d="M1083 169l5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/></g>
+<text x="1118" y="393" text-anchor="end" fill="#77717A" font-family="Arial,Helvetica,sans-serif" font-size="13" letter-spacing="2">SPORTSLINK MASCOT CONCEPT</text>
+</svg>
