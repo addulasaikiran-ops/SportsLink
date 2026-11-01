@@ -132,11 +132,24 @@ export default function NexconnChatUI() {
           if (targetUserId === currentUserId) {
             throw new Error("You cannot start a conversation with your own account.");
           }
-          const channelResult = await chatApp.openChannel(new chatSdk.DirectChannelIdentifier(targetUserId), true);
+          const channelIdentifier = new chatSdk.DirectChannelIdentifier(targetUserId);
+          let channelResult;
+          // Nexconn ChatUI returns 39005 while its remote channel list or offline
+          // message synchronization is still running. connect() can resolve before
+          // both synchronization steps finish, so retry this specific transient result.
+          for (let attempt = 0; attempt < 30; attempt += 1) {
+            channelResult = await chatApp.openChannel(channelIdentifier, true);
+            if (!channelResult || channelResult.code === 0 || channelResult.isOk === true) break;
+            if (channelResult.code !== 39005) break;
+            await new Promise((resolve) => setTimeout(resolve, 300));
+          }
           // Some ChatUI SDK builds return no result object on success; only treat
-          // explicit non-zero result codes as failures.
+          // explicit unsuccessful results as failures.
           if (channelResult && typeof channelResult.code === "number" && channelResult.code !== 0) {
             console.error("Nexconn openChannel failed", { code: channelResult.code });
+            if (channelResult.code === 39005) {
+              throw new Error("Chat is still syncing your conversations. Please try again in a few seconds.");
+            }
             throw new Error(`Could not open this member’s conversation (chat error ${channelResult.code}). Please try again.`);
           }
           if (channelResult && channelResult.isOk === false && typeof channelResult.code !== "number") {
