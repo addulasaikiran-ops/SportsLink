@@ -1,23 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
 <title id="title">SPORTSLINK — a tiny bunny plays football</title>
-<desc id="desc">A fluffy, round-faced bunny with long pink ears dribbles a football, performs two playful forward somersaults, lands with a happy bounce, and celebrates a goal in a sunny pastel stadium.</desc>
+<desc id="desc">A cute little bunny dribbles a football, performs a joyful forward flip, scores a goal, and celebrates in a sunny pastel stadium.</desc>
 <defs>
   <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#FFF9E8"/><stop offset="1" stop-color="#FFEAF2"/></linearGradient>
   <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#F7B8D0"/></linearGradient>
   <linearGradient id="ball" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7DDE2"/></linearGradient>
   <style>
     .ink{stroke:#55545C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
-    .bunny{transform-box:fill-box;transform-origin:center bottom;animation: bunnyFlip 9.6s cubic-bezier(.22,1,.36,1) infinite}
+    .bunny{transform-box:fill-box;transform-origin:center bottom;animation: bunnyFlip 7.2s cubic-bezier(.33,1,.68,1) infinite}
     .earL{transform-box:fill-box;transform-origin:bottom center;animation:earFlop 1.2s ease-in-out infinite alternate}
     .earR{transform-box:fill-box;transform-origin:bottom center;animation:earFlop 1.05s ease-in-out infinite alternate-reverse}
-    .ball{transform-box:fill-box;transform-origin:center;animation:ballPlay 9.6s cubic-bezier(.22,1,.36,1) infinite}
-    .foot{transform-box:fill-box;transform-origin:top center;animation:footKick 9.6s cubic-bezier(.37,0,.63,1) infinite}
-    .arm{transform-box:fill-box;transform-origin:top center;animation:armWave 9.6s cubic-bezier(.37,0,.63,1) infinite}
+    .ball{transform-box:fill-box;transform-origin:center;animation:ballPlay 7.2s cubic-bezier(.33,1,.68,1) infinite}
+    .foot{transform-box:fill-box;transform-origin:top center;animation:footKick 7.2s ease-in-out infinite}
+    .arm{transform-box:fill-box;transform-origin:top center;animation:armWave 7.2s ease-in-out infinite}
     .star{transform-box:fill-box;transform-origin:center;animation:twinkle 1.8s ease-in-out infinite}
     .cloud{animation:cloudDrift 16s ease-in-out infinite alternate}
     .caption{font:800 27px ui-rounded,system-ui,sans-serif;fill:#55545C;letter-spacing:1px}
     .tiny{font:700 15px ui-rounded,system-ui,sans-serif;fill:#777780;letter-spacing:3px}
-    @keyframes bunnyFlip{0%,7%,100%{transform:translate(0,0) rotate(0deg) scale(1)}10%{transform:translate(12px,-4px) rotate(-10deg) scale(1.04,.96)}16%{transform:translate(42px,-82px) rotate(170deg) scale(.96,1.05)}21%{transform:translate(78px,-132px) rotate(360deg) scale(1.02,.98)}26%{transform:translate(112px,-104px) rotate(540deg) scale(.98,1.03)}31%{transform:translate(148px,-48px) rotate(720deg) scale(1.04,.96)}35%,40%{transform:translate(172px,0) rotate(720deg) scale(1)}43%{transform:translate(180px,-5px) rotate(710deg) scale(1.02,.98)}49%{transform:translate(205px,-98px) rotate(880deg) scale(.96,1.05)}54%{transform:translate(240px,-126px) rotate(1080deg) scale(1.02,.98)}59%{transform:translate(275px,-65px) rotate(1260deg) scale(.98,1.02)}64%,69%{transform:translate(300px,0) rotate(1440deg) scale(1)}73%{transform:translate(306px,-8px) rotate(1430deg) scale(1.08,.92)}78%{transform:translate(314px,-28px) rotate(1440deg) scale(.98,1.03)}84%,92%{transform:translate(320px,0) rotate(1440deg) scale(1)}}
+    @keyframes bunnyFlip{
+      0%,13%,100%{transform:translate(0,0) rotate(0deg)}
       18%{transform:translate(25px,-9px) rotate(-12deg)}
       24%{transform:translate(65px,-118px) rotate(170deg)}
       30%{transform:translate(120px,-150px) rotate(360deg)}
@@ -26,18 +27,21 @@
       62%{transform:translate(225px,-12px) rotate(720deg)}
       70%,90%{transform:translate(225px,0) rotate(720deg)}
     }
-    @keyframes earFlop{0%{transform:rotate(-15deg)}45%{transform:rotate(22deg)}75%{transform:rotate(-7deg)}100%{transform:rotate(17deg)}}to{transform:rotate(17deg)}}
-    @keyframes footKick{0%,7%,100%{transform:rotate(0deg)}12%,18%{transform:rotate(-48deg)}24%,30%{transform:rotate(28deg)}36%,41%{transform:rotate(-22deg)}47%,53%{transform:rotate(38deg)}59%,65%{transform:rotate(-12deg)}72%,88%{transform:rotate(18deg)}}
+    @keyframes earFlop{from{transform:rotate(-10deg)}to{transform:rotate(17deg)}}
+    @keyframes footKick{
+      0%,12%,100%{transform:rotate(0deg)}
       17%,23%{transform:rotate(-48deg)}
       30%,38%{transform:rotate(25deg)}
       44%,70%{transform:rotate(-8deg)}
     }
-    @keyframes armWave{0%,7%,100%{transform:rotate(0deg)}12%,24%{transform:rotate(-38deg)}31%,40%{transform:rotate(42deg)}47%,57%{transform:rotate(-45deg)}64%,76%{transform:rotate(38deg)}82%,93%{transform:rotate(-28deg)}}
+    @keyframes armWave{
+      0%,12%,100%{transform:rotate(0deg)}
       18%,30%{transform:rotate(-32deg)}
       42%,58%{transform:rotate(35deg)}
       65%,90%{transform:rotate(-24deg)}
     }
-    @keyframes ballPlay{0%,7%{transform:translate(0,0) rotate(0deg) scale(1)}12%{transform:translate(28px,-8px) rotate(100deg) scale(1.04)}18%{transform:translate(88px,-48px) rotate(280deg) scale(.96)}24%{transform:translate(150px,-138px) rotate(520deg) scale(1.08)}30%{transform:translate(220px,-178px) rotate(760deg) scale(.94)}36%{transform:translate(295px,-112px) rotate(980deg) scale(1.02)}42%{transform:translate(360px,-30px) rotate(1190deg) scale(1)}48%{transform:translate(410px,-8px) rotate(1390deg) scale(.97)}55%{transform:translate(455px,-84px) rotate(1610deg) scale(1.05)}62%{transform:translate(500px,-128px) rotate(1840deg) scale(1)}68%,100%{transform:translate(500px,-120px) rotate(1980deg) scale(1)}}
+    @keyframes ballPlay{
+      0%,12%{transform:translate(0,0) rotate(0deg)}
       20%{transform:translate(70px,-10px) rotate(150deg)}
       29%{transform:translate(180px,-145px) rotate(420deg)}
       40%{transform:translate(335px,-90px) rotate(760deg)}
