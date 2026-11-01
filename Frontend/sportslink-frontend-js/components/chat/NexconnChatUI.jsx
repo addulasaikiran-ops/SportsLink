@@ -125,14 +125,14 @@ export default function NexconnChatUI() {
           throw new Error("Nexconn could not connect this account. Check the app key, region, and token configuration.");
         }
         // Open the requested one-to-one channel only after authentication succeeds.
-        // DirectChannelIdentifier is the ChatUI SDK API; query parameters alone do not
-        // cause the provider component to select a conversation.
+        // The ChatUI implementation imports DirectChannelIdentifier from @nexconn/chat,
+        // so construct it from the Chat SDK module (not @nexconn/chatui).
         if (targetUserId) {
           const currentUserId = String(chatApp.getCurrenUserId?.() || "").replace(/[^a-zA-Z0-9]/g, "");
           if (targetUserId === currentUserId) {
             throw new Error("You cannot start a conversation with your own account.");
           }
-          const channelResult = await chatApp.openChannel(new chatUiSdk.DirectChannelIdentifier(targetUserId), true);
+          const channelResult = await chatApp.openChannel(new chatSdk.DirectChannelIdentifier(targetUserId), true);
           // Some ChatUI SDK builds return no result object on success; only treat
           // explicit non-zero result codes as failures.
           if (channelResult && typeof channelResult.code === "number" && channelResult.code !== 0) {
