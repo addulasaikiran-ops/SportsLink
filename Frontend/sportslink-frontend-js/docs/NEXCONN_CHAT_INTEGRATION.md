@@ -4,29 +4,39 @@
 
 - Responsive `/messages` page.
 - Client adapter for Nexconn's Lit-based Chat UI.
-- Server endpoint that validates the current Supabase user before requesting a Nexconn user token.
+- Server endpoint that validates the current Supabase user and requests a Nexconn access token directly from the Platform Chat API.
 - Safe setup/error states when credentials are missing.
-
-## Dependencies
-
-The frontend manifest includes `@nexconn/chat`, `@nexconn/engine`, `@nexconn/chatui`, and `lit`. Install with the repository package manager and keep the Nexconn packages on compatible versions as described at https://github.com/NexconnAI-Dev/nexconn-chatui-web.
 
 ## Environment
 
-Set these values in local environment and the frontend's Railway service:
+Configure these variables in local development and the frontend's Railway service:
 
-- `NEXT_PUBLIC_NEXCONN_APP_KEY`: public Nexconn app key.
-- `NEXCONN_TOKEN_ENDPOINT`: server-side URL for a trusted SPORTSLINK token issuer.
-- `NEXCONN_SERVER_SECRET`: server-only secret for authenticating to that token issuer. Never prefix with `NEXT_PUBLIC_`.
+- `NEXT_PUBLIC_NEXCONN_APP_KEY`: Nexconn App Key. This is sent to the browser SDK and is public.
+- `NEXCONN_APP_SECRET`: Nexconn App Secret. Server-only; never prefix with `NEXT_PUBLIC_`.
+- `NEXCONN_API_BASE_URL`: regional HTTPS API base URL matching the data center selected in the Nexconn Console:
+  - Singapore: `https://api.sg-light-api.com`
+  - North America: `https://api.us-light-api.com`
+  - Saudi Arabia: `https://api.sau-light-api.com`
 
-The endpoint must accept `POST { "userId": "<Supabase auth user id>" }`, authenticated with `Authorization: Bearer <NEXCONN_SERVER_SECRET>`, and return `{ "token": "<user-scoped Nexconn token>" }`. It must map each Supabase user to a stable Nexconn identity and issue tokens through Nexconn's supported server-side process. Do not guess undocumented token-signing algorithms.
+The default value in `.env.local.example` is Singapore as an example. Confirm the actual Nexconn app region before deployment.
+
+## Token issuance
+
+`POST /api/nexconn/token` requires a valid Supabase access token in the Authorization Bearer header. The route verifies the user with Supabase, derives a stable alphanumeric Nexconn user ID from the Supabase UUID, and issues a token via `POST /v4/auth/access-token/issue`.
+
+The server creates a fresh 18-character random nonce and millisecond timestamp, then computes the documented signature:
+
+`SHA1(NEXCONN_APP_SECRET + Nonce + Timestamp)`
+
+The App Key, signature, nonce, timestamp, request ID, display name, and optional HTTPS avatar URL are sent to Nexconn. The route returns only `result.accessToken` to the authenticated client and disables response caching. The App Secret is never sent to the browser.
 
 ## Required before production
 
-1. Configure the Nexconn application and server-side token issuer.
-2. Connect the four ChatUI profile hooks in `components/chat/NexconnChatUI.jsx` to authorized SPORTSLINK profile/group APIs. They currently return empty arrays so no profile data is fabricated.
-3. Verify the deployed sign-in route; the current link is `/auth/login`.
-4. Test authenticated/unauthenticated states, token expiry, one-to-one chat, and mobile viewport sizing.
-5. Verify SDK versions and initialization settings against your Nexconn account's current docs.
+1. Set the correct regional `NEXCONN_API_BASE_URL` for your Nexconn app in Railway.
+2. Add `NEXT_PUBLIC_NEXCONN_APP_KEY` and `NEXCONN_APP_SECRET` to the frontend service's Railway variables. Keep the secret server-only.
+3. Connect the four ChatUI profile hooks in `components/chat/NexconnChatUI.jsx` to authorized SPORTSLINK profile/group APIs. They currently return empty arrays so no profile data is fabricated.
+4. Verify the deployed sign-in route; the current link is `/auth/login`.
+5. Verify the Nexconn SDK package versions and initialization settings against the current docs.
+6. Test authenticated/unauthenticated states, token issuance, one-to-one chat, reconnection, and mobile viewport sizing.
 
-This integration is scaffolding until the token issuer and profile hooks are configured and end-to-end tests pass.
+This removes the placeholder token-issuer dependency, but the complete chat experience remains unverified until the SDK initialization and end-to-end tests pass.
