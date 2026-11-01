@@ -1,7 +1,7 @@
 <div align="center">
 
 <picture>
-  <img src="docs/assets/moog-hero.svg" alt="Animated Moog Bots jumping together for SPORTSLINK" width="100%">
+  <img src="docs/assets/moog-hero.svg" alt="Animated Moog Bots welcoming the SPORTSLINK community" width="100%">
 </picture>
 
 <picture>
@@ -9,96 +9,70 @@
   <img src="docs/assets/typing-tagline-light.svg" alt="Connect. Discover. Grow. Move sport forward." width="100%">
 </picture>
 
-<h3>
-  <samp>BUILDING THE PROFESSIONAL NETWORK FOR SPORT</samp>
-</h3>
-
-<p><strong>A connected community for athletes, coaches, scouts, clubs and sports professionals.</strong></p>
-
-<p align="center">
-  <img src="docs/assets/sportslink-mascot-realistic.svg" alt="Pip, the dimensional cream-and-gold fox-kitty SPORTSLINK mascot with goggles and a football" width="100%">
-</p>
-
-<p align="center"><strong>Meet Pip — a dimensional, softly shaded little teammate with animated floating, waving and sparkles.</strong></p>
-
+<h1>SPORTSLINK</h1>
+<p><strong>The professional network for people who move sport forward.</strong></p>
+<p>Meet athletes, coaches, scouts, clubs and sports professionals. Build your network, share your journey, and discover opportunities.</p>
 
 <p>
-  <a href="https://sportslink.up.railway.app/"><img alt="Open SPORTSLINK" src="https://img.shields.io/badge/OPEN%20APP-LIVE-FFD84D?style=for-the-badge&labelColor=55545C"></a>
-  <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub repository" src="https://img.shields.io/badge/GITHUB-SOURCE-55545C?style=for-the-badge&logo=github"></a>
-  <a href="docs/FACTS.md"><img alt="Repository audit" src="https://img.shields.io/badge/PROJECT-AUDIT-FFD84D?style=for-the-badge&labelColor=55545C"></a>
+  <a href="https://sportslink.up.railway.app/"><img alt="Try SPORTSLINK" src="https://img.shields.io/badge/TRY%20SPORTSLINK-Open%20the%20app-FFD84D?style=for-the-badge&labelColor=34323B"></a>
+  <a href="docs/FACTS.md"><img alt="Verified repository audit" src="https://img.shields.io/badge/ENGINEERING-Verified%20audit-55545C?style=for-the-badge"></a>
+  <a href="https://github.com/addulasaikiran-ops/SportsLink/issues"><img alt="Issues and ideas" src="https://img.shields.io/badge/CONTRIBUTE-Ideas%20%26%20bugs-F7B8D0?style=for-the-badge&labelColor=34323B"></a>
 </p>
 
-<p>
-  <a href="#start-here"><strong>🚀 Start here</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#choose-your-sportslink-journey"><strong>Choose your journey</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#the-sportslink-world"><strong>Explore features</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#architecture"><strong>Architecture</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#run-locally"><strong>Run locally</strong></a>
-</p>
+<img src="docs/assets/sportslink-mascot-realistic.svg" alt="Pip, SPORTSLINK's dimensional cream-and-gold fox-kitty mascot, waving beside a football" width="560" style="max-width:100%;height:auto">
+
+<p><em>Meet Pip — your tiny teammate for big sports energy.</em></p>
+
+</div>
+
+<div align="center">
+
+**[Explore the platform ↓](#the-sportslink-world)** &nbsp; · &nbsp;
+**[Get running locally](#run-locally)** &nbsp; · &nbsp;
+**[See architecture](#architecture)** &nbsp; · &nbsp;
+**[Contribute](#contributing)**
 
 </div>
 
 <picture><img src="docs/assets/moog-relay.svg" alt="Animated Moog Bots pass a glowing block along a relay path" width="100%"></picture>
 
 
-## Start here
+## Navigate the project
 
-<div align="center">
-
-| Want to… | Go directly to |
+| I want to… | Best place to start |
 |---|---|
-| **Try SPORTSLINK** | [Open the live app](https://sportslink.up.railway.app/) |
-| **Understand what works today** | [Read the implementation audit](docs/FACTS.md) |
-| **Run the web app locally** | [Frontend setup](#frontend) |
-| **Explore the backend API** | [Endpoint explorer](#api-surface) |
-| **Understand the system design** | [Architecture diagram](#architecture) |
+| **Try the product** | [Open the live app](https://sportslink.up.railway.app/) |
+| **Understand the product** | [Explore SPORTSLINK](#the-sportslink-world) · [Platform capabilities](#the-platform) |
+| **Check what is actually implemented** | [Verified repository audit](docs/FACTS.md) |
+| **Run the frontend** | [Frontend setup](#frontend) |
+| **Explore the backend** | [API surface](#api-surface) · [Architecture](#architecture) |
+| **Build the Android debug APK** | [CI and delivery](#ci-and-delivery) |
 | **Help improve the project** | [Contribution guide](#contributing) |
 
-</div>
-
-> **README interaction tip:** Open the expandable sections throughout this page to explore endpoint details, engineering notes, and common questions without leaving the overview. GitHub renders the diagrams and animated SVG artwork directly; this README does not rely on custom JavaScript.
-
-## Choose your SPORTSLINK journey
-
 <details>
-<summary><strong>🏃 I'm an athlete or player</strong></summary>
+<summary><strong>🧭 Choose your journey — open a path</strong></summary>
 
-Build a profile that represents your sporting journey, discover other people in the sports community, share updates, make connections, and explore relevant opportunities.
-
-**Good next step:** [Open SPORTSLINK](https://sportslink.up.railway.app/) · [Platform capabilities](#the-platform)
+| If you are… | Start here |
+|---|---|
+| 🏃 An athlete or player | Build a profile, share updates, grow connections and explore opportunities. [Explore the platform](#the-platform) |
+| 🎯 A coach, scout or sports professional | Discover profiles and build relationships across the sports community. [Project overview](#the-sportslink-world) |
+| 🏟️ A club or organization | Explore organization and membership workflows, where enabled. [Verified implementation notes](docs/FACTS.md) |
+| 🧑‍💻 A developer | Review the stack, system design, setup steps and known boundaries before making changes. [Architecture](#architecture) · [Run locally](#run-locally) |
 
 </details>
 
 <details>
-<summary><strong>🎯 I'm a coach, scout, or sports professional</strong></summary>
+<summary><strong>⚡ First five minutes for contributors</strong></summary>
 
-Use the network to discover profiles, build professional relationships, share knowledge, and explore opportunities across the sports ecosystem.
-
-**Good next step:** [Explore the platform](#the-sportslink-world) · [Project snapshot](#project-snapshot)
-
-</details>
-
-<details>
-<summary><strong>🏟️ I represent a club or organization</strong></summary>
-
-Explore the organization and membership workflows available in the project, including creating organizations and reviewing membership requests where those screens are enabled.
-
-**Good next step:** [Organization capabilities](#the-platform) · [Implementation details](docs/FACTS.md)
+1. Read the [verified project audit](docs/FACTS.md) so you know what exists today.
+2. Review the [architecture](#architecture) and [project structure](#project-structure).
+3. Configure the [frontend environment](#environment-variables) without committing secrets.
+4. Run the frontend locally and confirm the page or workflow you plan to change.
+5. Keep the change focused; run the relevant build or tests and describe the evidence in your pull request.
 
 </details>
 
-<details>
-<summary><strong>🧑‍💻 I'm a developer or contributor</strong></summary>
-
-Start with the technology stack and architecture, follow the local setup steps, and check the implementation audit before choosing a task. The audit distinguishes verified code paths from planned or incomplete areas.
-
-**Good next step:** [Technology stack](#technology-stack) · [Architecture](#architecture) · [Run locally](#run-locally) · [Contributing](#contributing)
-
-</details>
+> **How to read this README:** Expand any disclosure to see more detail. Diagrams and mascot artwork render on GitHub without custom JavaScript. Feature descriptions are based on repository evidence; the [technical audit](docs/FACTS.md) records important implementation boundaries.
 
 ## The SPORTSLINK world
 
@@ -122,6 +96,20 @@ SPORTSLINK is a professional networking platform focused on the sports community
 | **Connect organizations** | Create sports organizations, request membership and review member requests. |
 
 <sub>Feature descriptions reflect repository UI/API code and migrations. Some features use direct Supabase access, the optional Spring API or Nexconn chat integration; not every feature is routed through one backend. See <a href="docs/FACTS.md">the implementation audit</a> for details.</sub>
+
+## Feature map at a glance
+
+| Area | Repository evidence | Important nuance |
+|---|---|---|
+| Member profiles and directory | UI and API paths exist | Some profile data is read directly from Supabase. |
+| Feed, posts and interactions | Post, comment and reaction code exists | Not every interaction is routed through the Spring API. |
+| Connections and follows | Connection-request and follow flows exist | Migration files currently live in two directories. |
+| Opportunities and applications | UI/API/schema pieces exist | Some workflows may be incomplete; check the audit before assuming end-to-end readiness. |
+| Messaging | Nexconn chat UI and backend conversation operations exist | Chat integration and API conversation paths are distinct parts of the architecture. |
+| Organizations and events | Workspace routes and schema references exist | The presence of a route or table alone does not guarantee every workflow is production-complete. |
+| Android | Manual workflow builds a debug APK | This is not a Play Store release pipeline. |
+
+<sub>This is intentionally an evidence-oriented map, not a marketing claim that every row is fully production-ready. See <a href="docs/FACTS.md">the detailed audit</a> for source-level findings.</sub>
 
 ## Project snapshot
 
@@ -355,30 +343,24 @@ These are repository findings, not promises or claims that a capability is compl
 For exact evidence and per-feature wiring status, use [docs/FACTS.md](docs/FACTS.md).
 
 
-## Interactive project guide
+## Questions people ask
 
 <details>
-<summary><strong>What is SPORTSLINK?</strong></summary>
+<summary><strong>Is SPORTSLINK live?</strong></summary>
 
-SPORTSLINK is a professional networking platform for the sports community, connecting athletes, coaches, scouts, clubs and other sports professionals around profiles, updates, relationships and opportunities.
+The project has a deployed app at [sportslink.up.railway.app](https://sportslink.up.railway.app/). Availability and individual feature readiness can change; the repository audit describes code evidence, not live uptime or usage telemetry.
 </details>
 
 <details>
-<summary><strong>Is every feature production-complete?</strong></summary>
+<summary><strong>Are all listed capabilities complete?</strong></summary>
 
-Not necessarily. This README describes repository evidence, not a guarantee that every workflow is enabled in production. Some screens remain incomplete or unavailable, and some frontend features use direct Supabase access rather than the optional Spring API. Check the [implementation audit](docs/FACTS.md) for verified details and known boundaries.
+No assumption should be made from a screen, route, table or API endpoint alone. Some frontend flows use direct Supabase access, and some workflows are incomplete. Use the [verified repository audit](docs/FACTS.md) for the most accurate boundaries.
 </details>
 
 <details>
-<summary><strong>Can I build and test the Android app?</strong></summary>
+<summary><strong>How can I report a bug or propose a feature?</strong></summary>
 
-The repository includes a Capacitor-based Android workflow that builds and uploads a debug APK when manually triggered. This demonstrates a debug-build path; it is not evidence of a Play Store release pipeline. See [CI and delivery](#ci-and-delivery).
-</details>
-
-<details>
-<summary><strong>Where should I report a bug or suggest an improvement?</strong></summary>
-
-Open an issue in the [SPORTSLINK GitHub repository](https://github.com/addulasaikiran-ops/SportsLink/issues). Include the page or workflow, steps to reproduce, expected behavior, actual behavior, and screenshots or logs when useful.
+Open a [GitHub issue](https://github.com/addulasaikiran-ops/SportsLink/issues). Include the page, steps to reproduce, expected versus actual behavior, and screenshots or logs when appropriate. Never include passwords, tokens, or personal data.
 </details>
 
 ## Contributing
