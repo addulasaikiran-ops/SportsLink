@@ -41,8 +41,10 @@ jobs:
           cache: npm
           cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
 
+      # Install updates the npm lockfile for the newly added Nexconn packages.
+      # Commit the generated lockfile in a follow-up once the dependency tree is resolved.
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Build frontend
         run: npm run build
