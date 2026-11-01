@@ -48,3 +48,12 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+
+      - name: Upload generated npm lockfile for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sportslink-frontend-package-lock
+          path: Frontend/sportslink-frontend-js/package-lock.json
+          if-no-files-found: error
+          retention-days: 3
