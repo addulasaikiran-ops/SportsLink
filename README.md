@@ -1,7 +1,7 @@
 <div align="center">
 
 <picture>
-  <img src="docs/assets/bunny-football.svg" alt="A cute bunny dribbles a football, performs a joyful flip, scores a goal, and celebrates in a pastel stadium" width="100%">
+  <img src="docs/assets/moog-build.svg" alt="Animated Moog Bots building and moving through the SPORTSLINK workflow" width="100%">
 </picture>
 
 </div>
