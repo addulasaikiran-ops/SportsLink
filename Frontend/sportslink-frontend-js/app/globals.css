@@ -4980,3 +4980,22 @@ body{
   :root[data-theme="dark"] .messages-page .new-chat-picker,:root[data-theme="dark"] .messages-page .new-chat-picker-header{background:#0d192b}
   :root[data-theme="dark"] .messages-page .new-chat-search{background:#101d31;border-color:rgba(145,165,200,.22)}
 }
+
+
+/* Public profile social actions */
+.public-profile-action-row{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px}
+.public-profile-action-row>.button{min-height:42px;gap:7px;white-space:nowrap}
+.profile-message-button{box-shadow:0 6px 18px rgba(37,99,235,.18)}
+.profile-more-wrap{position:relative}
+.profile-more-button{width:42px;min-width:42px;padding:0;justify-content:center}
+.profile-more-menu{position:absolute;right:0;top:calc(100% + 7px);z-index:30;min-width:180px;padding:6px;border:1px solid var(--line,#e1e7f0);border-radius:12px;background:var(--surface,#fff);box-shadow:0 14px 38px rgba(15,23,42,.16)}
+.profile-more-menu button{display:flex;width:100%;align-items:center;gap:9px;padding:10px;border:0;border-radius:8px;background:transparent;color:var(--ink,#172033);text-align:left;cursor:pointer}
+.profile-more-menu button:hover{background:var(--surface-soft,#f3f6fb)}
+.profile-action-notice{margin:0;padding:10px 12px;border:1px solid var(--line,#dce4f0);border-radius:10px;color:var(--muted,#667085);font-size:13px}
+@media(max-width:760px){
+  .public-profile-action-row{justify-content:flex-start;width:100%;gap:7px}
+  .public-profile-action-row>.button{flex:1 1 auto;min-height:42px;padding:9px 11px;font-size:13px}
+  .public-profile-action-row>.profile-message-button{flex:1 1 100%;justify-content:center}
+  .profile-more-wrap{flex:0 0 42px}
+  .public-profile-action-row .profile-more-button{width:42px}
+}

@@ -171,6 +171,7 @@ export function MessagesPage() {
   const [showPeople, setShowPeople] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const requestedMemberRef = useRef("");
 
   useEffect(() => {
     let active = true;
@@ -363,6 +364,16 @@ export function MessagesPage() {
       setStartingId("");
     }
   }
+
+  useEffect(() => {
+    if (!user?.id || !profiles.length || typeof window === "undefined") return;
+    const memberId = new URLSearchParams(window.location.search).get("member");
+    if (!memberId || memberId === user.id || requestedMemberRef.current === memberId) return;
+    const member = profiles.find((item) => item.id === memberId);
+    if (!member) return;
+    requestedMemberRef.current = memberId;
+    startConversation(member);
+  }, [user?.id, profiles, conversations]);
 
   async function sendMessage(event) {
     event.preventDefault();
