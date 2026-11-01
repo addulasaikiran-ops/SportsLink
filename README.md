@@ -1,12 +1,12 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sportslink-hero-dark.svg">
-  <img src="docs/assets/sportslink-hero-light.svg" alt="SPORTSLINK — a professional network for the world of sport" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-block-world-dark.svg">
+  <img src="docs/assets/hero-block-world-light.svg" alt="SPORTSLINK block-world hero with pixel-built sports mascots; decorative concept artwork" width="100%">
 </picture>
 
 <p>
-  <img src="docs/assets/typing-tagline.svg" alt="Connect. Discover. Grow. Move sport forward." width="100%">
+  <img src="docs/assets/typing-tagline-light.svg" alt="Connect. Discover. Grow. Move sport forward." width="100%">
 </p>
 
 <p>
@@ -35,6 +35,33 @@ SPORTSLINK is a professional networking product built around those connections. 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/section-divider-dark.svg">
   <img src="docs/assets/section-divider-light.svg" alt="" width="100%">
+</picture>
+
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-block-world-dark.svg">
+  <img src="docs/assets/architecture-block-world-light.svg" alt="Block-world SPORTSLINK community illustration; decorative concept artwork, not a product screenshot" width="100%">
+</picture>
+
+## Meet the SPORTSLINK crew
+
+A little pixel-built personality for the people who move sport forward. These animated mascots are decorative README artwork—not claims about shipped product features.
+
+<table>
+<tr>
+<td width="50%" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-connector-dark.svg"><img src="docs/assets/creature-connector-light.svg" alt="Connector mascot concept artwork" width="100%"></picture><strong>The Connector</strong><br>Bringing people into the same team.</td>
+<td width="50%" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-scout-dark.svg"><img src="docs/assets/creature-scout-light.svg" alt="Scout mascot concept artwork" width="100%"></picture><strong>The Scout</strong><br>Always looking for the next opportunity.</td>
+</tr>
+<tr>
+<td width="50%" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-messenger-dark.svg"><img src="docs/assets/creature-messenger-light.svg" alt="Messenger mascot concept artwork" width="100%"></picture><strong>The Messenger</strong><br>Keeping the conversation moving.</td>
+<td width="50%" align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-builder-crew-dark.svg"><img src="docs/assets/creature-builder-crew-light.svg" alt="Builder crew mascot concept artwork" width="100%"></picture><strong>The Builder Crew</strong><br>Helping a community take shape.</td>
+</tr>
+</table>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-coach-stroll-dark.svg">
+  <img src="docs/assets/divider-coach-stroll-light.svg" alt="" width="100%">
 </picture>
 
 ## The product, in motion
