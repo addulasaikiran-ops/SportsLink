@@ -69,7 +69,10 @@ export default function NexconnChatUI() {
         chatApp.ready();
 
         const connection = await chatSdk.NCEngine.connect({ token: tokenData.token });
-        if (!connection || !connection.isOk) throw new Error("Nexconn could not connect this account.");
+        // The official Web Quickstart documents `code === 0` as success.
+        if (!connection || connection.code !== 0) {
+          throw new Error(`Nexconn could not connect this account${connection?.code !== undefined ? ` (code ${connection.code})` : ""}.`);
+        }
         if (!cancelled) {
           setStatus("ready");
           setMessage("");
