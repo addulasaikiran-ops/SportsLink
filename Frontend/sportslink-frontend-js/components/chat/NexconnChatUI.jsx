@@ -107,9 +107,9 @@ export default function NexconnChatUI() {
         chatApp.ready();
 
         const connection = await chatSdk.NCEngine.connect({ token: tokenData.token });
-        // The official Web Quickstart documents `code === 0` as success.
-        if (!connection || connection.code !== 0) {
-          throw new Error(`Nexconn could not connect this account${connection?.code !== undefined ? ` (code ${connection.code})` : ""}.`);
+        // The official Nexconn ChatUI Web quickstart checks the SDK result's isOk flag.
+        if (!connection?.isOk) {
+          throw new Error("Nexconn could not connect this account. Check the app key, region, and token configuration.");
         }
         if (!cancelled) {
           setStatus("ready");
