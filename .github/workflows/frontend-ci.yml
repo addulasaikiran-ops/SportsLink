@@ -23,32 +23,26 @@ jobs:
     defaults:
       run:
         working-directory: Frontend/sportslink-frontend-js
-
     env:
       NEXT_PUBLIC_SUPABASE_URL: https://project-ref.example.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_build_placeholder
       NEXT_PUBLIC_API_URL: http://localhost:8080
       NEXT_PUBLIC_USE_SPRING_API: "false"
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
-
-      # The Nexconn dependency lockfile is being regenerated separately. Install dependencies
-      # without mutating or pushing repository files, then build the app.
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
+      - name: Regenerate and validate npm lockfile
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
       - name: Build frontend
         run: npm run build
-
       - name: Upload generated npm lockfile for review
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,3 +51,36 @@ jobs:
           path: Frontend/sportslink-frontend-js/package-lock.json
           if-no-files-found: error
           retention-days: 3
+
+  # Isolated write-enabled job: only the named same-repository repair PR can
+  # update its lockfile, and only after the read-only build job succeeds.
+  sync-lockfile:
+    name: Commit validated lockfile to repair branch
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'fix/nexconn-lockfile-npm-ci' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/nexconn-lockfile-npm-ci
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
+      - name: Regenerate lockfile without running package scripts
+        working-directory: Frontend/sportslink-frontend-js
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Commit lockfile if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- Frontend/sportslink-frontend-js/package-lock.json; then
+            git add Frontend/sportslink-frontend-js/package-lock.json
+            git commit -m "fix: sync frontend npm lockfile"
+            git push origin HEAD:fix/nexconn-lockfile-npm-ci
+          fi
