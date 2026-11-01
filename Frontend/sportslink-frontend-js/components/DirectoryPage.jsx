@@ -42,27 +42,12 @@ export function DirectoryPage({ section, initialQuery = "" }) {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError) throw authError;
       setCurrentUserId(user?.id || "");
-      if (user?.id) {
-        const { data: requests, error: requestsError } = await supabase.from("connection_requests")
-          .select("id,requester_id,recipient_id,status,created_at")
-          .or(`requester_id.eq.${user.id},recipient_id.eq.${user.id}`);
-        if (requestsError && requestsError.code !== "42P01") throw requestsError;
-        const requestMap = new Map();
-        for (const request of requests || []) {
-          const otherId = request.requester_id === user.id ? request.recipient_id : request.requester_id;
-          requestMap.set(otherId, request);
-        }
-        setConnectionRequests(requestMap);
-      }
 
+      // Load the directory independently from optional connection/follow metadata.
+      // A missing table or a policy/API issue in those features must not hide profiles.
       let data;
       if (USE_SPRING_API) {
-        const [profileData, follows] = await Promise.all([
-          backendRequest("/api/profiles"),
-          backendRequest("/api/follows?direction=following"),
-        ]);
-        data = profileData;
-        setFollowingIds(new Set((follows || []).map((follow) => follow.following_id)));
+        data = await backendRequest("/api/profiles");
       } else {
         let request = supabase
           .from("profiles")
@@ -75,9 +60,37 @@ export function DirectoryPage({ section, initialQuery = "" }) {
         if (profileError) throw profileError;
         data = profileData;
       }
-      setProfiles(data || []);
+      setProfiles(Array.isArray(data) ? data : []);
+
+      if (user?.id) {
+        try {
+          const { data: requests, error: requestsError } = await supabase.from("connection_requests")
+            .select("id,requester_id,recipient_id,status,created_at")
+            .or(`requester_id.eq.${user.id},recipient_id.eq.${user.id}`);
+          if (requestsError) throw requestsError;
+          const requestMap = new Map();
+          for (const request of requests || []) {
+            const otherId = request.requester_id === user.id ? request.recipient_id : request.requester_id;
+            requestMap.set(otherId, request);
+          }
+          setConnectionRequests(requestMap);
+        } catch (metadataError) {
+          console.warn("SPORTSLINK: connection request metadata unavailable; directory remains usable.", metadataError);
+        }
+      }
+
+      if (USE_SPRING_API) {
+        try {
+          const follows = await backendRequest("/api/follows?direction=following");
+          setFollowingIds(new Set((follows || []).map((follow) => follow.following_id)));
+        } catch (metadataError) {
+          console.warn("SPORTSLINK: follow metadata unavailable; directory remains usable.", metadataError);
+        }
+      }
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Unable to load public profiles.");
+      console.error("SPORTSLINK: public profile directory failed to load.", loadError);
+      const message = loadError && typeof loadError.message === "string" ? loadError.message : "";
+      setError(message || "Unable to load public profiles. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
