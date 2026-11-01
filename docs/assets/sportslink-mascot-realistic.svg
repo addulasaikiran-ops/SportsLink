@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
+<title id="title">Pip — SPORTSLINK's 3D-inspired mascot</title>
+<desc id="desc">A polished, dimensional cream fox-kitty with soft fur tufts, amber eyes, golden goggles, a charcoal and yellow sports hoodie, and a football. Pip gently floats and waves.</desc>
+<defs>
+  <linearGradient id="back" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf0"/><stop offset="1" stop-color="#f3e4d7"/></linearGradient>
+  <radialGradient id="fur" cx="34%" cy="22%" r="82%"><stop stop-color="#fff"/><stop offset=".52" stop-color="#fffaf6"/><stop offset=".83" stop-color="#eadfe0"/><stop offset="1" stop-color="#cfc1c8"/></radialGradient>
+  <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe86a"/><stop offset=".55" stop-color="#ffbd16"/><stop offset="1" stop-color="#d98b00"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#fff09a"/><stop offset=".25" stop-color="#ffd84d"/><stop offset=".7" stop-color="#f3b600"/><stop offset="1" stop-color="#bd7800"/></linearGradient>
+  <linearGradient id="hood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#77747d"/><stop offset=".42" stop-color="#45434c"/><stop offset="1" stop-color="#282831"/></linearGradient>
+  <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#646779"/><stop offset=".55" stop-color="#282936"/><stop offset="1" stop-color="#10121b"/></linearGradient>
+  <radialGradient id="eye" cx="35%" cy="22%" r="80%"><stop stop-color="#b47b38"/><stop offset=".4" stop-color="#75421e"/><stop offset=".78" stop-color="#241a18"/><stop offset="1" stop-color="#09090d"/></radialGradient>
+  <linearGradient id="ball" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff"/><stop offset=".6" stop-color="#f4edf0"/><stop offset="1" stop-color="#c9c1ca"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#4a3440" flood-opacity=".2"/></filter>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+  <style>
+    .float{transform-box:fill-box;transform-origin:center;animation:float 3.2s ease-in-out infinite}
+    .wave{transform-box:fill-box;transform-origin:15% 90%;animation:wave 1.9s ease-in-out infinite}
+    .tail{transform-box:fill-box;transform-origin:80% 45%;animation:tail 2.8s ease-in-out infinite}
+    .spark{transform-box:fill-box;transform-origin:center;animation:spark 2s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(2px)}50%{transform:translateY(-7px)}}
+    @keyframes wave{0%,100%{transform:rotate(0)}40%{transform:rotate(-13deg)}65%{transform:rotate(5deg)}}
+    @keyframes tail{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(7deg)}}
+    @keyframes spark{0%,100%{opacity:.55;transform:scale(.9) rotate(-7deg)}50%{opacity:1;transform:scale(1.08) rotate(7deg)}}
+    @media(prefers-reduced-motion:reduce){.float,.wave,.tail,.spark{animation:none}}
+  </style>
+</defs>
+<rect x="8" y="8" width="984" height="404" rx="28" fill="url(#back)" stroke="#e9d8cb" stroke-width="2"/>
+<circle cx="160" cy="100" r="70" fill="#ffd84d" opacity=".1"/><circle cx="830" cy="330" r="82" fill="#f7b8d0" opacity=".12"/>
+<ellipse cx="330" cy="370" rx="155" ry="18" fill="#594651" opacity=".12" filter="url(#soft)"/>
+<g class="spark" fill="#f5bb00"><path d="M125 91l8 18 19 8-19 8-8 19-8-19-19-8 19-8z"/><path d="M595 76l6 14 15 6-15 6-6 15-6-15-15-6 15-6z"/><path d="M605 286l5 11 12 5-12 5-5 12-5-12-12-5 12-5z"/></g>
+<g class="float" filter="url(#shadow)">
+  <!-- fluffy tail with layered fur -->
+  <g class="tail">
+    <path d="M354 270c-72-25-121 14-111 61 8 38 58 51 104 20l45-49z" fill="url(#fur)" stroke="#cfc0c9" stroke-width="3"/>
+    <path d="M258 319q-13-28 10-45-2 21 15 28-1-22 16-35 0 25 18 35 13-4 23-19-1 33-29 49-27 15-53-13z" fill="url(#ear)"/>
+    <path d="M252 310q10 26 36 22M275 284q0 17 13 23M307 278q-2 18 9 26" fill="none" stroke="#fff4cf" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  </g>
+  <!-- ears -->
+  <path d="M250 150 225 63q-7-26 17-10l86 76M407 126l71-75q21-21 24 8l-2 100" fill="url(#fur)" stroke="#bcaeb8" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M258 123l-16-48 55 49M423 117l54-53-4 63" fill="url(#ear)"/>
+  <path d="M257 114l-8-24 34 30M433 109l31-31-3 36" fill="none" stroke="#fff0a0" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+  <!-- body and hoodie -->
+  <path d="M270 260q-35 35-29 83 6 32 47 36h104q48-5 45-40-3-42-35-83z" fill="url(#hood)" stroke="#34323b" stroke-width="5"/>
+  <path d="M285 275q31 23 57 21 29-1 51-23l-5 99H291z" fill="url(#gold)"/>
+  <path d="M316 304q26 21 52 0l-7 15 14 7-22 3-4 21-10-18-22 4 14-17z" fill="#fff9e8" stroke="#f7f0d7" stroke-width="1.5"/>
+  <path d="M274 292q-16 34-6 61M405 291q15 31 10 57" fill="none" stroke="#8c8792" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <path d="M313 270q15 16 34 16t35-16" fill="none" stroke="#ffd84d" stroke-width="13" stroke-linecap="round"/>
+  <path d="M320 280l-4 44M361 280l6 44" stroke="#fff6d8" stroke-width="5" stroke-linecap="round"/><circle cx="315" cy="326" r="5" fill="url(#gold)"/><circle cx="369" cy="326" r="5" fill="url(#gold)"/>
+  <!-- head, cheek tufts -->
+  <path d="M235 169q-1-82 91-91h34q92 9 91 91v47q-1 89-108 91-107-2-108-91z" fill="url(#fur)" stroke="#d5c7ce" stroke-width="4"/>
+  <path d="M240 205q-30 12-27 33 18-4 34-16M445 205q30 12 27 33-18-4-34-16" fill="url(#fur)"/>
+  <path d="M252 213q-8 27 12 43M431 213q8 27-12 43" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+  <!-- goggles strap -->
+  <path d="M237 151q91-42 210 0" fill="none" stroke="#292832" stroke-width="20" stroke-linecap="round"/>
+  <g stroke="#5d4b2d" stroke-width="5" fill="url(#gold)">
+    <rect x="251" y="112" width="83" height="53" rx="20" transform="rotate(-8 292 138)"/>
+    <rect x="353" y="112" width="83" height="53" rx="20" transform="rotate(8 394 138)"/>
+  </g>
+  <g fill="url(#lens)"><rect x="263" y="124" width="59" height="30" rx="12" transform="rotate(-8 292 138)"/><rect x="365" y="124" width="59" height="30" rx="12" transform="rotate(8 394 138)"/></g>
+  <path d="M270 127q14-7 30-4M372 127q14-7 30-4" fill="none" stroke="#cbd4e7" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+  <path d="M335 137h18" stroke="#5d4b2d" stroke-width="8" stroke-linecap="round"/>
+  <!-- face -->
+  <ellipse cx="293" cy="207" rx="22" ry="28" fill="#241b1a"/><ellipse cx="389" cy="207" rx="22" ry="28" fill="#241b1a"/>
+  <ellipse cx="294" cy="207" rx="16" ry="22" fill="url(#eye)"/><ellipse cx="390" cy="207" rx="16" ry="22" fill="url(#eye)"/>
+  <ellipse cx="287" cy="198" rx="7" ry="9" fill="#fff"/><ellipse cx="383" cy="198" rx="7" ry="9" fill="#fff"/><circle cx="300" cy="215" r="3.5" fill="#ffe8b1"/><circle cx="396" cy="215" r="3.5" fill="#ffe8b1"/>
+  <ellipse cx="264" cy="238" rx="20" ry="11" fill="#f7b8c3" opacity=".75"/><ellipse cx="418" cy="238" rx="20" ry="11" fill="#f7b8c3" opacity=".75"/>
+  <path d="M323 239q17 19 35 0" fill="#4b2527" stroke="#5c3c3f" stroke-width="4" stroke-linecap="round"/><path d="M331 248q10 12 20 0" fill="#ef7c89"/>
+  <!-- arms -->
+  <path d="M274 293q-25 7-27 31" fill="none" stroke="#34323b" stroke-width="25" stroke-linecap="round"/><path d="M274 293q-25 7-27 31" fill="none" stroke="#ffd84d" stroke-width="7" stroke-linecap="round"/>
+  <g class="wave"><path d="M405 290q24-23 27-48" fill="none" stroke="#34323b" stroke-width="24" stroke-linecap="round"/><path d="M430 245q-8-18 2-24 9-4 13 12 2-20 12-17 9 4 4 22 12-14 18-5 7 10-15 29-18 13-34-17z" fill="url(#fur)" stroke="#cfc1c8" stroke-width="3"/><path d="M442 244q-2-9 3-12M457 242q-1-8 4-11" fill="none" stroke="#e2b5b8" stroke-width="3" stroke-linecap="round"/></g>
+  <!-- shoes -->
+  <path d="M278 362q-3 15 20 17h30q14-3 5-13l-19-13zM359 363q-1 14 22 16h29q13-3 5-13l-18-13z" fill="#fff9e8" stroke="#bcb0ba" stroke-width="3"/>
+  <path d="M282 372h47M364 373h45" stroke="#ffd84d" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- football with glossy highlights -->
+<g transform="translate(492 334)" filter="url(#shadow)"><circle r="49" fill="url(#ball)" stroke="#9e929d" stroke-width="3"/><path d="M-2-22l22-7 15 18-8 23H-9l-9-23z" fill="#383640"/><path d="M-18-22l-18-10M20-29l8-18M27 12l21 5M-9 12l-9 25M-36-32l-13 3M-9-22l7-26" stroke="#6c6470" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M-30-34q10-10 22-10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/><path d="M-7 2l8 7 9-8-3 15-10 3z" fill="#ffd84d"/></g>
+<!-- label -->
+<g font-family="Arial,Helvetica,sans-serif"><text x="625" y="143" fill="#77717a" font-size="17" font-weight="700" letter-spacing="4">YOUR LITTLE TEAMMATE</text><text x="619" y="220" fill="#34323b" font-size="72" font-weight="900" letter-spacing="-3">PIP</text><rect x="622" y="240" width="96" height="7" rx="4" fill="#ffd84d"/><text x="622" y="284" fill="#45434c" font-size="25" font-weight="700">Small mascot. Big sports energy.</text><text x="622" y="321" fill="#77717a" font-size="18">A little cheer for every connection,</text><text x="622" y="347" fill="#77717a" font-size="18">opportunity, and win.</text><g fill="#f5bb00"><path d="M894 98l6 14 15 6-15 6-6 15-6-15-15-6 15-6z"/><path d="M915 167l4 10 11 4-11 4-4 11-4-11-11-4 11-4z"/></g></g>
+</svg>
