@@ -8,6 +8,7 @@ import "./chat-ui.css";
 export default function NexconnChatUI() {
   const [status, setStatus] = useState("connecting");
   const [message, setMessage] = useState("Connecting your secure SPORTSLINK session…");
+  const [providerReady, setProviderReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -112,6 +113,10 @@ export default function NexconnChatUI() {
 
         if (!chatApp) throw new Error("Nexconn Chat UI could not initialize.");
         chatApp.ready();
+        // The provider element must be mounted before openChannel is called.
+        // Otherwise ChatUI has no active UI host and channel opening can fail.
+        if (!cancelled) setProviderReady(true);
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
         const connection = await chatSdk.NCEngine.connect({ token: tokenData.token });
         // Nexconn docs show both isOk and code === 0 across SDK quickstarts/versions.
@@ -127,8 +132,15 @@ export default function NexconnChatUI() {
           if (targetUserId === currentUserId) {
             throw new Error("You cannot start a conversation with your own account.");
           }
-          const channelResult = await chatApp.openChannel(new chatSdk.DirectChannelIdentifier(targetUserId), true);
-          if (!(channelResult?.isOk === true || channelResult?.code === 0)) {
+          const channelResult = await chatApp.openChannel(new chatUiSdk.DirectChannelIdentifier(targetUserId), true);
+          // Some ChatUI SDK builds return no result object on success; only treat
+          // explicit non-zero result codes as failures.
+          if (channelResult && typeof channelResult.code === "number" && channelResult.code !== 0) {
+            console.error("Nexconn openChannel failed", { code: channelResult.code });
+            throw new Error(`Could not open this member’s conversation (chat error ${channelResult.code}). Please try again.`);
+          }
+          if (channelResult && channelResult.isOk === false && typeof channelResult.code !== "number") {
+            console.error("Nexconn openChannel returned an unsuccessful result");
             throw new Error("Could not open this member’s conversation. Please try again.");
           }
         }
@@ -159,6 +171,7 @@ export default function NexconnChatUI() {
 
   return (
     <section className="sl-chat-card" aria-label="SPORTSLINK messages">
+      {providerReady ? <div className="sl-nexconn-chat-root" style={status === "ready" ? undefined : { position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}><nc-chat-ui-app-provider></nc-chat-ui-app-provider></div> : null}
       {status !== "ready" ? (
         <div className="sl-chat-state" role={status === "error" ? "alert" : "status"}>
           <div className={"sl-chat-state-icon " + (status === "connecting" ? "is-loading" : "")} aria-hidden="true">
@@ -171,9 +184,7 @@ export default function NexconnChatUI() {
           {status === "setup" ? <a className="sl-chat-help-link" href="https://docs.nexconn.ai/">View Nexconn setup guide ↗</a> : null}
         </div>
       ) : (
-        <div id="sl-nexconn-chat-root" className="sl-nexconn-chat-root">
-          <nc-chat-ui-app-provider></nc-chat-ui-app-provider>
-        </div>
+        <div className="sl-nexconn-chat-ready-spacer" aria-hidden="true" />
       )}
     </section>
   );
