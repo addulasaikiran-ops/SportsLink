@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">SPORTSLINK — a tiny bunny plays football</title>
+<desc id="desc">A cute little bunny dribbles a football, performs a joyful forward flip, scores a goal, and celebrates in a sunny pastel stadium.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#FFF9E8"/><stop offset="1" stop-color="#FFEAF2"/></linearGradient>
+  <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFDF7"/><stop offset="1" stop-color="#F7B8D0"/></linearGradient>
+  <linearGradient id="ball" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7DDE2"/></linearGradient>
+  <style>
+    .ink{stroke:#55545C;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+    .bunny{transform-box:fill-box;transform-origin:center bottom;animation: bunnyFlip 7.2s cubic-bezier(.33,1,.68,1) infinite}
+    .earL{transform-box:fill-box;transform-origin:bottom center;animation:earFlop 1.2s ease-in-out infinite alternate}
+    .earR{transform-box:fill-box;transform-origin:bottom center;animation:earFlop 1.05s ease-in-out infinite alternate-reverse}
+    .ball{transform-box:fill-box;transform-origin:center;animation:ballPlay 7.2s cubic-bezier(.33,1,.68,1) infinite}
+    .foot{transform-box:fill-box;transform-origin:top center;animation:footKick 7.2s ease-in-out infinite}
+    .arm{transform-box:fill-box;transform-origin:top center;animation:armWave 7.2s ease-in-out infinite}
+    .star{transform-box:fill-box;transform-origin:center;animation:twinkle 1.8s ease-in-out infinite}
+    .cloud{animation:cloudDrift 16s ease-in-out infinite alternate}
+    .caption{font:800 27px ui-rounded,system-ui,sans-serif;fill:#55545C;letter-spacing:1px}
+    .tiny{font:700 15px ui-rounded,system-ui,sans-serif;fill:#777780;letter-spacing:3px}
+    @keyframes bunnyFlip{
+      0%,13%,100%{transform:translate(0,0) rotate(0deg)}
+      18%{transform:translate(25px,-9px) rotate(-12deg)}
+      24%{transform:translate(65px,-118px) rotate(170deg)}
+      30%{transform:translate(120px,-150px) rotate(360deg)}
+      36%{transform:translate(172px,-90px) rotate(540deg)}
+      42%,55%{transform:translate(210px,0) rotate(720deg)}
+      62%{transform:translate(225px,-12px) rotate(720deg)}
+      70%,90%{transform:translate(225px,0) rotate(720deg)}
+    }
+    @keyframes earFlop{from{transform:rotate(-10deg)}to{transform:rotate(17deg)}}
+    @keyframes footKick{
+      0%,12%,100%{transform:rotate(0deg)}
+      17%,23%{transform:rotate(-48deg)}
+      30%,38%{transform:rotate(25deg)}
+      44%,70%{transform:rotate(-8deg)}
+    }
+    @keyframes armWave{
+      0%,12%,100%{transform:rotate(0deg)}
+      18%,30%{transform:rotate(-32deg)}
+      42%,58%{transform:rotate(35deg)}
+      65%,90%{transform:rotate(-24deg)}
+    }
+    @keyframes ballPlay{
+      0%,12%{transform:translate(0,0) rotate(0deg)}
+      20%{transform:translate(70px,-10px) rotate(150deg)}
+      29%{transform:translate(180px,-145px) rotate(420deg)}
+      40%{transform:translate(335px,-90px) rotate(760deg)}
+      48%{transform:translate(445px,-5px) rotate(1020deg)}
+      55%,100%{transform:translate(500px,0) rotate(1200deg)}
+    }
+    @keyframes twinkle{0%,100%{opacity:.35;transform:scale(.7) rotate(0deg)}50%{opacity:1;transform:scale(1.2) rotate(20deg)}}
+    @keyframes cloudDrift{from{transform:translateX(-12px)}to{transform:translateX(22px)}}
+    @media(prefers-reduced-motion:reduce){.bunny,.earL,.earR,.ball,.foot,.arm,.star,.cloud{animation:none!important}}
+  </style>
+  <g id="spark"><path d="M0-18 4-4 18 0 4 4 0 18-4 4-18 0-4-4Z" fill="#FFD84D" stroke="#55545C" stroke-width="2.5"/></g>
+</defs>
+<rect width="1200" height="680" rx="30" fill="url(#sky)"/>
+<g class="cloud" fill="#FFFFFF" opacity=".9"><path d="M110 125c-3-22 24-35 42-20 11-34 58-29 63 5 26-6 43 12 39 30H123c-9-3-14-8-13-15Z"/><path d="M820 100c-3-18 20-29 35-17 9-28 48-24 52 4 21-5 35 10 32 25H831c-7-2-12-6-11-12Z"/></g>
+<g opacity=".7"><circle cx="90" cy="230" r="5" fill="#FFD84D"/><circle cx="1080" cy="180" r="6" fill="#F7B8D0"/><circle cx="1000" cy="270" r="4" fill="#FFD84D"/><circle cx="190" cy="310" r="4" fill="#F7B8D0"/></g>
+<text x="600" y="72" text-anchor="middle" class="tiny">A LITTLE FOOTBALL MAGIC</text>
+<text x="600" y="112" text-anchor="middle" class="caption">KICK. FLIP. GOOOOAL!</text>
+<!-- goal -->
+<g transform="translate(875 245)">
+  <path d="M0 205V0H245V205" fill="#FFFFFF" fill-opacity=".24" stroke="#55545C" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M0 40H245M0 80H245M0 120H245M0 160H245M49 0V205M98 0V205M147 0V205M196 0V205" fill="none" stroke="#D9C8D0" stroke-width="2.5" stroke-dasharray="5 5"/>
+  <path d="M-16 205H260" stroke="#55545C" stroke-width="10" stroke-linecap="round"/>
+</g>
+<!-- pitch -->
+<path d="M0 510Q300 475 600 510T1200 500V680H0Z" fill="#DDF2D0"/>
+<path d="M0 570Q300 535 600 570T1200 560" fill="none" stroke="#B8DCA8" stroke-width="4"/>
+<ellipse cx="570" cy="545" rx="340" ry="34" fill="#C9C4C8" opacity=".34"/>
+<!-- bunny: centered around x=370, feet around y=530 -->
+<g class="bunny" transform="translate(0 0)">
+ <g transform="translate(345 420)">
+  <!-- fluffy tail -->
+  <circle cx="-69" cy="53" r="25" fill="#FFFFFF" class="ink"/>
+  <circle cx="-76" cy="46" r="7" fill="#F7B8D0" stroke="none"/>
+  <!-- ears -->
+  <g class="earL"><path d="M-24-103C-63-166-50-230-22-225C9-221 5-153 3-104Z" fill="url(#fur)" class="ink"/><path d="M-22-122C-44-170-36-204-22-204C-7-199-10-156-8-119Z" fill="#F7B8D0"/></g>
+  <g class="earR"><path d="M20-105C12-177 42-220 65-204C89-188 59-135 42-100Z" fill="url(#fur)" class="ink"/><path d="M31-121C31-166 48-190 60-184C69-173 49-139 40-117Z" fill="#F7B8D0"/></g>
+  <!-- body -->
+  <ellipse cx="0" cy="48" rx="66" ry="78" fill="url(#fur)" class="ink"/>
+  <ellipse cx="3" cy="62" rx="36" ry="43" fill="#FFFFFF" opacity=".85"/>
+  <!-- head -->
+  <circle cx="8" cy="-58" r="77" fill="url(#fur)" class="ink"/>
+  <!-- cheeks -->
+  <ellipse cx="-38" cy="-39" rx="17" ry="11" fill="#F7B8D0" opacity=".85"/>
+  <ellipse cx="51" cy="-39" rx="17" ry="11" fill="#F7B8D0" opacity=".85"/>
+  <!-- eyes -->
+  <ellipse cx="-20" cy="-65" rx="7.5" ry="11" fill="#55545C"/>
+  <ellipse cx="32" cy="-65" rx="7.5" ry="11" fill="#55545C"/>
+  <circle cx="-18" cy="-69" r="2.5" fill="#FFFFFF"/><circle cx="34" cy="-69" r="2.5" fill="#FFFFFF"/>
+  <!-- tiny nose and smile -->
+  <path d="M1-48q8-8 16 0q-8 11-16 0Z" fill="#E98EAF" stroke="#55545C" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M9-38q-2 12-14 8M9-38q3 12 15 7" fill="none" class="ink" stroke-width="3.5"/>
+  <!-- arms -->
+  <g class="arm"><path d="M-48 5Q-91 9-79 43Q-72 54-57 39" fill="none" class="ink" stroke-width="18"/><path d="M-48 5Q-91 9-79 43Q-72 54-57 39" fill="none" stroke="#FFFDF7" stroke-width="10"/></g>
+  <g class="arm" style="animation-delay:.15s"><path d="M49 5Q91-8 90 22Q88 39 73 31" fill="none" class="ink" stroke-width="18"/><path d="M49 5Q91-8 90 22Q88 39 73 31" fill="none" stroke="#FFFDF7" stroke-width="10"/></g>
+  <!-- feet -->
+  <g class="foot"><ellipse cx="-32" cy="111" rx="33" ry="17" fill="#F7B8D0" class="ink"/><path d="M-49 110h12" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g>
+  <g class="foot" style="animation-delay:.1s"><ellipse cx="39" cy="110" rx="34" ry="17" fill="#F7B8D0" class="ink"/><path d="M25 109h12" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/></g>
+ </g>
+</g>
+<!-- ball travelling toward goal -->
+<g class="ball" transform="translate(510 505)">
+ <circle r="35" fill="url(#ball)" class="ink"/>
+ <path d="M-12-12 0-21 13-12 9 3-7 5Z" fill="#55545C"/>
+ <path d="M-12-12-25-15M13-12 26-15M9 3 18 20M-7 5-15 22M-25-15-29 4-15 22M26-15 29 4 18 20" fill="none" stroke="#55545C" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M-7-31 0-35 8-31" fill="none" stroke="#55545C" stroke-width="3"/>
+</g>
+<!-- goal celebration sparkles -->
+<g class="star"><use href="#spark" x="1040" y="210"/><use href="#spark" x="1120" y="300" transform="scale(.7) translate(480 130)"/></g>
+<g class="star" style="animation-delay:.5s"><use href="#spark" x="790" y="300" transform="scale(.65) translate(430 160)"/></g>
+<g transform="translate(600 615)">
+ <rect x="-210" y="-28" width="420" height="48" rx="24" fill="#FFFFFF" stroke="#E7DDE2" stroke-width="2"/>
+ <circle cx="-177" cy="-4" r="9" fill="#FFD84D" stroke="#55545C" stroke-width="2"/>
+ <text x="8" y="3" text-anchor="middle" class="tiny" style="letter-spacing:2px">SPORTSLINK • PLAY HAPPY</text>
+ <circle cx="177" cy="-4" r="9" fill="#F7B8D0" stroke="#55545C" stroke-width="2"/>
+</g>
+</svg>
