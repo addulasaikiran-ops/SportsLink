@@ -58,6 +58,11 @@ export default function NexconnChatUI() {
         // region explicitly so client routing matches NEXCONN_API_BASE_URL.
         chatSdk.NCEngine.initialize({ appKey, areaCode: chatSdk.AreaCode.NA });
 
+        // Read the recipient from the public-profile Send Message link. SPORTSLINK
+        // profile UUIDs map to Nexconn IDs by removing non-alphanumeric characters.
+        const requestedMember = new URLSearchParams(window.location.search).get("member");
+        const targetUserId = requestedMember ? requestedMember.replace(/[^a-zA-Z0-9]/g, "") : "";
+
         // Nexconn IDs use the same stable, hyphen-free Supabase UUID mapping
         // as the token endpoint. Fetch profiles only through SPORTSLINK's
         // authenticated API so profile visibility continues to obey backend RLS.
@@ -114,6 +119,20 @@ export default function NexconnChatUI() {
         if (!(connection?.isOk === true || connection?.code === 0)) {
           throw new Error("Nexconn could not connect this account. Check the app key, region, and token configuration.");
         }
+        // Open the requested one-to-one channel only after authentication succeeds.
+        // DirectChannelIdentifier is the ChatUI SDK API; query parameters alone do not
+        // cause the provider component to select a conversation.
+        if (targetUserId) {
+          const currentUserId = String(chatApp.getCurrenUserId?.() || "").replace(/[^a-zA-Z0-9]/g, "");
+          if (targetUserId === currentUserId) {
+            throw new Error("You cannot start a conversation with your own account.");
+          }
+          const channelResult = await chatApp.openChannel(new chatSdk.DirectChannelIdentifier(targetUserId), true);
+          if (!(channelResult?.isOk === true || channelResult?.code === 0)) {
+            throw new Error("Could not open this member’s conversation. Please try again.");
+          }
+        }
+
         if (!cancelled) {
           setStatus("ready");
           setMessage("");
