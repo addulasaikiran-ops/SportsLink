@@ -13,6 +13,8 @@ on:
       - ".github/workflows/frontend-ci.yml"
   workflow_dispatch:
 
+# Write access is used only by the guarded lockfile-sync step on the named
+# same-repository repair branch. All other workflow runs remain read-only.
 permissions:
   contents: read
 
@@ -33,6 +35,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          # Persist credentials only for the explicitly guarded repair-branch commit.
+          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -41,8 +46,6 @@ jobs:
           cache: npm
           cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
 
-      # Regenerate the lockfile from package.json, then prove clean installs work.
-      # This is done only in the CI workspace; it does not push generated files.
       - name: Regenerate and validate npm lockfile
         run: |
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund
@@ -50,6 +53,22 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+
+      # Only update the lockfile on this specific same-repository PR branch,
+      # and only after npm ci and the production build have both succeeded.
+      - name: Commit validated lockfile to repair branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'fix/nexconn-lockfile-npm-ci' && github.event.pull_request.head.repo.full_name == github.repository
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- Frontend/sportslink-frontend-js/package-lock.json; then
+            git add Frontend/sportslink-frontend-js/package-lock.json
+            git commit -m "fix: sync frontend npm lockfile"
+            git push origin HEAD:fix/nexconn-lockfile-npm-ci
+          fi
 
       - name: Upload generated npm lockfile for review
         if: always()
