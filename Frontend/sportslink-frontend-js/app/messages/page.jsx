@@ -1,4 +1,4 @@
-import { MessagesPage as MessagingWorkspace } from "@/components/WorkspacePages";
+import NexconnChatUI from "@/components/chat/NexconnChatUI";
 
 export const metadata = {
   title: "Messages | SPORTSLINK",
@@ -8,7 +8,7 @@ export const metadata = {
 export default function MessagesPage() {
   return (
     <main className="sl-messages-page">
-      <MessagingWorkspace />
+      <NexconnChatUI />
     </main>
   );
 }
