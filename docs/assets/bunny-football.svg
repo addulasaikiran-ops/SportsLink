@@ -46,7 +46,7 @@
       29%{transform:translate(180px,-145px) rotate(420deg)}
       40%{transform:translate(335px,-90px) rotate(760deg)}
       48%{transform:translate(445px,-5px) rotate(1020deg)}
-      55%,100%{transform:translate(500px,0) rotate(1200deg)}
+      55%,100%{transform:translate(500px,-120px) rotate(1200deg)}
     }
     @keyframes twinkle{0%,100%{opacity:.35;transform:scale(.7) rotate(0deg)}50%{opacity:1;transform:scale(1.2) rotate(20deg)}}
     @keyframes cloudDrift{from{transform:translateX(-12px)}to{transform:translateX(22px)}}
