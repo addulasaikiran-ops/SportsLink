@@ -16,10 +16,10 @@
 <p><strong>A connected community for athletes, coaches, scouts, clubs and sports professionals.</strong></p>
 
 <p align="center">
-  <img src="docs/assets/sportslink-mascot.svg" alt="Pip, the SPORTSLINK mascot: a cheerful cream fox-kitty in golden goggles with a football" width="100%">
+  <img src="docs/assets/sportslink-mascot-realistic.svg" alt="Pip, the dimensional cream-and-gold fox-kitty SPORTSLINK mascot with goggles and a football" width="100%">
 </p>
 
-<p align="center"><strong>Meet Pip — your tiny teammate for big sports energy.</strong></p>
+<p align="center"><strong>Meet Pip — a dimensional, softly shaded little teammate with animated floating, waving and sparkles.</strong></p>
 
 
 <p>
