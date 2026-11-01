@@ -41,10 +41,12 @@ jobs:
           cache: npm
           cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
 
-      # The Nexconn dependency lockfile is being regenerated separately. Install dependencies
-      # without mutating or pushing repository files, then build the app.
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      # Regenerate the lockfile in the runner, validate a clean npm ci install,
+      # and publish the generated lockfile as an artifact for review. Never push from CI.
+      - name: Generate lockfile and verify clean install
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
 
       - name: Build frontend
         run: npm run build
