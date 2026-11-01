@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Activity, ArrowLeft, Award, CalendarDays, GraduationCap, Globe, MapPin, Trophy, UserRound } from "lucide-react";
+import { Activity, ArrowLeft, Award, CalendarDays, GraduationCap, Globe, MapPin, Trophy, UserRound, MessageCircle, UserPlus, UserCheck, MoreVertical, Flag, Ban } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { backendRequest } from "@/lib/api/backend";
 import { createClient } from "@/lib/supabase/client";
 import { Heading } from "./shared";
 import { ProfileCompletionBadge } from "@/components/ProfileCompletionBadge";
@@ -54,6 +56,13 @@ export function PublicProfilePage({ profileId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [postsError, setPostsError] = useState("");
+  const [following, setFollowing] = useState(false);
+  const [followBusy, setFollowBusy] = useState(false);
+  const [connection, setConnection] = useState(null);
+  const [connectionBusy, setConnectionBusy] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [actionNotice, setActionNotice] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     let active = true;
@@ -84,6 +93,17 @@ export function PublicProfilePage({ profileId }) {
         if (active) {
           setViewerId(authData.user.id);
           setProfile(profileData);
+          if (authData.user.id !== profileId) {
+            try {
+              const follows = await backendRequest("/api/follows?direction=following");
+              setFollowing(Array.isArray(follows) && follows.some((item) => item.following_id === profileId));
+            } catch { /* Follow controls remain available; errors are shown if the user acts. */ }
+            const { data: requests, error: requestsError } = await supabase.from("connection_requests")
+              .select("id,requester_id,recipient_id,status,created_at")
+              .or(`and(requester_id.eq.${authData.user.id},recipient_id.eq.${profileId}),and(requester_id.eq.${profileId},recipient_id.eq.${authData.user.id})`)
+              .limit(1);
+            if (!requestsError) setConnection((requests || [])[0] || null);
+          }
         }
 
         const { data: recentPosts, error: recentPostsError } = await supabase
@@ -130,6 +150,55 @@ export function PublicProfilePage({ profileId }) {
   const website = websiteHref(profile.website_url);
   const memberSince = formatMemberSince(profile.created_at);
 
+  async function toggleFollow() {
+    if (followBusy || !viewerId || viewerId === profile.id) return;
+    setFollowBusy(true); setActionNotice("");
+    try {
+      if (following) {
+        await backendRequest(`/api/follows/${encodeURIComponent(profile.id)}`, { method: "DELETE" });
+        setFollowing(false);
+      } else {
+        await backendRequest(`/api/follows/${encodeURIComponent(profile.id)}`, { method: "POST" });
+        setFollowing(true);
+      }
+    } catch (e) { setActionNotice(e instanceof Error ? e.message : "Unable to update follow status."); }
+    finally { setFollowBusy(false); }
+  }
+
+  async function toggleConnection() {
+    if (connectionBusy || !viewerId || viewerId === profile.id) return;
+    setConnectionBusy(true); setActionNotice("");
+    try {
+      const supabase = createClient();
+      if (!supabase) throw new Error("Supabase is not configured.");
+      if (connection?.status === "pending" && connection.recipient_id === viewerId) {
+        const { error } = await supabase.from("connection_requests").update({ status: "accepted" }).eq("id", connection.id);
+        if (error) throw error;
+        setConnection({ ...connection, status: "accepted" });
+      } else if (connection?.status === "pending" && connection.requester_id === viewerId) {
+        setActionNotice("Your connection invitation is pending.");
+      } else if (connection?.status === "accepted") {
+        setActionNotice("You are already connected.");
+      } else {
+        const { data, error } = await supabase.from("connection_requests")
+          .insert({ requester_id: viewerId, recipient_id: profile.id, status: "pending" })
+          .select("id,requester_id,recipient_id,status,created_at").single();
+        if (error) throw error;
+        setConnection(data);
+        setActionNotice("Connection invitation sent.");
+      }
+    } catch (e) { setActionNotice(e instanceof Error ? e.message : "Unable to update this connection."); }
+    finally { setConnectionBusy(false); }
+  }
+
+  function openMessage() { router.push(`/messages?member=${encodeURIComponent(profile.id)}`); }
+  function handleProfileSafetyAction(action) {
+    setMenuOpen(false);
+    setActionNotice(action === "report"
+      ? "Profile reporting is not connected to the moderation service yet."
+      : "Blocking is not connected to the account safety service yet.");
+  }
+
   const roleLabel = (profile.role || "member").replaceAll("_", " ");
   const heroHeadline = [roleLabel, profile.sport].filter(Boolean).join(" · ");
 
@@ -158,8 +227,26 @@ export function PublicProfilePage({ profileId }) {
         <div className="profile-reference-actions">
           {viewerId === profile.id
             ? <Link className="button button-primary profile-reference-edit-button" href="/profile">Edit profile</Link>
-            : <Link className="button button-secondary profile-reference-edit-button" href="/discover"><ArrowLeft size={16}/> Discover members</Link>}
+            : <div className="public-profile-action-row">
+                <button className="button button-primary profile-message-button" type="button" onClick={openMessage}><MessageCircle size={17}/> Send Message</button>
+                <button className="button button-secondary" type="button" onClick={toggleConnection} disabled={connectionBusy}>
+                  {connectionBusy ? <Activity size={16} className="spin"/> : connection?.status === "accepted" ? <UserCheck size={16}/> : <UserPlus size={16}/>}
+                  {connection?.status === "accepted" ? "Connected" : connection?.status === "pending" && connection.requester_id === viewerId ? "Requested" : connection?.status === "pending" ? "Accept Request" : "Connect"}
+                </button>
+                <button className="button button-secondary" type="button" onClick={toggleFollow} disabled={followBusy}>
+                  {followBusy ? <Activity size={16} className="spin"/> : <UserRound size={16}/>}
+                  {following ? "Following" : "Follow"}
+                </button>
+                <div className="profile-more-wrap">
+                  <button className="button button-secondary profile-more-button" type="button" aria-label="More profile actions" aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><MoreVertical size={18}/></button>
+                  {menuOpen && <div className="profile-more-menu" role="menu">
+                    <button type="button" role="menuitem" onClick={() => handleProfileSafetyAction("report")}><Flag size={15}/> Report profile</button>
+                    <button type="button" role="menuitem" onClick={() => handleProfileSafetyAction("block")}><Ban size={15}/> Block user</button>
+                  </div>}
+                </div>
+              </div>}
         </div>
+        {actionNotice && <p className="profile-action-notice" role="status">{actionNotice}</p>}
       </div>
     </section>
 
