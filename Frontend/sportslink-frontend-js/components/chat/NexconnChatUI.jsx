@@ -54,7 +54,9 @@ export default function NexconnChatUI() {
         const chatUiSdk = await import("@nexconn/chatui");
         if (cancelled) return;
 
-        chatSdk.NCEngine.initialize({ appKey });
+        // SPORTSLINK's Nexconn app is registered in North America; configure the SDK
+        // region explicitly so client routing matches NEXCONN_API_BASE_URL.
+        chatSdk.NCEngine.initialize({ appKey, areaCode: chatSdk.AreaCode.NA });
 
         // Nexconn IDs use the same stable, hyphen-free Supabase UUID mapping
         // as the token endpoint. Fetch profiles only through SPORTSLINK's
@@ -107,8 +109,9 @@ export default function NexconnChatUI() {
         chatApp.ready();
 
         const connection = await chatSdk.NCEngine.connect({ token: tokenData.token });
-        // The official Nexconn Chat SDK Web quickstart signals success with code === 0.
-        if (connection?.code !== 0) {
+        // Nexconn docs show both isOk and code === 0 across SDK quickstarts/versions.
+        // Accept either documented success signal for compatibility.
+        if (!(connection?.isOk === true || connection?.code === 0)) {
           throw new Error("Nexconn could not connect this account. Check the app key, region, and token configuration.");
         }
         if (!cancelled) {
