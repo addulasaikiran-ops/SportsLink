@@ -22,6 +22,9 @@
 
 ## The idea
 
+<picture><img src="docs/assets/moog-orbit.svg" alt="Animated yellow sports ball bouncing between two Moog Bots" width="100%"></picture>
+
+
 **New visual palette:** warm yellow `#FFD84D`, playful pink `#F7B8D0`, and soft charcoal grey `#55545C` with pale cream surfaces.
 
 Sport runs on people: athletes finding coaches, scouts spotting potential, clubs building teams, and professionals sharing opportunities. **SPORTSLINK is a professional networking platform focused on the sports community**—a place to discover people, build connections, share updates, and explore sporting opportunities.
@@ -45,6 +48,9 @@ The Moog Bots are the little pixel crew that brings this README to life. They ju
 <picture><img src="docs/assets/moog-scout.svg" alt="Zed the scout bot bounces beside abstract profile cards and a bright star" width="100%"></picture>
 
 ## What you can do
+
+<picture><img src="docs/assets/moog-connect.svg" alt="Animated profile cards moving together with a spinning connection spark" width="100%"></picture>
+
 
 <table width="100%">
 <tr>
@@ -217,6 +223,8 @@ On Windows, use `gradlew.bat bootRun`. Configure the backend environment variabl
 ### 4. Build checks
 
 Run the scripts defined by the project manifests and workflows. Use the repository's current CI configuration as the source of truth for required checks; a successful local frontend build alone does not validate the backend, Android packaging, database policies, or deployed service.
+
+<picture><img src="docs/assets/moog-progress.svg" alt="Five yellow, pink and grey blocks hopping in sequence" width="100%"></picture>
 
 ## Roadmap for contributors
 
