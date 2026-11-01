@@ -15,6 +15,13 @@
 
 <p><strong>A connected community for athletes, coaches, scouts, clubs and sports professionals.</strong></p>
 
+<p align="center">
+  <img src="docs/assets/sportslink-mascot.svg" alt="Pip, the SPORTSLINK mascot: a cheerful cream fox-kitty in golden goggles with a football" width="100%">
+</p>
+
+<p align="center"><strong>Meet Pip — your tiny teammate for big sports energy.</strong></p>
+
+
 <p>
   <a href="https://sportslink.up.railway.app/"><img alt="Open SPORTSLINK" src="https://img.shields.io/badge/OPEN%20APP-LIVE-FFD84D?style=for-the-badge&labelColor=55545C"></a>
   <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub repository" src="https://img.shields.io/badge/GITHUB-SOURCE-55545C?style=for-the-badge&logo=github"></a>
@@ -43,14 +50,6 @@ Sport is more than a game. It is people, teams, talent, relationships and opport
 
 SPORTSLINK is a professional networking platform focused on the sports community. It brings athletes, coaches, scouts, clubs and other sports professionals into one connected place to discover people, build meaningful connections, share updates and explore opportunities.
 
-## Your starting points
-
-## Meet the SPORTSLINK crew
-
-<picture><img src="docs/assets/moog-scout.svg" alt="Animated scout bot bouncing beside profile cards and a bright star" width="100%"></picture>
-
-Our small pixel crew represents the connections that make the sports world move. These characters are decorative project artwork.
-
 ## The platform
 
 <picture><img src="docs/assets/moog-connect.svg" alt="Animated profile cards moving together with a spinning connection spark" width="100%"></picture>
@@ -68,6 +67,7 @@ Our small pixel crew represents the connections that make the sports world move.
 
 ## Project snapshot
 
+**189 tracked files · 29 backend API operations · 14 SQL migrations · 13 App Router page modules**  
 <sub>Repository counts from the audited Git tree, not live user or production usage metrics. Evidence: <a href="docs/FACTS.md">docs/FACTS.md</a>.</sub>
 
 ## Technology stack
