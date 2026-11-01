@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+<title id="title">Pip, the SPORTSLINK mascot</title><desc id="desc">Tiny cream fox-kitty with golden ears, yellow goggles and charcoal hoodie, gently floating and waving.</desc>
+<style>
+.pip{transform-box:fill-box;transform-origin:center;animation:bob 2.8s ease-in-out infinite}
+.tail{transform-box:fill-box;transform-origin:80% 30%;animation:tail 2.4s ease-in-out infinite}
+.paw{transform-box:fill-box;transform-origin:20% 85%;animation:wave 1.7s ease-in-out infinite}
+.spark{transform-box:fill-box;transform-origin:center;animation:shine 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(1px)}50%{transform:translateY(-3px)}}
+@keyframes tail{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(8deg)}}
+@keyframes wave{0%,100%{transform:rotate(0)}40%{transform:rotate(-14deg)}65%{transform:rotate(7deg)}}
+@keyframes shine{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.pip,.tail,.paw,.spark{animation:none}}
+</style>
+<ellipse cx="80" cy="145" rx="34" ry="5" fill="#55545c" opacity=".09"/>
+<g class="spark" fill="#ffd84d"><path d="M25 39l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path d="M132 66l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></g>
+<g class="pip">
+<g class="tail"><path d="M103 111c23-5 30 10 20 20-7 7-17 5-25-3" fill="#fff" stroke="#55545c" stroke-width="3" stroke-linecap="round"/><path d="M116 124q9 0 10 6-8 7-16 0z" fill="#ffd84d"/></g>
+<path d="M43 54 34 22q-2-7 5-3l27 25M99 44l23-25q6-5 6 3l-2 34" fill="#fff9e8" stroke="#55545c" stroke-width="3.5" stroke-linejoin="round"/><path d="M43 43l-4-15 18 17M105 43l15-16-1 18" fill="#ffd84d"/>
+<path d="M49 99q-10 12-7 30 2 10 17 11h39q18-2 17-14-1-16-10-27z" fill="#55545c" stroke="#44434a" stroke-width="3"/><path d="M62 103q9 8 18 8t18-8l-2 35H64z" fill="#ffd84d"/><path d="M76 116l4 4 5-4-2 8 6 3-8 1-1 7-3-6-7 1 5-5z" fill="#fff9e8"/>
+<path d="M39 66q0-29 30-31h21q31 2 31 31v18q0 30-41 30T39 84z" fill="#fff" stroke="#55545c" stroke-width="3.5"/>
+<path d="M39 54q41-16 82 0" fill="none" stroke="#55545c" stroke-width="7" stroke-linecap="round"/>
+<g fill="#ffd84d" stroke="#55545c" stroke-width="2.8"><rect x="46" y="43" width="28" height="19" rx="7" transform="rotate(-7 60 52)"/><rect x="84" y="43" width="28" height="19" rx="7" transform="rotate(7 98 52)"/></g><g fill="#55545c"><rect x="50" y="47" width="20" height="11" rx="4" transform="rotate(-7 60 52)"/><rect x="88" y="47" width="20" height="11" rx="4" transform="rotate(7 98 52)"/></g>
+<ellipse cx="62" cy="77" rx="6" ry="9" fill="#4b342b"/><ellipse cx="97" cy="77" rx="6" ry="9" fill="#4b342b"/><circle cx="64" cy="74" r="2" fill="#fff"/><circle cx="99" cy="74" r="2" fill="#fff"/><ellipse cx="49" cy="88" rx="7" ry="4" fill="#f7b8d0"/><ellipse cx="109" cy="88" rx="7" ry="4" fill="#f7b8d0"/><path d="M73 88q7 8 14 0" fill="#e97e86" stroke="#55545c" stroke-width="2" stroke-linecap="round"/>
+<g class="paw"><path d="M103 106q11-8 14-19" fill="none" stroke="#55545c" stroke-width="10" stroke-linecap="round"/><path d="M112 91q-3-8 1-10 5-2 6 6 2-8 6-6 4 2 1 9 6-5 8-1 2 5-8 12-8 4-14-10z" fill="#fff9e8" stroke="#55545c" stroke-width="2.5" stroke-linejoin="round"/></g>
+</g></svg>
