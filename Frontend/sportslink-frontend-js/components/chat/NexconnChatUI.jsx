@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient as createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { backendRequest } from "@/lib/api/backend";
 import "./chat-ui.css";
 
 export default function NexconnChatUI() {
@@ -54,11 +55,48 @@ export default function NexconnChatUI() {
         if (cancelled) return;
 
         chatSdk.NCEngine.initialize({ appKey });
+
+        // Nexconn IDs use the same stable, hyphen-free Supabase UUID mapping
+        // as the token endpoint. Fetch profiles only through SPORTSLINK's
+        // authenticated API so profile visibility continues to obey backend RLS.
+        let profileRowsPromise;
+        const loadProfileRows = () => {
+          if (!profileRowsPromise) {
+            profileRowsPromise = Promise.all([
+              backendRequest("/api/profiles"),
+              backendRequest("/api/profiles/me").catch(() => null),
+            ]).then(([others, current]) => {
+              const rows = [...(Array.isArray(others) ? others : [])];
+              if (current && typeof current === "object") rows.push(current);
+              return rows;
+            }).catch((error) => {
+              profileRowsPromise = null;
+              throw error;
+            });
+          }
+          return profileRowsPromise;
+        };
+
         chatApp = chatUiSdk.NCChatUIApplication.initialize({
           language: "en_US",
           hooks: {
-            // Connect these hooks to authorized SPORTSLINK profile/group APIs before production.
-            reqUserProfiles: async () => [],
+            reqUserProfiles: async (userIds = []) => {
+              if (!Array.isArray(userIds) || userIds.length === 0) return [];
+              const requestedIds = new Set(userIds.map((id) => String(id)));
+              const rows = await loadProfileRows();
+              return rows.filter((profile) => {
+                const mappedId = String(profile?.id || "").replace(/[^a-zA-Z0-9]/g, "");
+                return mappedId && requestedIds.has(mappedId);
+              }).map((profile) => ({
+                userId: String(profile.id).replace(/[^a-zA-Z0-9]/g, ""),
+                name: String(profile.full_name || profile.username || "SPORTSLINK member").slice(0, 64),
+                ...(typeof profile.avatar_url === "string" && /^https:\/\//i.test(profile.avatar_url)
+                  ? { avatarUrl: profile.avatar_url }
+                  : {}),
+              }));
+            },
+            // SPORTSLINK does not yet have a shared Nexconn group/system
+            // identity mapping. Keep these empty rather than inventing IDs.
             reqGroupProfiles: async () => [],
             reqSystemProfiles: async () => [],
             reqGroupMembers: async () => [],
