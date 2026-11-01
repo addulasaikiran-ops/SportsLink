@@ -9,9 +9,9 @@
 <p><strong>The professional network for sport.</strong><br>Find your people. Build your network. Move sport forward.</p>
 
 <p>
-  <a href="https://sportslink.up.railway.app/"><img alt="Open live app" src="https://img.shields.io/badge/OPEN%20APP-LIVE-70D522?style=for-the-badge&labelColor=102D50"></a>
-  <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub source" src="https://img.shields.io/badge/SOURCE-GITHUB-102D50?style=for-the-badge&logo=github"></a>
-  <a href="docs/FACTS.md"><img alt="Verified project facts" src="https://img.shields.io/badge/PROJECT-FACTS-70D522?style=for-the-badge&labelColor=102D50"></a>
+  <a href="https://sportslink.up.railway.app/"><img alt="Open live app" src="https://img.shields.io/badge/OPEN%20APP-LIVE-FFD84D?style=for-the-badge&labelColor=55545C"></a>
+  <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub source" src="https://img.shields.io/badge/SOURCE-GITHUB-55545C?style=for-the-badge&logo=github"></a>
+  <a href="docs/FACTS.md"><img alt="Verified project facts" src="https://img.shields.io/badge/PROJECT-FACTS-FFD84D?style=for-the-badge&labelColor=55545C"></a>
 </p>
 
 <p><a href="#the-moog-bots">Meet the bots</a> · <a href="#what-you-can-do">Explore the platform</a> · <a href="#under-the-hood">Architecture</a> · <a href="#run-locally">Run locally</a></p>
@@ -21,6 +21,8 @@
 <picture><img src="docs/assets/moog-relay.svg" alt="Three Moog Bots bounce a glowing pixel block along a dotted relay path" width="100%"></picture>
 
 ## The idea
+
+**New visual palette:** warm yellow `#FFD84D`, playful pink `#F7B8D0`, and soft charcoal grey `#55545C` with pale cream surfaces.
 
 Sport runs on people: athletes finding coaches, scouts spotting potential, clubs building teams, and professionals sharing opportunities. **SPORTSLINK is a professional networking platform focused on the sports community**—a place to discover people, build connections, share updates, and explore sporting opportunities.
 
@@ -120,7 +122,7 @@ flowchart LR
     API -->|Caller token forwarded| DB
     UI --> CHAT[Nexconn chat integration]
     CI[GitHub Actions] --> BUILD[Frontend / backend / Android workflows]
-    classDef lime fill:#70D522,stroke:#102D50,color:#102D50;
+    classDef lime fill:#FFD84D,stroke:#55545C,color:#55545C;
     class AUTH,BUILD lime;
 ```
 
@@ -244,7 +246,7 @@ SportsLink/
 
 <br><br>
 
-<a href="https://sportslink.up.railway.app/"><img alt="Visit SPORTSLINK" src="https://img.shields.io/badge/TRY%20SPORTSLINK-70D522?style=for-the-badge&labelColor=102D50"></a>
+<a href="https://sportslink.up.railway.app/"><img alt="Visit SPORTSLINK" src="https://img.shields.io/badge/TRY%20SPORTSLINK-FFD84D?style=for-the-badge&labelColor=55545C"></a>
 
 <sub>Built for the people who move sport forward. Moog Bots artwork is decorative and uses inline SVG animation with reduced-motion fallbacks.</sub>
 
