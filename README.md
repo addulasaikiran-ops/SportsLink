@@ -1,261 +1,427 @@
 <div align="center">
 
 <picture>
-  <img src="docs/assets/moog-hero.svg" alt="Five animated 3D-inspired pixel Moog Bots jumping together for SPORTSLINK" width="100%">
+  <img src="docs/assets/moog-hero.svg" alt="Animated Moog Bots jumping together for SPORTSLINK" width="100%">
 </picture>
 
-<h1>SPORTSLINK</h1>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/typing-tagline-dark.svg">
+  <img src="docs/assets/typing-tagline-light.svg" alt="Connect. Discover. Grow. Move sport forward." width="100%">
+</picture>
 
-<p><strong>The professional network for sport.</strong><br>Find your people. Build your network. Move sport forward.</p>
+<h3>
+  <samp>BUILDING THE PROFESSIONAL NETWORK FOR SPORT</samp>
+</h3>
+
+<p><strong>A connected community for athletes, coaches, scouts, clubs and sports professionals.</strong></p>
 
 <p>
-  <a href="https://sportslink.up.railway.app/"><img alt="Open live app" src="https://img.shields.io/badge/OPEN%20APP-LIVE-FFD84D?style=for-the-badge&labelColor=55545C"></a>
-  <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub source" src="https://img.shields.io/badge/SOURCE-GITHUB-55545C?style=for-the-badge&logo=github"></a>
-  <a href="docs/FACTS.md"><img alt="Verified project facts" src="https://img.shields.io/badge/PROJECT-FACTS-FFD84D?style=for-the-badge&labelColor=55545C"></a>
+  <a href="https://sportslink.up.railway.app/"><img alt="Open SPORTSLINK" src="https://img.shields.io/badge/OPEN%20APP-LIVE-70D522?style=for-the-badge&labelColor=102D50"></a>
+  <a href="https://github.com/addulasaikiran-ops/SportsLink"><img alt="GitHub repository" src="https://img.shields.io/badge/GITHUB-SOURCE-102D50?style=for-the-badge&logo=github"></a>
+  <a href="docs/FACTS.md"><img alt="Repository audit" src="https://img.shields.io/badge/PROJECT-AUDIT-70D522?style=for-the-badge&labelColor=102D50"></a>
 </p>
 
-<p><a href="#the-moog-bots">Meet the bots</a> · <a href="#what-you-can-do">Explore the platform</a> · <a href="#under-the-hood">Architecture</a> · <a href="#run-locally">Run locally</a></p>
+<p>
+  <a href="#the-sportslink-world"><strong>Explore the platform</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#technology-stack"><strong>Technology</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#architecture"><strong>Architecture</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#run-locally"><strong>Run locally</strong></a>
+</p>
 
 </div>
 
-<picture><img src="docs/assets/moog-relay.svg" alt="Three Moog Bots bounce a glowing pixel block along a dotted relay path" width="100%"></picture>
+<picture><img src="docs/assets/moog-relay.svg" alt="Animated Moog Bots pass a glowing block along a relay path" width="100%"></picture>
 
-## The idea
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-coach-stroll-dark.svg">
+  <img src="docs/assets/divider-coach-stroll-light.svg" alt="" width="100%">
+</picture>
 
-<picture><img src="docs/assets/moog-orbit.svg" alt="Animated yellow sports ball bouncing between two Moog Bots" width="100%"></picture>
+## The SPORTSLINK world
 
+<picture><img src="docs/assets/moog-orbit.svg" alt="Animated sports ball bouncing between two Moog Bots" width="100%"></picture>
 
-**New visual palette:** warm yellow `#FFD84D`, playful pink `#F7B8D0`, and soft charcoal grey `#55545C` with pale cream surfaces.
+Sport is more than a game. It is people, teams, talent, relationships and opportunities.
 
-Sport runs on people: athletes finding coaches, scouts spotting potential, clubs building teams, and professionals sharing opportunities. **SPORTSLINK is a professional networking platform focused on the sports community**—a place to discover people, build connections, share updates, and explore sporting opportunities.
+SPORTSLINK is a professional networking platform focused on the sports community. It brings athletes, coaches, scouts, clubs and other sports professionals into one connected place to discover people, build meaningful connections, share updates and explore opportunities.
 
-The Moog Bots are the little pixel crew that brings this README to life. They jump, pass a glowing block, scout profile cards, and help move the build along. Their scenes are decorative illustrations, not representations of live user activity or product automation.
+<p align="center">
+  <a href="https://sportslink.up.railway.app/">
+    <img src="docs/assets/architecture-block-world-light.svg" width="96%" alt="SPORTSLINK community illustration">
+  </a>
+</p>
 
-## The Moog Bots
+## Your starting points
 
-<table width="100%">
+<table align="center" width="100%">
 <tr>
-<td width="20%" align="center"><strong>01 · PIP</strong><br><sub>Messenger</sub><br><sub>Gets the conversation moving.</sub></td>
-<td width="20%" align="center"><strong>02 · BO</strong><br><sub>Connector</sub><br><sub>Links people and teams.</sub></td>
-<td width="20%" align="center"><strong>03 · ZED</strong><br><sub>Scout</sub><br><sub>Looks for the next connection.</sub></td>
-<td width="20%" align="center"><strong>04 · RU</strong><br><sub>Builder</sub><br><sub>Keeps the pieces moving.</sub></td>
-<td width="20%" align="center"><strong>05 · MO</strong><br><sub>Mascot</sub><br><sub>Always hops in first.</sub></td>
+<td align="center" width="50%">
+<a href="https://sportslink.up.railway.app/"><img src="docs/assets/feature-network.svg" width="100%" alt="Discover the sports network"></a>
+<strong><a href="https://sportslink.up.railway.app/">ENTER SPORTSLINK</a></strong><br>
+<sub>Explore the live platform and connect with the sports community.</sub>
+</td>
+<td align="center" width="50%">
+<a href="docs/FACTS.md"><img src="docs/assets/feature-profile.svg" width="100%" alt="Project facts and audit"></a>
+<strong><a href="docs/FACTS.md">PROJECT FACTS</a></strong><br>
+<sub>Review verified repository details, implementation status and technical evidence.</sub>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+<a href="#technology-stack"><img src="docs/assets/feature-organizations.svg" width="100%" alt="Technology stack"></a>
+<strong><a href="#technology-stack">TECH STACK</a></strong><br>
+<sub>See the tools and frameworks powering SPORTSLINK.</sub>
+</td>
+<td align="center" width="50%">
+<a href="#run-locally"><img src="docs/assets/feature-opportunities.svg" width="100%" alt="Developer setup"></a>
+<strong><a href="#run-locally">DEVELOPER SETUP</a></strong><br>
+<sub>Set up the frontend and backend on your machine.</sub>
+</td>
 </tr>
 </table>
 
-**Tiny lore:** the lime block is a mystery parcel in a cartoon relay. Pip crouches, Bo makes a catch, Zed checks the route, Ru steadies the next step, and Mo celebrates before anyone else. The dots and question marks are visual jokes—not actual messages, credentials, encryption, or a security feature.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-coach-stroll-dark.svg">
+  <img src="docs/assets/divider-coach-stroll-light.svg" alt="" width="100%">
+</picture>
 
-<picture><img src="docs/assets/moog-scout.svg" alt="Zed the scout bot bounces beside abstract profile cards and a bright star" width="100%"></picture>
+## Meet the SPORTSLINK crew
 
-## What you can do
+<picture><img src="docs/assets/moog-scout.svg" alt="Animated scout bot bouncing beside profile cards and a bright star" width="100%"></picture>
+
+Our small pixel crew represents the connections that make the sports world move. These characters are decorative project artwork.
+
+<table align="center" width="100%">
+<tr>
+<td width="50%" align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-connector-dark.svg"><img src="docs/assets/creature-connector-light.svg" width="100%" alt="The Connector"></picture>
+<strong>THE CONNECTOR</strong><br><sub>Bringing the sports community together.</sub>
+</td>
+<td width="50%" align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-scout-dark.svg"><img src="docs/assets/creature-scout-light.svg" width="100%" alt="The Scout"></picture>
+<strong>THE SCOUT</strong><br><sub>Spotting talent and new possibilities.</sub>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-messenger-dark.svg"><img src="docs/assets/creature-messenger-light.svg" width="100%" alt="The Messenger"></picture>
+<strong>THE MESSENGER</strong><br><sub>Keeping conversations moving.</sub>
+</td>
+<td width="50%" align="center">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/creature-builder-crew-dark.svg"><img src="docs/assets/creature-builder-crew-light.svg" width="100%" alt="The Builder Crew"></picture>
+<strong>THE BUILDER CREW</strong><br><sub>Growing teams and organizations.</sub>
+</td>
+</tr>
+</table>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-coach-stroll-dark.svg">
+  <img src="docs/assets/divider-coach-stroll-light.svg" alt="" width="100%">
+</picture>
+
+## The platform
 
 <picture><img src="docs/assets/moog-connect.svg" alt="Animated profile cards moving together with a spinning connection spark" width="100%"></picture>
 
-
 <table width="100%">
 <tr>
 <td width="50%" valign="top">
-
-### Discover people
-Explore profiles across the sports community and find athletes, coaches, scouts, and sports professionals.
-
-### Build your profile
-Present your role, sporting interests, headline, biography, and profile details.
-
-### Grow your network
-Send, review, accept, or decline connection requests. The repository includes a `connection_requests` data model and frontend flows that use it.
-
+<img src="docs/assets/feature-network.svg" width="100%" alt="">
+### Discover your network
+Explore athlete, coach, scout and sports-professional profiles. Search for people and send or respond to connection requests.
 </td>
 <td width="50%" valign="top">
-
-### Share community updates
-The platform includes a feed experience with posts and interaction surfaces.
-
+<img src="docs/assets/feature-profile.svg" width="100%" alt="">
+### Build your profile
+Showcase your sporting role, sport, headline, bio, location, education, skills and profile imagery.
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/assets/feature-feed.svg" width="100%" alt="">
+### Share updates
+Publish posts, comment, react, bookmark useful updates and repost community content.
+</td>
+<td width="50%" valign="top">
+<img src="docs/assets/feature-opportunities.svg" width="100%" alt="">
 ### Explore opportunities
-Find sports-related opportunities and review the relevant application flows.
-
-### Organizations and messaging
-The codebase includes organization-related screens and membership flows, plus a Nexconn chat integration. The exact level of backend wiring differs by feature; this README does not imply every screen uses the same API path.
-
+Discover sports roles, trials, scholarships, teams, sponsorships, volunteer work and other opportunities.
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<img src="docs/assets/feature-messaging.svg" width="100%" alt="">
+### Stay connected
+Use member messaging, conversation threads and notifications to keep in touch.
+</td>
+<td width="50%" valign="top">
+<img src="docs/assets/feature-organizations.svg" width="100%" alt="">
+### Connect organizations
+Create sports organizations, request membership and review member requests.
 </td>
 </tr>
 </table>
 
-> **Implementation note:** feature descriptions are based on the repository, not a guarantee that every flow is fully enabled in the deployed app. Some screens access Supabase directly; selected flows can use the Spring API; chat has a Nexconn integration. See [the repository audit](docs/FACTS.md) for evidence and wiring caveats.
+<sub>Feature descriptions reflect repository UI/API code and migrations. Some features use direct Supabase access, the optional Spring API or Nexconn chat integration; not every feature is routed through one backend. See <a href="docs/FACTS.md">the implementation audit</a> for details.</sub>
 
 ## Project snapshot
 
-The counts below describe the audited Git tree—not live traffic, user totals, or production health.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/stats-dark.svg">
+  <img src="docs/assets/stats-light.svg" alt="189 tracked files, 29 backend API operations, 14 SQL migrations and 13 App Router page modules" width="100%">
+</picture>
 
-| Repository measure | Verified count |
-|---|---:|
-| Tracked files | 189 |
-| Frontend files | 129 |
-| Backend files | 42 |
-| GitHub Actions workflow files | 4 |
-| Next.js App Router page modules | 13 |
-| Concrete page paths when allowed dynamic sections are expanded | 22 |
-| Backend REST operations | 29 |
-| SQL migration files across both migration directories | 14 |
+<sub>Repository counts from the audited Git tree, not live user or production usage metrics. Evidence: <a href="docs/FACTS.md">docs/FACTS.md</a>.</sub>
 
-The page-path count is not a count of page modules, and the migration files are not a complete bootstrap schema. The audit documents the counting method and limitations.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/divider-coach-stroll-dark.svg">
+  <img src="docs/assets/divider-coach-stroll-light.svg" alt="" width="100%">
+</picture>
 
-## Under the hood
+## Technology stack
 
-<picture><img src="docs/assets/moog-build.svg" alt="Ru the builder bot hops beside four illustrated stages inspired by frontend, backend, Android and demo-data workflows" width="100%"></picture>
+<picture><img src="docs/assets/moog-build.svg" alt="Animated builder bot hops beside illustrated frontend, backend, Android and workflow stages" width="100%"></picture>
 
-SPORTSLINK is a multi-part application. The main pieces found in the repository are:
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/tech-marquee-dark.svg">
+  <img src="docs/assets/tech-marquee-light.svg" alt="Next.js, React, Supabase, Spring Boot, Java, Gradle, GSAP, Lucide, Nexconn, Capacitor and GitHub Actions" width="100%">
+</picture>
+</div>
 
-| Layer | Technology | Repository evidence |
+| Layer | Technology | Verified version / detail |
 |---|---|---|
-| Web app | Next.js App Router, React, JavaScript / JSX | Frontend package manifest and app routes |
-| Auth and data | Supabase Auth, Supabase JS / SSR, Postgres and RLS policies in migrations | Frontend dependencies, data-access code, SQL migrations |
-| REST API | Spring Boot Web MVC and Spring Security | Backend Gradle build and Java controllers |
-| Runtime | Java toolchain 25 | Backend build configuration |
-| Build | Gradle wrapper 9.7.1 | Wrapper properties |
-| Motion and icons | GSAP, Lucide React | Frontend dependencies |
-| Chat integration | Nexconn packages and token route | Frontend dependencies and Next.js route handler |
-| CI workflows | GitHub Actions | `.github/workflows/` |
+| Web framework | Next.js | 15.5.27 |
+| UI | React / React DOM | 19.3.0 |
+| Auth and database | Supabase JS + SSR | 2.117.1 / 0.12.7 |
+| API | Spring Boot Web MVC + Security | 4.1.1 |
+| Runtime | Java | Toolchain 25 |
+| Build | Gradle | Wrapper 9.7.1 |
+| Motion | GSAP | 3.15.0 |
+| Icons | Lucide React | 0.468.0 |
+| Chat integration | Nexconn | Chat 26.2.1; UI 26.2.5; Engine 26.2.1 |
+| Android workflow | Capacitor | CI builds a debug APK |
 
-### A simplified request path
+## Architecture
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
+  <img src="docs/assets/architecture-light.svg" alt="SPORTSLINK architecture: Next.js frontend, optional Spring Boot API, Supabase Auth and Postgres with RLS, Nexconn chat, Railway deployment and GitHub Actions" width="100%">
+</picture>
+
+SPORTSLINK is built around a Next.js App Router frontend. It uses Supabase Auth and data access, with a Spring Boot REST API available for selected flows. The backend validates Supabase JWTs and forwards the caller's token to Supabase REST so database grants and row-level security remain in force. The frontend also includes a Nexconn chat client and a server-side token route.
+
+### Authentication and request flow
 
 ```mermaid
-flowchart LR
-    M[Member] --> UI[Next.js + React]
-    UI --> AUTH[Supabase Auth]
-    UI -->|Direct data access in some flows| DB[(Supabase / Postgres)]
-    UI -->|Selected API flows + bearer token| API[Spring Boot REST API]
-    API -->|Caller token forwarded| DB
-    UI --> CHAT[Nexconn chat integration]
-    CI[GitHub Actions] --> BUILD[Frontend / backend / Android workflows]
-    classDef lime fill:#FFD84D,stroke:#55545C,color:#55545C;
-    class AUTH,BUILD lime;
+sequenceDiagram
+    autonumber
+    actor Member
+    participant UI as Next.js UI
+    participant Auth as Supabase Auth
+    participant MW as Next.js Middleware
+    participant API as Spring Boot API
+    participant DB as Supabase REST / Postgres
+
+    Member->>UI: Sign in
+    UI->>Auth: Authenticate
+    Auth-->>UI: Session and access token
+    UI->>MW: Navigate to workspace
+    MW->>Auth: Validate user session
+    Auth-->>MW: Authenticated user
+    MW-->>UI: Allow protected route
+    UI->>API: Optional API request + Bearer token
+    API->>API: Verify Supabase JWT
+    API->>DB: REST request + caller JWT + publishable key
+    DB->>DB: Apply grants and RLS policies
+    DB-->>API: Authorized rows
+    API-->>UI: JSON response
 ```
 
-Some frontend features use Supabase directly rather than passing through Spring Boot. The Spring API defines 29 operations, but the repository audit does **not** claim all 29 are exercised by frontend callers. Security behavior, RLS, and route-level wiring should be checked against the code and migrations before drawing conclusions about any individual flow.
+<sub>Some frontend screens call Supabase directly rather than traversing Spring Boot. The sequence shows the optional API path.</sub>
+
+## API surface
+
+The Spring Boot backend defines 29 REST operations. All require a valid Supabase access token except the public health endpoint.
 
 <details>
-<summary><strong>Spring Boot REST endpoints (expand)</strong></summary>
+<summary><strong>Explore the Spring Boot endpoints</strong></summary>
 
-| Method | Endpoint | Authentication |
-|---|---|---|
-| GET | `/api/health` | Public |
-| GET | `/api/me` | Required |
-| GET | `/api/profiles` | Required |
-| GET | `/api/profiles/me` | Required |
-| PATCH | `/api/profiles/me` | Required |
-| GET | `/api/posts` | Required |
-| POST | `/api/posts` | Required |
-| GET | `/api/posts/{postId}/comments` | Required |
-| POST | `/api/posts/{postId}/comments` | Required |
-| GET | `/api/posts/{postId}/reactions` | Required |
-| PUT | `/api/posts/{postId}/reaction` | Required |
-| DELETE | `/api/posts/{postId}/reaction` | Required |
-| GET | `/api/follows` | Required |
-| POST | `/api/follows/{profileId}` | Required |
-| DELETE | `/api/follows/{profileId}` | Required |
-| GET | `/api/notifications` | Required |
-| PATCH | `/api/notifications/{notificationId}/read` | Required |
-| DELETE | `/api/notifications/{notificationId}` | Required |
-| GET | `/api/opportunities` | Required |
-| POST | `/api/opportunities` | Required |
-| GET | `/api/applications/me` | Required |
-| GET | `/api/opportunities/{opportunityId}/applications` | Required |
-| POST | `/api/opportunities/{opportunityId}/applications` | Required |
-| PATCH | `/api/applications/{applicationId}/status` | Required |
-| GET | `/api/conversations` | Required |
-| POST | `/api/conversations` | Required |
-| GET | `/api/conversations/{conversationId}/messages` | Required |
-| POST | `/api/conversations/{conversationId}/messages` | Required |
-| PATCH | `/api/conversations/{conversationId}/read` | Required |
+| Method | Endpoint | Auth |
+|---|---|---:|
+| GET | /api/health | No |
+| GET | /api/me | Yes |
+| GET | /api/profiles | Yes |
+| GET | /api/profiles/me | Yes |
+| PATCH | /api/profiles/me | Yes |
+| GET | /api/posts | Yes |
+| POST | /api/posts | Yes |
+| GET | /api/posts/{postId}/comments | Yes |
+| POST | /api/posts/{postId}/comments | Yes |
+| GET | /api/posts/{postId}/reactions | Yes |
+| PUT | /api/posts/{postId}/reaction | Yes |
+| DELETE | /api/posts/{postId}/reaction | Yes |
+| GET | /api/follows | Yes |
+| POST | /api/follows/{profileId} | Yes |
+| DELETE | /api/follows/{profileId} | Yes |
+| GET | /api/notifications | Yes |
+| PATCH | /api/notifications/{notificationId}/read | Yes |
+| DELETE | /api/notifications/{notificationId} | Yes |
+| GET | /api/opportunities | Yes |
+| POST | /api/opportunities | Yes |
+| GET | /api/applications/me | Yes |
+| GET | /api/opportunities/{opportunityId}/applications | Yes |
+| POST | /api/opportunities/{opportunityId}/applications | Yes |
+| PATCH | /api/applications/{applicationId}/status | Yes |
+| GET | /api/conversations | Yes |
+| POST | /api/conversations | Yes |
+| GET | /api/conversations/{conversationId}/messages | Yes |
+| POST | /api/conversations/{conversationId}/messages | Yes |
+| PATCH | /api/conversations/{conversationId}/read | Yes |
 
 </details>
 
-### Data and security notes
+## Data layer
 
-- Supabase access appears both directly in frontend code and through the Spring API.
-- The backend validates Supabase JWTs and forwards the caller's token to Supabase REST for its request path; this is not the same as every frontend action going through Spring.
-- SQL migrations define RLS and storage policies for the objects they touch, but the repository does not include a single baseline migration that bootstraps every table listed in application code.
-- The repository contains `connection_requests` references in both the frontend flows and SQL migrations. It is **not** an unused table.
-- No rate-limiting implementation was found in the inspected backend security/controllers. Do not assume one exists without further verification.
+The repository contains 14 SQL migration files across two locations: the root `supabase/migrations/` directory and the frontend's `Frontend/sportslink-frontend-js/supabase/migrations/` directory.
 
-For full route inventory, migration details, auth notes, counting methodology, and file-level evidence, open [docs/FACTS.md](docs/FACTS.md).
+The inspected schema and data-access code reference profiles, posts, comments, post media, reactions, follows, notifications, conversations, messages, opportunities, applications, events, organizations and connection requests.
 
-## Workflows, with a little hop
+**Connection requests are implemented and used.** The directory and public member profile components read and write `connection_requests`; it is not an unused table. The migration folders coexist and are not yet a single canonical migration root. See the [migration ledger and evidence](docs/FACTS.md#database-migrations-filename-order).
 
-The build illustration is a metaphor, not a live CI dashboard. The repository currently contains four workflow files; inspect [`.github/workflows/`](.github/workflows/) for the actual triggers and commands. The workflow set includes frontend/backend checks and Android/demo-related automation. A green pixel in the illustration is not evidence that a workflow has passed.
+## Security
+
+- Supabase JWT resource-server validation in Spring Security.
+- Public exception limited to **GET /api/health** (OPTIONS preflight requests are also permitted).
+- Configurable CORS origin allowlist; credentials are not enabled.
+- Request DTO validation via Jakarta Validation.
+- Spring REST proxy forwards the authenticated member's token and Supabase publishable key; it does not use a service-role key in that request path.
+- Supabase RLS and Storage object policies are defined in the audited migrations.
+- Next.js middleware checks the Supabase session and gates workspace routes.
+- Nexconn app secret is server-only in the token route.
+
+**Scope note:** inspected repository evidence did not establish backend rate limiting or custom CSP/security-header configuration. See [security evidence and limitations](docs/FACTS.md#security-and-request-handling).
 
 ## Run locally
 
-### 1. Requirements
+### Frontend
 
-- Node.js compatible with the repository's frontend workflow (Node 22 is used in frontend CI).
-- Java 25 for the backend.
-- Git.
-- Supabase project configuration for features that need authentication or database access.
-
-### 2. Frontend
+Requirements: Node.js (CI uses Node 22).
 
 ```bash
 cd Frontend/sportslink-frontend-js
-npm ci
-```
-
-Create a local `.env.local` from the repository's `.env.local.example` and fill in the values for your own development environment. Never commit real secrets.
-
-```bash
+cp .env.local.example .env.local
+npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+The app runs at http://localhost:3000.
 
-### 3. Backend (optional)
+### Backend
 
-In a second terminal:
+Requirements: Java 25.
 
 ```bash
 cd Backend/sportslink-backend
+./gradlew test
 ./gradlew bootRun
 ```
 
-On Windows, use `gradlew.bat bootRun`. Configure the backend environment variables described by the backend configuration and deployment workflow. The frontend's `NEXT_PUBLIC_USE_SPRING_API` setting defaults to `false` in the example environment file, so do not assume the frontend uses the API unless configured to do so.
+On Windows PowerShell use `./gradlew.bat test` and `./gradlew.bat bootRun`.
 
-### 4. Build checks
+### Environment variables
 
-Run the scripts defined by the project manifests and workflows. Use the repository's current CI configuration as the source of truth for required checks; a successful local frontend build alone does not validate the backend, Android packaging, database policies, or deployed service.
+Set only the values required by features you enable. Never commit actual secrets.
 
-<picture><img src="docs/assets/moog-progress.svg" alt="Five yellow, pink and grey blocks hopping in sequence" width="100%"></picture>
+| Variable | Used by |
+|---|---|
+| NEXT_PUBLIC_SUPABASE_URL | Frontend Supabase clients |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Frontend Supabase clients |
+| NEXT_PUBLIC_API_URL | Frontend Spring API adapter |
+| NEXT_PUBLIC_USE_SPRING_API | Optional Spring integration switch |
+| NEXT_PUBLIC_NEXCONN_APP_KEY | Nexconn app identity |
+| NEXCONN_APP_SECRET | Server-side Nexconn token signing |
+| NEXCONN_API_BASE_URL | Nexconn regional API |
+| SUPABASE_URL | Backend Supabase REST base URL |
+| SUPABASE_PUBLISHABLE_KEY | Backend Supabase REST API key |
+| SUPABASE_JWT_ISSUER | Optional JWT issuer override |
+| SUPABASE_JWKS_URL | Optional JWKS URL override |
+| SPORTSLINK_CORS_ALLOWED_ORIGIN | Backend CORS origin allowlist |
+| NEXT_PUBLIC_SITE_URL | Canonical site and auth callback origin |
 
-## Roadmap for contributors
+The demo seed workflow also expects Actions secrets named **SUPABASE_URL** and **SUPABASE_SERVICE_ROLE_KEY**. They are used by the manual seed workflow; do not expose them to frontend/browser code.
 
-Good next steps are to keep the README's feature claims aligned with actual frontend callers, document which screens use direct Supabase versus Spring endpoints, add repeatable frontend tests, and maintain a clear baseline for database setup. These are suggestions—not claims that the work is already implemented.
-
-## Repository map
+## Project structure
 
 ```text
 SportsLink/
-├── Frontend/sportslink-frontend-js/  # Next.js application
-├── Backend/sportslink-backend/       # Spring Boot REST API
-├── supabase/migrations/              # Root migration directory
-├── .github/workflows/                # CI and automation
+├── .github/workflows/
+├── Backend/
+│   └── sportslink-backend/
+│       ├── src/main/java/
+│       ├── src/main/resources/
+│       └── src/test/
+├── Frontend/
+│   └── sportslink-frontend-js/
+│       ├── app/
+│       ├── components/
+│       ├── design-system/
+│       ├── lib/
+│       ├── public/
+│       └── supabase/migrations/
+├── supabase/migrations/
 ├── docs/
-│   ├── FACTS.md                      # Evidence-based repository audit
-│   └── assets/                       # README illustrations
+│   ├── FACTS.md
+│   └── assets/
 └── README.md
 ```
 
-## A final hop
+## CI and delivery
 
-<picture><img src="docs/assets/moog-finale.svg" alt="SPORTSLINK block wordmark with the Moog Bots jumping beside it" width="100%"></picture>
+<picture><img src="docs/assets/moog-progress.svg" alt="Animated yellow, pink and grey blocks hop forward in sequence" width="100%"></picture>
+
+Four workflows are present:
+
+- Backend CI builds and tests the Spring Boot service on Java 25.
+- Frontend CI validates the npm lockfile and builds the Next.js application on Node 22.
+- Android workflow builds and uploads a debug APK on manual dispatch.
+- Demo seed workflow is manual, environment-gated and requires an explicit confirmation input.
+
+The Android workflow proves a debug APK artifact path, not a Play Store release pipeline.
+
+## Current engineering boundaries
+
+These are repository findings, not promises or claims that a capability is complete:
+
+- The Spring API integration switch is off by default in the sample frontend environment; callers use direct Supabase for several operations unless enabled.
+- There is no frontend test/spec suite in the tracked tree; frontend CI performs a production build.
+- Backend tests mock the Supabase REST client; no live-database integration test is shown in the tracked test source.
+- Root and frontend migration folders coexist and include overlapping connection-request schema creation; migration history should be consolidated deliberately before new environments depend on one migration command.
+- Rate limiting and custom backend security-header/CSP configuration were not found in the inspected files.
+- Some frontend pages still present empty/unavailable workspaces while API operations or schema structures exist.
+
+For exact evidence and per-feature wiring status, use [docs/FACTS.md](docs/FACTS.md).
+
+<picture><img src="docs/assets/moog-finale.svg" alt="SPORTSLINK wordmark with animated Moog Bots celebrating" width="100%"></picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/footer-dark.svg">
+  <img src="docs/assets/footer-light.svg" alt="SPORTSLINK — your world of sport, connected" width="100%">
+</picture>
 
 <div align="center">
 
-<strong>Find your people. Build your network. Move sport forward.</strong>
+<sub>The Moog Bots are decorative SVG animations, not a live CI or product-activity dashboard.</sub>
 
-<br><br>
+**Built for the people who move sport forward.**
 
-<a href="https://sportslink.up.railway.app/"><img alt="Visit SPORTSLINK" src="https://img.shields.io/badge/TRY%20SPORTSLINK-FFD84D?style=for-the-badge&labelColor=55545C"></a>
-
-<sub>Built for the people who move sport forward. Moog Bots artwork is decorative and uses inline SVG animation with reduced-motion fallbacks.</sub>
+<a href="https://sportslink.up.railway.app/">LIVE APPLICATION</a>
+&nbsp;·&nbsp;
+<a href="https://github.com/addulasaikiran-ops/SportsLink">GITHUB REPOSITORY</a>
+&nbsp;·&nbsp;
+<a href="docs/FACTS.md">TECHNICAL AUDIT</a>
 
 </div>
