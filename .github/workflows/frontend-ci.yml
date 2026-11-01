@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -41,10 +41,23 @@ jobs:
           cache: npm
           cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
 
-      # Install updates the npm lockfile for the newly added Nexconn packages.
-      # Commit the generated lockfile in a follow-up once the dependency tree is resolved.
-      - name: Install dependencies
+      # Resolve the Nexconn dependency tree, commit only the lockfile if it changed,
+      # then prove the committed lockfile supports a clean deterministic install.
+      - name: Resolve dependencies
         run: npm install --no-audit --no-fund
+
+      - name: Commit generated package lockfile
+        run: |
+          if ! git diff --quiet -- Frontend/sportslink-frontend-js/package-lock.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add Frontend/sportslink-frontend-js/package-lock.json
+            git commit -m "chore: update frontend lockfile for Nexconn"
+            git push origin HEAD
+          fi
+
+      - name: Verify clean install
+        run: npm ci --no-audit --no-fund
 
       - name: Build frontend
         run: npm run build
