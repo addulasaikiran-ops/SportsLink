@@ -29,7 +29,9 @@ A professional networking platform for the sports community — bringing athlete
 
 Sport is more than a game. It is people, teams, talent, relationships, and opportunities.
 
-SPORTSLINK helps the sports community build a professional presence, discover people, share updates, connect with others, and explore opportunities in one place.
+**SPORTSLINK is a sports-focused professional networking platform.** It brings athletes, coaches, scouts, clubs, organizations, and other sports professionals into one community where people can build profiles, discover one another, share updates, create connections, and explore sporting opportunities.
+
+<p align="center"><img src="docs/assets/sportslink-mini-buddies.svg" alt="Tiny animated teammates: one playing football, one checking a phone, and two playing together" width="360"></p>
 
 ## ✨ Features
 
@@ -43,10 +45,13 @@ SPORTSLINK helps the sports community build a professional presence, discover pe
 - **Messaging and notifications** — stay connected with your community.
 - **Organizations and events** — discover and participate in the wider sports ecosystem.
 
-*Note: Feature availability and completion can vary. See the [implementation audit](docs/FACTS.md) for repository-backed details.*
+<p align="center"><img src="docs/assets/sportslink-mini-buddies.svg" alt="SPORTSLINK buddies moving together" width="260"></p>
+
+*Note: Feature availability and completion can vary. See the [implementation audit](docs/FACTS.md) for repository-backed details.**
 
 ## 🛠️ Tech stack
 
+<p align="center"><img src="docs/assets/sportslink-mini-buddies.svg" alt="A tiny SPORTSLINK buddy checking a mobile phone" width="220"></p>
 
 
 | Area | Technology |
@@ -116,6 +121,8 @@ SportsLink/
 ```
 
 ## 🤝 Contributing
+
+<p align="center"><img src="docs/assets/sportslink-mini-buddies.svg" alt="SPORTSLINK teammates playing together" width="240"></p>
 
 Ideas, bug reports, and contributions are welcome!
 
