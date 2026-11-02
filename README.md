@@ -15,7 +15,7 @@ A professional networking platform for the sports community — bringing athlete
   <a href="https://github.com/addulasaikiran-ops/SportsLink/issues"><img src="https://img.shields.io/badge/Issues%20%26%20Ideas-F7B8D0?style=for-the-badge&logo=github&logoColor=34323B" alt="Issues and ideas"></a>
 </p>
 
-<img src="docs/assets/sportslink-mascot-realistic.svg" alt="Pip, the SPORTSLINK mascot" width="420">
+<img src="docs/assets/sportslink-mini-buddies.svg" alt="Four small animated SPORTSLINK buddies: playing football, checking a phone, and playing basketball together, on a transparent background" width="760" style="max-width:100%;height:auto">
 
 *Meet Pip — your tiny teammate for big sports energy.*
 
