@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 340" role="img" aria-labelledby="title desc">
+<title id="title">SPORTSLINK mini sports buddies</title>
+<desc id="desc">Four small cream fox mascots on a transparent background: one plays football, one checks a phone, and two play basketball together.</desc>
+<defs>
+ <linearGradient id="fur" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#fffdf7"/><stop offset="1" stop-color="#eadfd2"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe77a"/><stop offset="1" stop-color="#ffbd16"/></linearGradient>
+ <linearGradient id="hood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b4853"/><stop offset="1" stop-color="#292832"/></linearGradient>
+ <filter id="soft" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#6b5c4b" flood-opacity=".14"/></filter>
+ <style>
+ .buddy{transform-box:fill-box;transform-origin:center;animation:bob 2.5s ease-in-out infinite}
+ .phone{transform-box:fill-box;transform-origin:center;animation:phone 2s ease-in-out infinite}
+ .kick{transform-box:fill-box;transform-origin:center;animation:kick 1.1s ease-in-out infinite}
+ .ball{transform-box:fill-box;transform-origin:center;animation:roll 1.6s ease-in-out infinite}
+ .bounce{transform-box:fill-box;transform-origin:center;animation:bounce .8s ease-in-out infinite}
+ .blink{animation:twinkle 2.5s ease-in-out infinite}
+ @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+ @keyframes phone{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+ @keyframes kick{0%,100%{transform:rotate(0)}45%{transform:rotate(-9deg)}}
+ @keyframes roll{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(12px,-7px) rotate(90deg)}}
+ @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+ @keyframes twinkle{0%,100%{opacity:.45}50%{opacity:1}}
+ @media(prefers-reduced-motion:reduce){.buddy,.phone,.kick,.ball,.bounce,.blink{animation:none}}
+ </style>
+</defs>
+<!-- 1: football buddy -->
+<g class="buddy" transform="translate(135 40)" filter="url(#soft)">
+ <ellipse cx="82" cy="268" rx="66" ry="8" fill="#b7a89b" opacity=".18"/>
+ <path d="M25 68Q-12 14 3 0Q43 3 62 43L91 49Q113 7 151 1Q168 21 141 72" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M12 12Q36 19 52 55L31 50Z M140 13L111 57L132 51Z" fill="#ffca27"/>
+ <path d="M38 88Q25 61 49 43Q80 28 111 46Q140 63 126 99L134 142L30 142Z" fill="url(#fur)"/>
+ <path d="M40 93Q79 67 119 93L139 155L20 155Z" fill="url(#hood)"/>
+ <path d="M40 100Q80 118 119 100L113 139L46 139Z" fill="url(#gold)"/>
+ <path d="M64 116l17-10 17 10-17 10z" fill="#fff9e8"/><path d="M80 109l5 8-5 8-5-8z" fill="#ffd84d"/>
+ <ellipse cx="61" cy="79" rx="14" ry="18" fill="#fff"/><ellipse cx="101" cy="79" rx="14" ry="18" fill="#fff"/>
+ <ellipse cx="64" cy="82" rx="8" ry="12" fill="#352d2a"/><ellipse cx="98" cy="82" rx="8" ry="12" fill="#352d2a"/>
+ <circle cx="67" cy="77" r="3.5" fill="#fff"/><circle cx="101" cy="77" r="3.5" fill="#fff"/>
+ <path d="M72 101Q81 111 91 100Q83 117 72 101" fill="#a84c4b"/><ellipse cx="43" cy="97" rx="9" ry="5" fill="#f4a6a0"/><ellipse cx="117" cy="97" rx="9" ry="5" fill="#f4a6a0"/>
+ <path d="M39 58Q61 45 80 56L83 67Q58 58 42 70Z M85 56Q106 44 127 59L123 71Q103 58 84 67Z" fill="#26242b" stroke="#ffca27" stroke-width="6"/>
+ <path d="M39 144L26 176L49 190L64 158M116 145L137 172L126 186L105 158" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M48 150L41 192L72 200L81 164" fill="#fffaf1"/><path d="M91 164L104 199L133 190L119 149" fill="#fffaf1"/>
+ <path d="M41 191Q29 199 44 207L74 207Q82 199 72 194Z M104 198Q99 207 113 211L141 207Q148 199 132 191Z" fill="#282731"/>
+ <g class="kick"><path d="M109 176L135 199L157 189" fill="none" stroke="#fffaf1" stroke-width="17" stroke-linecap="round"/><path d="M150 184l15 4" stroke="#ffd84d" stroke-width="5" stroke-linecap="round"/></g>
+ <g class="ball" transform="translate(190 220)"><circle r="27" fill="#fff" stroke="#d6d1d1" stroke-width="2"/><path d="M-7-11L6-17L17-5L12 10H-7L-15-3Z" fill="#34323b"/><path d="M-15-3l-10-5M12 10l9 8M-7 10l-7 12" stroke="#34323b" stroke-width="5" stroke-linecap="round"/></g>
+ <g class="blink" fill="#ffd84d"><path d="M185 159l5 12 12 5-12 5-5 12-5-12-12-5 12-5z"/></g>
+</g>
+<!-- 2: phone buddy -->
+<g class="buddy" transform="translate(390 58)" filter="url(#soft)" style="animation-delay:-.7s">
+ <ellipse cx="90" cy="250" rx="70" ry="8" fill="#b7a89b" opacity=".16"/>
+ <path d="M35 58Q2 13 13 0Q48 4 66 38L95 44Q117 5 151 4Q169 24 143 67" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M22 12L54 52L34 48Z M140 14L113 53L134 48Z" fill="#ffca27"/>
+ <path d="M42 80Q37 50 67 41Q103 31 127 58Q143 78 129 113L139 146L33 146Z" fill="url(#fur)"/>
+ <path d="M40 94Q85 73 124 94L137 151L29 151Z" fill="url(#hood)"/><path d="M47 101Q85 120 117 101L113 140L48 140Z" fill="url(#gold)"/>
+ <ellipse cx="64" cy="78" rx="13" ry="16" fill="#fff"/><ellipse cx="103" cy="78" rx="13" ry="16" fill="#fff"/><ellipse cx="67" cy="81" rx="7" ry="10" fill="#352d2a"/><ellipse cx="100" cy="81" rx="7" ry="10" fill="#352d2a"/><circle cx="69" cy="77" r="3" fill="#fff"/><circle cx="102" cy="77" r="3" fill="#fff"/>
+ <path d="M75 101Q86 108 96 99Q88 116 75 101" fill="#a84c4b"/><ellipse cx="45" cy="96" rx="9" ry="5" fill="#f4a6a0"/><ellipse cx="119" cy="96" rx="9" ry="5" fill="#f4a6a0"/>
+ <path d="M40 58Q60 47 81 56L83 66Q60 59 43 70Z M87 56Q108 46 129 60L124 70Q105 60 86 67Z" fill="#26242b" stroke="#ffca27" stroke-width="6"/>
+ <path d="M46 146L34 176L55 186L72 154M116 146L136 169L126 185L105 157" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M50 154L46 191L73 198L82 160M95 160L108 197L132 189L119 151" fill="#fffaf1"/>
+ <path d="M45 190Q35 200 49 205L75 205Q82 198 70 192Z M108 196Q101 205 115 209L139 205Q146 197 130 190Z" fill="#282731"/>
+ <g class="phone" transform="translate(115 120) rotate(10)"><rect x="0" y="0" width="38" height="62" rx="7" fill="#25242d" stroke="#ffca27" stroke-width="2"/><rect x="4" y="7" width="30" height="47" rx="3" fill="#f7e9d8"/><path d="M14 25l6-4 6 4-6 4z" fill="#ffd84d"/><path d="M20 23v13" stroke="#ffd84d" stroke-width="3"/><circle cx="19" cy="58" r="1.5" fill="#fff"/></g>
+</g>
+<!-- 3 and 4: two basketball buddies facing off -->
+<g class="buddy" transform="translate(660 45)" filter="url(#soft)" style="animation-delay:-.3s">
+ <ellipse cx="95" cy="270" rx="70" ry="8" fill="#b7a89b" opacity=".16"/>
+ <path d="M28 61Q-5 15 9 2Q43 6 62 40L92 46Q113 4 150 4Q167 24 140 68" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/><path d="M17 14L51 53L30 49Z M139 14L111 55L131 49Z" fill="#ffca27"/>
+ <path d="M40 81Q33 50 64 42Q102 32 128 60Q142 82 127 113L138 147L31 147Z" fill="url(#fur)"/>
+ <path d="M39 94Q82 72 123 94L139 151L29 151Z" fill="url(#hood)"/><path d="M48 102Q84 119 117 102L112 140L49 140Z" fill="url(#gold)"/>
+ <ellipse cx="64" cy="79" rx="13" ry="16" fill="#fff"/><ellipse cx="103" cy="79" rx="13" ry="16" fill="#fff"/><ellipse cx="67" cy="82" rx="7" ry="10" fill="#352d2a"/><ellipse cx="100" cy="82" rx="7" ry="10" fill="#352d2a"/><circle cx="69" cy="77" r="3" fill="#fff"/><circle cx="102" cy="77" r="3" fill="#fff"/>
+ <path d="M75 101Q86 108 96 99Q88 116 75 101" fill="#a84c4b"/><ellipse cx="45" cy="96" rx="9" ry="5" fill="#f4a6a0"/><ellipse cx="119" cy="96" rx="9" ry="5" fill="#f4a6a0"/>
+ <path d="M40 58Q60 47 81 56L83 66Q60 59 43 70Z M87 56Q108 46 129 60L124 70Q105 60 86 67Z" fill="#26242b" stroke="#ffca27" stroke-width="6"/>
+ <path d="M43 147L26 174L48 186L69 155M117 147L140 166L129 183L105 157" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M47 151L41 195L69 201L81 160M97 160L112 196L136 188L119 151" fill="#fffaf1"/><path d="M41 194Q33 204 48 208L73 208Q81 200 69 195Z M112 195Q104 205 119 210L143 205Q149 198 133 189Z" fill="#282731"/>
+ <path d="M42 105L16 123L-1 111" fill="none" stroke="#fffaf1" stroke-width="14" stroke-linecap="round"/>
+ <g class="bounce" transform="translate(12 188)"><circle r="24" fill="#f28b22" stroke="#a94d20" stroke-width="2"/><path d="M-24 0h48M0-24Q-12 0 0 24M0-24Q12 0 0 24" fill="none" stroke="#583a2d" stroke-width="2.5"/></g>
+</g>
+<g class="buddy" transform="translate(865 54)" filter="url(#soft)" style="animation-delay:-1.1s">
+ <ellipse cx="91" cy="260" rx="68" ry="8" fill="#b7a89b" opacity=".16"/>
+ <path d="M30 60Q-3 15 10 2Q44 6 63 39L91 45Q113 5 149 4Q166 24 140 67" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/><path d="M18 13L52 53L31 49Z M138 14L111 54L130 49Z" fill="#ffca27"/>
+ <path d="M41 80Q34 50 65 42Q102 32 128 59Q142 80 128 112L138 146L32 146Z" fill="url(#fur)"/>
+ <path d="M40 94Q82 73 123 94L138 150L30 150Z" fill="url(#hood)"/><path d="M48 101Q84 119 117 101L113 139L49 139Z" fill="url(#gold)"/>
+ <ellipse cx="64" cy="79" rx="13" ry="16" fill="#fff"/><ellipse cx="103" cy="79" rx="13" ry="16" fill="#fff"/><ellipse cx="67" cy="82" rx="7" ry="10" fill="#352d2a"/><ellipse cx="100" cy="82" rx="7" ry="10" fill="#352d2a"/><circle cx="69" cy="77" r="3" fill="#fff"/><circle cx="102" cy="77" r="3" fill="#fff"/>
+ <path d="M75 101Q86 108 96 99Q88 116 75 101" fill="#a84c4b"/><ellipse cx="45" cy="96" rx="9" ry="5" fill="#f4a6a0"/><ellipse cx="119" cy="96" rx="9" ry="5" fill="#f4a6a0"/>
+ <path d="M40 58Q60 47 81 56L83 66Q60 59 43 70Z M87 56Q108 46 129 60L124 70Q105 60 86 67Z" fill="#26242b" stroke="#ffca27" stroke-width="6"/>
+ <path d="M43 147L27 172L48 186L68 155M117 147L139 166L129 183L105 157" fill="url(#fur)" stroke="#e9ded1" stroke-width="3"/>
+ <path d="M47 151L41 195L69 201L81 160M97 160L112 196L136 188L119 151" fill="#fffaf1"/><path d="M41 194Q33 204 48 208L73 208Q81 200 69 195Z M112 195Q104 205 119 210L143 205Q149 198 133 189Z" fill="#282731"/>
+ <path d="M43 106L21 121L5 113" fill="none" stroke="#fffaf1" stroke-width="14" stroke-linecap="round"/>
+ <g class="bounce" transform="translate(5 188)" style="animation-delay:-.4s"><circle r="24" fill="#f28b22" stroke="#a94d20" stroke-width="2"/><path d="M-24 0h48M0-24Q-12 0 0 24M0-24Q12 0 0 24" fill="none" stroke="#583a2d" stroke-width="2.5"/></g>
+</g>
+</svg>
