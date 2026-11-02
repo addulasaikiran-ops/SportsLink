@@ -57,6 +57,8 @@ Six original pixel characters explain different parts of the project. Their art 
 - **Media storage** — migration-defined policies for profile images and private post media.
 - **Android packaging** — a manual GitHub Actions workflow generates a Capacitor Android project and uploads a debug APK artifact.
 
+<p align="center"><img src="docs/assets/bots/feed.svg" alt="Feed Bot: community posts and comments" width="150"><img src="docs/assets/bots/event.svg" alt="Event Bot: event-related UI and data" width="150"><img src="docs/assets/bots/recruiter.svg" alt="Recruiter Bot: opportunities and applications" width="150"><img src="docs/assets/bots/bell.svg" alt="Bell Bot: notifications" width="150"></p>
+
 </details>
 
 <details>
@@ -73,6 +75,8 @@ Six original pixel characters explain different parts of the project. Their art 
 ## Architecture
 
 <img src="docs/assets/architecture.svg" alt="Animated architecture showing Next.js, Spring Boot JWT validation and Supabase Postgres row-level security" width="100%">
+
+<p align="center"><img src="docs/assets/bots/referee.svg" alt="Referee Bot checks authentication and row-level security" width="180"><img src="docs/assets/bots/mechanic.svg" alt="Mechanic Bot represents the Spring Boot API" width="180"><img src="docs/assets/bots/pocket.svg" alt="Pocket Bot represents the mobile app shell" width="180"></p>
 
 ```mermaid
 sequenceDiagram
@@ -94,6 +98,8 @@ sequenceDiagram
 
 ## Security model
 
+<p align="center"><img src="docs/assets/bots/privacy.svg" alt="Privacy Bot represents access-control and privacy guidance" width="170"><img src="docs/assets/bots/referee.svg" alt="Referee Bot represents JWT validation and RLS" width="170"></p>
+
 - The frontend uses the Supabase **publishable key** for client configuration. The publishable key is not a substitute for access control; Auth and RLS enforce data access.
 - Backend security configuration allows <code>OPTIONS</code> and <code>GET /api/health</code> without authentication. Other inspected API routes require a JWT.
 - The backend verifies caller JWTs and the Supabase REST request path forwards the **caller's token** alongside the publishable key. It does not use a service-role key for that request path.
@@ -102,6 +108,8 @@ sequenceDiagram
 - This documentation is not a claim of a third-party security audit.
 
 ## Spring Boot API reference
+
+<p align="center"><img src="docs/assets/bots/mechanic.svg" alt="Mechanic Bot represents the API layer" width="150"><img src="docs/assets/bots/courier.svg" alt="Courier Bot represents conversations and messages" width="150"><img src="docs/assets/bots/recruiter.svg" alt="Recruiter Bot represents opportunity endpoints" width="150"></p>
 
 Derived from controller mapping annotations. Protected endpoints require a JWT unless marked public.
 
@@ -129,6 +137,8 @@ Derived from controller mapping annotations. Protected endpoints require a JWT u
 | PATCH | <code>/api/conversations/{conversationId}/read</code> | Mark conversation read |
 
 ## Database and migrations
+
+<p align="center"><img src="docs/assets/bots/event.svg" alt="Event Bot represents event-related tables" width="150"><img src="docs/assets/bots/club.svg" alt="Club Bot represents organization tables" width="150"><img src="docs/assets/bots/bell.svg" alt="Bell Bot represents notification records and triggers" width="150"></p>
 
 The repository has **14 SQL migration files across two directories**; this is not a complete baseline schema for a fresh database. The migrations cover events, private post media, profile-image storage, signup/profile hardening, notification triggers, messaging RLS helpers, onboarding fields, organizations, connection requests and seed-profile support.
 
@@ -173,6 +183,8 @@ SportsLink/
 ```
 
 ## Getting started
+
+<p align="center"><img src="docs/assets/bots/pocket.svg" alt="Pocket Bot introduces the mobile packaging option" width="150"><img src="docs/assets/bots/seed.svg" alt="Seed Bot introduces demo data tools" width="150"></p>
 
 <details>
 <summary><strong>Prerequisites</strong></summary>
@@ -242,6 +254,8 @@ This is a debug build, not a signed Play Store release. The checked-in Capacitor
 ## CI/CD
 
 <img src="docs/assets/ci-pipeline.svg" alt="Mechanic Bot pushes a pixel cube through backend CI, frontend CI and the manual Android debug APK workflow" width="100%">
+
+<p align="center"><img src="docs/assets/bots/mechanic.svg" alt="Mechanic Bot: backend and frontend continuous integration" width="170"><img src="docs/assets/bots/seed.svg" alt="Seed Bot: controlled demo data workflow" width="170"></p>
 
 | Workflow | Trigger | What it does |
 |---|---|---|
