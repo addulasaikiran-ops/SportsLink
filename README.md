@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero.svg">
-  <img src="docs/assets/hero-light.svg" alt="Six original mini-voxel robots run across a pixel football pitch under the SPORTSLINK wordmark" width="100%">
+  <img src="docs/assets/hero-light.svg" alt="Twelve original animated mini-voxel SPORTSLINK bots bounce and pass a football along a simple grassy strip, with no stadium background" width="100%">
 </picture>
 
 **A professional network for the people who move sport forward.**
