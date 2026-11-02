@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+<title id="title">SPORTSLINK — where sport connects</title>
+<desc id="desc">A softly glowing football pitch with animated player silhouettes, a rolling football, and connection paths linking athletes, coaches, scouts and clubs.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf0"/><stop offset="1" stop-color="#f4e7df"/></linearGradient>
+  <linearGradient id="pitch" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#243b35"/><stop offset=".5" stop-color="#31564a"/><stop offset="1" stop-color="#1e3933"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe77a"/><stop offset="1" stop-color="#ffbd16"/></linearGradient>
+  <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd8e7"/><stop offset="1" stop-color="#ef8bb2"/></linearGradient>
+  <radialGradient id="ball" cx=".28" cy=".2" r=".8"><stop stop-color="#fff"/><stop offset=".72" stop-color="#f1edf0"/><stop offset="1" stop-color="#b8b7c1"/></radialGradient>
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#1a2925" flood-opacity=".22"/></filter>
+  <style>
+    .orbit{transform-box:fill-box;transform-origin:center;animation:orbit 8s linear infinite}
+    .player{transform-box:fill-box;transform-origin:center;animation:player-bob 2.1s ease-in-out infinite}
+    .player.two{animation-delay:-.7s}.player.three{animation-delay:-1.3s}
+    .ball{transform-box:fill-box;transform-origin:center;animation:ball-run 5s cubic-bezier(.45,0,.55,1) infinite}
+    .pulse{stroke-dasharray:9 14;animation:dash 2.4s linear infinite}
+    .spark{transform-box:fill-box;transform-origin:center;animation:spark 1.8s ease-in-out infinite}
+    @keyframes orbit{to{transform:rotate(360deg)}}
+    @keyframes player-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    @keyframes ball-run{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(105px,-23px) rotate(95deg)}50%{transform:translate(215px,8px) rotate(190deg)}75%{transform:translate(320px,-17px) rotate(285deg)}100%{transform:translate(420px,0) rotate(380deg)}}
+    @keyframes dash{to{stroke-dashoffset:-46}}
+    @keyframes spark{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.12)}}
+    @media(prefers-reduced-motion:reduce){.orbit,.player,.ball,.pulse,.spark{animation:none}}
+  </style>
+</defs>
+<rect width="1200" height="430" rx="28" fill="url(#bg)"/>
+<circle cx="1000" cy="72" r="120" fill="#ffd84d" opacity=".12"/><circle cx="140" cy="365" r="105" fill="#f7b8d0" opacity=".16"/>
+<!-- stadium light glows -->
+<g fill="#ffd84d" opacity=".9"><circle cx="75" cy="65" r="3"/><circle cx="97" cy="48" r="2"/><circle cx="1120" cy="76" r="3"/><circle cx="1090" cy="53" r="2"/></g>
+<!-- pitch -->
+<g filter="url(#shadow)">
+<rect x="92" y="56" width="1016" height="318" rx="22" fill="url(#pitch)"/>
+<g opacity=".13" fill="#d6f0c7"><path d="M112 76h142v278H112z"/><path d="M396 76h142v278H396z"/><path d="M680 76h142v278H680z"/><path d="M964 76h124v278H964z"/></g>
+<rect x="111" y="75" width="978" height="280" rx="13" fill="none" stroke="#e9f3e9" stroke-width="2" opacity=".78"/>
+<path d="M600 76v278" stroke="#e9f3e9" stroke-width="2" opacity=".72"/>
+<circle cx="600" cy="215" r="68" fill="none" stroke="#e9f3e9" stroke-width="2" opacity=".72"/>
+<circle cx="600" cy="215" r="4" fill="#e9f3e9"/>
+<path d="M111 148h92v134h-92M1089 148h-92v134h92" fill="none" stroke="#e9f3e9" stroke-width="2" opacity=".72"/>
+<path d="M111 186h35v58h-35M1089 186h-35v58h35" fill="none" stroke="#e9f3e9" stroke-width="2" opacity=".72"/>
+</g>
+<!-- networking paths behind players -->
+<g fill="none" stroke-linecap="round">
+<path class="pulse" d="M255 171Q420 87 558 187T850 173T1010 236" stroke="#ffd84d" stroke-width="3" filter="url(#glow)"/>
+<path class="pulse" d="M255 285Q430 344 600 241T850 173" stroke="#f7b8d0" stroke-width="2.5" opacity=".9"/>
+</g>
+<!-- floating profile nodes -->
+<g filter="url(#shadow)">
+<g transform="translate(212 122)"><circle r="31" fill="url(#gold)"/><circle r="25" fill="#fff9e8"/><circle cy="-7" r="8" fill="#55545c"/><path d="M-15 13q15-22 30 0" fill="#55545c"/><circle cx="22" cy="-22" r="8" fill="#31564a" stroke="#fff9e8" stroke-width="3"/></g>
+<g transform="translate(846 118)"><circle r="31" fill="url(#pink)"/><circle r="25" fill="#fff9e8"/><circle cy="-7" r="8" fill="#55545c"/><path d="M-15 13q15-22 30 0" fill="#55545c"/><circle cx="22" cy="-22" r="8" fill="#ffd84d" stroke="#fff9e8" stroke-width="3"/></g>
+<g transform="translate(1003 278)"><circle r="29" fill="url(#gold)"/><circle r="23" fill="#fff9e8"/><circle cy="-6" r="7" fill="#55545c"/><path d="M-14 12q14-20 28 0" fill="#55545c"/></g>
+</g>
+<!-- simplified energetic player silhouettes -->
+<g class="player" transform="translate(368 198)" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="0" cy="59" rx="29" ry="6" fill="#0e2520" opacity=".32"/>
+<circle cx="0" cy="-26" r="16" fill="#fff9e8"/><path d="M-13-33q9-19 24-4l5 8" fill="none" stroke="#ffd84d" stroke-width="7"/>
+<path d="M-17-7q17-12 34 0l9 42-48 0z" fill="url(#gold)"/><path d="M-17 4l-22 23 8 7 25-17M17 4l20 16 10-8" fill="none" stroke="#fff9e8" stroke-width="10"/>
+<path d="M-12 34l-11 19-21 4M12 34l18 15 19 0" fill="none" stroke="#fff9e8" stroke-width="12"/><path d="M-50 58h12M46 51h12" stroke="#ffd84d" stroke-width="7"/>
+</g>
+<g class="player two" transform="translate(734 215)" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="0" cy="64" rx="28" ry="6" fill="#0e2520" opacity=".32"/>
+<circle cy="-26" r="15" fill="#fff9e8"/><path d="M-13-31q12-15 25 0" fill="none" stroke="#f7b8d0" stroke-width="7"/>
+<path d="M-17-7q17-12 34 0l8 43h-50z" fill="url(#pink)"/><path d="M-17 4l-23 17-10-9M17 4l20 22 10-8" fill="none" stroke="#fff9e8" stroke-width="10"/>
+<path d="M-12 36l-18 19-20 0M12 36l15 17 19 3" fill="none" stroke="#fff9e8" stroke-width="12"/><path d="M-54 55h12M42 58h12" stroke="#ffd84d" stroke-width="7"/>
+</g>
+<g class="player three" transform="translate(930 218)" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="0" cy="61" rx="26" ry="6" fill="#0e2520" opacity=".32"/>
+<circle cy="-25" r="14" fill="#fff9e8"/><path d="M-12-30q12-14 24 0" fill="none" stroke="#ffd84d" stroke-width="6"/>
+<path d="M-16-7q16-11 32 0l8 39h-48z" fill="#fff9e8"/><path d="M-16 3l-18 19-11-5M16 3l18 16 10-8" fill="none" stroke="#f7b8d0" stroke-width="9"/>
+<path d="M-10 32l-13 20-19 3M10 32l17 19 18 0" fill="none" stroke="#fff9e8" stroke-width="11"/><path d="M-45 55h12M41 52h12" stroke="#ffd84d" stroke-width="6"/>
+</g>
+<!-- moving football -->
+<g class="ball" transform="translate(438 307)" filter="url(#shadow)">
+<circle r="22" fill="url(#ball)" stroke="#d4d0d5" stroke-width="1.5"/>
+<path d="M-5-10l11-4 8 9-4 12H-8l-5-12z" fill="#34323b"/>
+<path d="M-13-7l-8-5M14-5l7-6M10 7l8 8M-8 7l-6 11" stroke="#34323b" stroke-width="4" stroke-linecap="round"/>
+<path d="M-12-14q7-5 12-4" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+</g>
+<!-- motion sparks -->
+<g class="spark" fill="#ffd84d"><path d="M508 115l5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><path d="M675 305l4 9 10 4-10 4-4 10-4-10-10-4 10-4z"/></g>
+<g font-family="Arial,Helvetica,sans-serif" fill="#fff9e8"><text x="135" y="337" font-size="12" letter-spacing="3" opacity=".76">ONE SPORTING COMMUNITY</text><text x="858" y="337" font-size="12" letter-spacing="2" opacity=".76">CONNECT · DISCOVER · GROW</text></g>
+</svg>
