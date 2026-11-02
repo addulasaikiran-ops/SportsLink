@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/hero.svg" alt="Six original mini-voxel robots run across a pixel football pitch under the SPORTSLINK wordmark" width="100%">
+<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero.svg">\n  <img src="docs/assets/hero-light.svg" alt="Six original mini-voxel robots run across a pixel football pitch under the SPORTSLINK wordmark" width="100%">\n</picture>
 
 **A professional network for the people who move sport forward.**
 
