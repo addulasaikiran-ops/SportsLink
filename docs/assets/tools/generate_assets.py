@@ -5,7 +5,7 @@ Uses Python standard library only. Scene compositions remain hand-editable SVGs.
 """
 from pathlib import Path
 import html
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 BOTS = {
 "scout":("#39E7D5","#176B68","#C7FFF5","BINOCULARS · DISCOVER"),
 "courier":("#FF6EA8","#873C67","#FFE0ED","ENVELOPE · MESSAGES"),
