@@ -1,7 +1,7 @@
 <div align="center">
 
 <picture>
-  <img src="docs/assets/moog-hero.svg" alt="Animated SPORTSLINK welcome artwork" width="100%">
+  <img src="docs/assets/sportslink-matchday.svg" alt="Animated football pitch with moving ball and connected sports community profiles" width="100%">
 </picture>
 
 # SPORTSLINK
@@ -23,7 +23,7 @@ A professional networking platform for the sports community — bringing athlete
 
 ---
 
-<picture><img src="docs/assets/moog-relay.svg" alt="Animated relay showing the power of teamwork" width="100%"></picture>
+
 
 ## ⚽ What is SPORTSLINK?
 
@@ -33,7 +33,7 @@ SPORTSLINK helps the sports community build a professional presence, discover pe
 
 ## ✨ Features
 
-<picture><img src="docs/assets/moog-connect.svg" alt="Animated connection artwork" width="100%"></picture>
+
 
 - **Profiles** — showcase your sporting role, experience, skills, and journey.
 - **Discover people** — find athletes, coaches, scouts, and other sports professionals.
@@ -47,7 +47,7 @@ SPORTSLINK helps the sports community build a professional presence, discover pe
 
 ## 🛠️ Tech stack
 
-<picture><img src="docs/assets/moog-build.svg" alt="Animated SPORTSLINK build process" width="100%"></picture>
+
 
 | Area | Technology |
 |---|---|
@@ -134,9 +134,9 @@ Ideas, bug reports, and contributions are welcome!
 
 <div align="center">
 
-<picture><img src="docs/assets/moog-progress.svg" alt="Animated SPORTSLINK progress artwork" width="80%"></picture>
 
-**Built for the people who move sport forward.** 💛
+
+**Built for the people who move sport forward.** ⚽💛
 
 [Open SPORTSLINK](https://sportslink.up.railway.app/) · [Report an issue](https://github.com/addulasaikiran-ops/SportsLink/issues)
 
