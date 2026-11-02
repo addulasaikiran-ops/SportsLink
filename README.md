@@ -1,6 +1,9 @@
 <div align="center">
 
-<picture>\n  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero.svg">\n  <img src="docs/assets/hero-light.svg" alt="Six original mini-voxel robots run across a pixel football pitch under the SPORTSLINK wordmark" width="100%">\n</picture>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero.svg">
+  <img src="docs/assets/hero-light.svg" alt="Six original mini-voxel robots run across a pixel football pitch under the SPORTSLINK wordmark" width="100%">
+</picture>
 
 **A professional network for the people who move sport forward.**
 
@@ -32,6 +35,12 @@ Six original pixel characters explain different parts of the project. Their art 
 | **Recruiter Bot** | <img src="docs/assets/bots/recruiter.svg" alt="Yellow pixel Recruiter Bot holding a clipboard" width="180"> | Opportunity listing, applications and status-review endpoints |
 | **Mechanic Bot** | <img src="docs/assets/bots/mechanic.svg" alt="Orange pixel Mechanic Bot with a wrench" width="180"> | Spring Boot API, Gradle and GitHub Actions CI |
 | **Pocket Bot** | <img src="docs/assets/bots/pocket.svg" alt="Green phone-shaped Pocket Bot" width="180"> | Capacitor configuration and Android debug APK workflow |
+| **Feed Bot** | <img src="docs/assets/bots/feed.svg" alt="Pink pixel Feed Bot with a post card" width="180"> | Community posts, comments and reactions |
+| **Event Bot** | <img src="docs/assets/bots/event.svg" alt="Teal pixel Event Bot with a calendar" width="180"> | Event data structures and event-related UI |
+| **Club Bot** | <img src="docs/assets/bots/club.svg" alt="Violet pixel Club Bot with a clubhouse icon" width="180"> | Organizations and organization membership |
+| **Bell Bot** | <img src="docs/assets/bots/bell.svg" alt="Yellow pixel Bell Bot with a notification bell" width="180"> | Notification endpoints and selected SQL triggers |
+| **Seed Bot** | <img src="docs/assets/bots/seed.svg" alt="Green pixel Seed Bot with a sprout icon" width="180"> | Demo data seed and cleanup scripts/workflow |
+| **Privacy Bot** | <img src="docs/assets/bots/privacy.svg" alt="Orange pixel Privacy Bot with a shield check" width="180"> | Privacy route, access controls and security documentation |
 
 ## Features: implemented vs. roadmap
 
