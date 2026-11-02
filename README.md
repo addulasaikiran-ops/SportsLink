@@ -22,7 +22,7 @@ The frontend is built with Next.js and Supabase. A Spring Boot API supports sele
 
 ## Meet the mini-voxel bots
 
-Six original pixel characters explain different parts of the project. Their art is drawn from tiny square SVG pixels, has transparent backgrounds, and includes small idle/blink motion. The art is original and does not use game-character assets.
+Six original pixel characters explain different parts of the project. Their art is drawn from tiny square SVG pixels, has transparent backgrounds, and includes small idle/blink motion. The art is original and does not use game-character assets. Rebuild the six bot sprites with the standard-library Python generator: [generate_assets.py](docs/assets/tools/generate_assets.py).
 
 | Bot | Animation | What it represents |
 |---|---|---|
