@@ -19,7 +19,7 @@ Athletes · Coaches · Scouts · Clubs · Sports professionals
 
 Sports careers move through people: the coach who spots potential, the scout who finds a player, the club that needs a teammate, and the athlete looking for the next opportunity. **SPORTSLINK is a sports-focused professional networking web application** built to help athletes, coaches, scouts, clubs, organizations and sports professionals create profiles, discover people, follow members, share posts, explore opportunities and communicate.
 
-The frontend is built with Next.js and Supabase. A Spring Boot API supports selected authenticated workflows. The app also includes a Nexconn chat integration and a GitHub Actions workflow that can build a connected Capacitor Android debug APK.
+<p align="center"><img src="docs/assets/bots/scout.svg" alt="Scout Bot introduces the SPORTSLINK member network" width="170"><img src="docs/assets/bots/club.svg" alt="Club Bot represents sports organizations" width="170"><img src="docs/assets/bots/feed.svg" alt="Feed Bot represents the sports community feed" width="170"></p>\n\nThe frontend is built with Next.js and Supabase. A Spring Boot API supports selected authenticated workflows. The app also includes a Nexconn chat integration and a GitHub Actions workflow that can build a connected Capacitor Android debug APK.
 
 > **Accuracy note:** Feature descriptions below are grounded in repository code and migrations, not live usage or uptime telemetry. A route or endpoint existing does not prove every workflow is complete. See [docs/FACTS.md](docs/FACTS.md) for the source-based audit.
 
