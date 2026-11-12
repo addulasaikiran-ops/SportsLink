@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A professional network for athletes, coaches, scouts, clubs, and sports professionals.">
+<link rel="icon" href="/landing/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/landing/favicon.ico" sizes="any">
+<link rel="icon" href="/landing/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/landing/apple-touch-icon.png">
+<meta name="theme-color" content="#050d22">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SPORTSLINK">
+<meta property="og:title" content="SPORTSLINK – Your world of sport, connected">
+<meta property="og:description" content="Connect with the people moving sport forward.">
+
+<meta property="og:image" content="https://sportslink.up.railway.app/landing/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sportslink.up.railway.app/landing/og-image.png">
+<title>SPORTSLINK – Your world of sport</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#050d22;--bg2:#0a2252;--blue:#2f6bff;--sky:#8fb4ff;--text:#fff;--muted:#b9c8e6;--gold:#ffc93c;--card:rgba(255,255,255,.06);--line:rgba(143,180,255,.22)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#050d22}}
+:root[data-theme="dark"]{--bg:#050d22}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text);background:radial-gradient(1200px 700px at 80% 20%,var(--bg2),var(--bg));min-height:100vh;overflow-x:hidden}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 24px}
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:26px;letter-spacing:-.5px}
+.logo i{width:46px;height:46px;border-radius:13px;background:var(--blue);display:grid;place-items:center;box-shadow:0 0 24px rgba(47,107,255,.7);animation:pulse 3s ease-in-out infinite}
+.logo b{color:var(--sky)}
+nav{display:flex;align-items:center;gap:26px}
+nav a{color:#fff;text-decoration:none;font-weight:700;position:relative;padding:6px 0}
+nav a:not(.join)::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--sky);box-shadow:0 0 10px var(--sky);transition:width .3s}
+nav a:not(.join):hover::after,nav a:focus-visible::after{width:100%}
+.join,.btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,#4a82ff,var(--blue));color:#fff;border:1px solid #6b97ff;border-radius:14px;padding:14px 22px;font-weight:800;text-decoration:none;box-shadow:0 0 0 rgba(47,107,255,0);transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.join:hover,.btn:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(47,107,255,.75)}
+.btn::before,.join::before{content:"";position:absolute;top:0;left:-70%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover::before,.join:hover::before{left:130%}
+.btn span,.join span{transition:transform .25s}
+.btn:hover span,.join:hover span{transform:translateX(5px)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:30px;align-items:center;padding:30px 0 40px;min-height:640px}
+.panel{border:1px solid var(--line);background:rgba(8,20,48,.62);backdrop-filter:blur(10px);border-radius:30px;padding:44px}
+.eyebrow{font-size:13px;letter-spacing:.14em;font-weight:800;color:var(--sky);display:flex;align-items:center;gap:10px;text-transform:uppercase}
+.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:#2bd48a;box-shadow:0 0 12px #2bd48a;animation:pulse 2s infinite}
+h1{font-size:clamp(42px,6vw,82px);line-height:1;letter-spacing:-.04em;margin:22px 0;font-weight:800}
+h1 em{font-style:normal;color:var(--sky);text-shadow:0 0 36px rgba(79,141,255,.8)}
+.lead{color:var(--muted);font-size:19px;line-height:1.7;max-width:50ch;margin:0 0 30px}
+.row{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.ghost{color:#fff;font-weight:700;text-decoration:none;border-bottom:2px solid transparent;transition:border-color .25s}
+.ghost:hover{border-color:var(--sky)}
+.scene{position:relative;height:560px;perspective:1100px}
+.stage{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .15s ease-out}
+.big{position:absolute;left:50%;top:50%;width:360px;margin:-170px 0 0 -170px;padding:30px;border-radius:30px;background:linear-gradient(145deg,#3a76ff,#1d49c9);box-shadow:0 30px 80px rgba(20,60,200,.6),inset 0 0 0 1px rgba(255,255,255,.2);transform:translateZ(0)}
+.big h3{font-size:36px;line-height:1.05;letter-spacing:-.03em;margin:90px 0 10px}
+.big p{margin:0 0 16px;color:#dbe7ff}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tags span{border:1px solid rgba(255,255,255,.4);padding:6px 11px;border-radius:9px;font-size:12px;font-weight:700;transition:background .25s,transform .25s,box-shadow .25s;cursor:default}
+.tags span:hover{background:#fff;color:#1d49c9;transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.spark{position:absolute;top:28px;left:30px;width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.2);display:grid;place-items:center;animation:pulse 2.4s infinite}
+.fl{position:absolute;transition:transform .2s ease-out;will-change:transform}
+.fi{animation:float 6s ease-in-out infinite;filter:drop-shadow(0 0 14px var(--g,#5c9bff)) drop-shadow(0 0 34px var(--g,#5c9bff));cursor:pointer;transition:filter .3s,scale .3s}
+.fi:hover{scale:1.25;filter:drop-shadow(0 0 22px var(--g)) drop-shadow(0 0 60px var(--g))}
+.fi svg{width:100%;height:100%;display:block;animation:spin 14s linear infinite}
+.mini{white-space:nowrap;position:absolute;background:#fff;color:#0a1b3f;border-radius:16px;padding:14px 18px;font-size:13px;font-weight:700;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:float 7s ease-in-out infinite;transition:transform .25s}
+.mini:hover{transform:scale(1.08) rotate(-2deg)}
+.mini small{display:block;color:#6a7a99;font-weight:500;margin-top:3px}
+.sports{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;padding:20px 0 40px}
+.tile{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:22px 10px;text-align:center;font-weight:700;cursor:pointer;transition:transform .3s,border-color .3s,box-shadow .3s,background .3s;position:relative;font-family:inherit;color:#fff}
+.tile svg{width:54px;height:54px;display:block;margin:0 auto 12px;transition:transform .5s,filter .3s}
+.tile:hover{transform:translateY(-10px);border-color:var(--g);background:rgba(255,255,255,.1);box-shadow:0 18px 50px color-mix(in srgb,var(--g) 45%,transparent)}
+.tile:hover svg{transform:rotate(360deg) scale(1.15);filter:drop-shadow(0 0 16px var(--g))}
+.tile.on{border-color:var(--g);box-shadow:0 0 30px color-mix(in srgb,var(--g) 50%,transparent)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:10px 0 80px}
+.card{--mx:50%;--my:50%;position:relative;border:1px solid var(--line);background:var(--card);border-radius:24px;padding:30px;transform-style:preserve-3d;transition:transform .2s ease-out,border-color .3s;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(79,141,255,.35),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{border-color:var(--sky)}.card:hover::after{opacity:1}
+.card h4{font-size:22px;margin:14px 0 8px}.card p{color:var(--muted);line-height:1.6;margin:0}
+.ic{width:52px;height:52px;border-radius:15px;background:rgba(47,107,255,.25);display:grid;place-items:center;font-size:26px;transition:transform .4s}
+.card:hover .ic{transform:translateZ(40px) rotate(-8deg) scale(1.1)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:900px){.hero{grid-template-columns:1fr}.panel{padding:28px}.scene{height:520px}.sports{grid-template-columns:repeat(3,1fr)}.feat{grid-template-columns:1fr}nav a:not(.join){display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.sec{padding:70px 0 10px}.sec h2{font-size:clamp(32px,4.5vw,56px);letter-spacing:-.03em;line-height:1.05;margin:14px 0}
+.marq{overflow:hidden;border-block:1px solid var(--line);background:rgba(47,107,255,.08);margin:10px -24px;white-space:nowrap}
+.mt{display:inline-flex;gap:34px;padding:18px 0;animation:mq 28s linear infinite;font-weight:800;letter-spacing:.12em;font-size:15px}
+.marq:hover .mt{animation-play-state:paused}.mt i{color:var(--gold);font-style:normal}.mt span{transition:color .3s,text-shadow .3s}.mt span:hover{color:var(--sky);text-shadow:0 0 18px var(--sky)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.strength{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0;color:var(--muted);font-weight:700}
+.bar{width:200px;height:10px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.bar b{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--blue),var(--gold));box-shadow:0 0 14px var(--blue);transition:width .6s}
+.strength strong{color:#fff;font-size:20px}
+.nw{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+.gwrap,.pyk{border:1px solid var(--line);background:rgba(8,20,48,.6);backdrop-filter:blur(8px);border-radius:26px;padding:22px;position:relative}
+.rc{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.rc button,.tabs button{font:inherit;font-weight:700;font-size:13px;color:#fff;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:all .25s}
+.rc button:hover,.tabs button:hover{transform:translateY(-3px);border-color:var(--c,var(--sky));box-shadow:0 8px 22px rgba(47,107,255,.4)}
+.rc button.on,.tabs button.on{background:var(--c,var(--blue));color:#07122b;border-color:transparent}
+#graph{width:100%;height:auto;display:block}
+#graph .ln{stroke:#8fb4ff;stroke-opacity:.28;stroke-width:1.4;transition:all .3s}
+#graph .nd{cursor:pointer;transition:opacity .3s}#graph.act .nd{opacity:.28}#graph.act .nd.m{opacity:1}#graph.act .ln{stroke-opacity:.08}#graph.act .ln.m{stroke-opacity:.9;stroke:var(--gold)}
+#graph .nd circle.c{transition:r .25s}#graph .nd:hover circle.c{r:19}#graph .nd.m circle.h{opacity:.55;animation:pulse 1.4s infinite}
+#graph .me{animation:pulse 2.4s infinite}#graph.fl2 .me circle.h{r:60;opacity:.7}
+.gi{font-weight:700;color:var(--muted);min-height:24px;margin-top:6px}
+.pyk h4{margin:0 0 14px;font-size:20px}
+.pp{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1px solid transparent;transition:all .3s}
+.pp:hover{background:rgba(255,255,255,.06);border-color:var(--line);transform:translateX(6px)}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#07122b;flex:none}
+.pp div:not(.av){flex:1;min-width:0}.pp b{display:block}.pp small{color:var(--muted)}
+.cn{font:inherit;font-weight:800;font-size:13px;border-radius:999px;padding:8px 14px;border:1px solid var(--sky);background:transparent;color:#fff;cursor:pointer;transition:all .25s}
+.cn:hover{background:var(--blue);box-shadow:0 0 20px var(--blue)}.cn.pe{opacity:.7}.cn.ok{background:#2bd48a;color:#07122b;border-color:#2bd48a}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 22px}
+.og{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.op{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:22px;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative}
+.op:hover{transform:translateY(-8px) rotateX(3deg);border-color:var(--sky);box-shadow:0 20px 50px rgba(47,107,255,.35)}
+.op span.t{font-size:12px;font-weight:800;color:var(--gold)}.op h4{margin:8px 0 6px;font-size:19px}.op p{margin:0 0 16px;color:var(--muted)}
+.st{position:absolute;right:16px;top:14px;font-size:22px;background:none;border:0;cursor:pointer;color:#fff;transition:transform .3s}.st:hover{transform:scale(1.3) rotate(15deg)}.st.on{color:var(--gold);text-shadow:0 0 14px var(--gold)}
+.fd{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px}
+.po{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:22px;transition:border-color .3s,transform .3s}.po:hover{border-color:var(--sky);transform:translateY(-5px)}
+.po header{padding:0 0 12px;gap:12px;justify-content:flex-start}.po p{line-height:1.6;color:#dbe7ff;margin:0 0 14px}
+.act button{font:inherit;font-weight:700;color:var(--muted);background:none;border:0;cursor:pointer;padding:6px 10px;border-radius:10px;transition:all .25s;margin-right:6px}
+.act button:hover{background:rgba(255,255,255,.08);color:#fff}.act button.on{color:#ff6b86}
+.cta{margin:30px 0 70px;text-align:center;border:1px solid var(--line);border-radius:32px;padding:60px 24px;background:radial-gradient(600px 240px at 50% 0,rgba(47,107,255,.5),rgba(8,20,48,.6))}
+.cta h2{font-size:clamp(32px,5vw,60px);letter-spacing:-.03em;margin:0 0 12px}.cta p{color:var(--muted);margin:0 0 26px}
+.feat .num{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--sky)}.feat a{color:var(--sky);font-weight:700;text-decoration:none;display:inline-block;margin-top:14px;transition:transform .25s}.feat a:hover{transform:translateX(6px)}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.note{color:var(--muted);font-size:13px;margin-top:14px}
+@media (max-width:900px){.nw,.fd{grid-template-columns:1fr}.og{grid-template-columns:1fr}}
+.bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.85}
+body::before{content:"";position:fixed;inset:0;background:rgba(5,13,34,.4);z-index:-1;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.bg-video{display:none}}
+</style>
+</head>
+<body>
+<video class="bg-video" autoplay muted loop playsinline aria-hidden="true"><source src="/landing/sportslink-background.webm" type="video/webm"><source src="/landing/sportslink-background.mp4" type="video/mp4"></video>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="foot" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#fff"/><polygon points="32,20 43,28 39,41 25,41 21,28" fill="#14284b"/><path d="M32 20V6M43 28l14-5M39 41l9 11M25 41l-9 11M21 28L7 23" stroke="#14284b" stroke-width="3" fill="none"/></symbol>
+<symbol id="bask" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#ff7a2f"/><path d="M3 32h58M32 3v58M12 11q20 21 0 42M52 11q-20 21 0 42" stroke="#6b2406" stroke-width="2.6" fill="none"/></symbol>
+<symbol id="tenn" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#d7f25a"/><path d="M10 12q18 20 0 40M54 12q-18 20 0 40" stroke="#fff" stroke-width="3.5" fill="none"/></symbol>
+<symbol id="cric" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29" fill="#d0303f"/><path d="M14 14q18 18 0 36M50 14q-18 18 0 36" stroke="#fff" stroke-width="2.6" stroke-dasharray="4 3" fill="none"/></symbol>
+<symbol id="shut" viewBox="0 0 64 64"><polygon points="24,36 40,36 54,6 10,6" fill="#fff" fill-opacity=".92"/><path d="M28 36L19 6M36 36l9-30M32 36V6" stroke="#8fb4ff" stroke-width="2"/><ellipse cx="32" cy="6" rx="22" ry="4" fill="none" stroke="#fff" stroke-width="3"/><circle cx="32" cy="46" r="12" fill="#ffc93c"/></symbol>
+<symbol id="trop" viewBox="0 0 64 64"><path d="M18 8h28v16c0 10-6 16-14 16S18 34 18 24z" fill="#ffc93c"/><path d="M18 12H8c0 9 4 14 10 15M46 12h10c0 9-4 14-10 15" stroke="#ffc93c" stroke-width="4" fill="none"/><rect x="28" y="40" width="8" height="9" fill="#e0a516"/><rect x="19" y="49" width="26" height="8" rx="3" fill="#ffc93c"/></symbol>
+</defs></svg>
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="wrap">
+<header>
+  <div class="logo"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></i><span>SPORTS<b>LINK</b></span></div>
+  <nav><a href="/about">About</a><a href="#network">Network</a><a href="#why">Why SPORTSLINK</a><a href="/login">Log in</a><a class="join" href="/signup">Join SPORTSLINK <span>↗</span></a></nav>
+</header>
+<section class="hero">
+  <div class="panel">
+    <div class="eyebrow">The professional network for sport</div>
+    <h1>Your next chapter in sport <em>starts here.</em></h1>
+    <p class="lead">Meet the people, discover the opportunities, and build the career you want in the world of sport.</p>
+    <div class="row"><a class="btn" href="/signup">Create your free profile <span>→</span></a><a class="ghost" href="/login">Already a member? Log in</a></div>
+  </div>
+  <div class="scene" id="scene"><div class="stage" id="stage">
+    <div class="fl" data-d="30" style="left:2%;top:2%;width:90px"><div class="fi" style="--g:#d7f25a;animation-delay:-1s"><svg><use href="#tenn"/></svg></div></div>
+    <div class="fl" data-d="55" style="right:6%;top:0;width:110px"><div class="fi" style="--g:#ff7a2f;animation-delay:-3s"><svg><use href="#bask"/></svg></div></div>
+    <div class="fl" data-d="40" style="left:-2%;bottom:14%;width:100px"><div class="fi" style="--g:#ffffff;animation-delay:-2s"><svg><use href="#foot"/></svg></div></div>
+    <div class="fl" data-d="70" style="right:-1%;bottom:4%;width:84px"><div class="fi" style="--g:#ff4f63;animation-delay:-4s"><svg><use href="#cric"/></svg></div></div>
+    <div class="fl" data-d="25" style="left:38%;top:-4%;width:76px"><div class="fi" style="--g:#8fb4ff;animation-delay:-5s"><svg><use href="#shut"/></svg></div></div>
+    <div class="fl" data-d="60" style="left:12%;bottom:-3%;width:80px"><div class="fi" style="--g:#ffc93c;animation-delay:-2.5s"><svg><use href="#trop"/></svg></div></div>
+    <div class="fl" data-d="15" style="left:0;top:0;right:0;bottom:0"><div class="big" data-tilt>
+      <div class="spark"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></div>
+      <h3>Opportunity is a team sport.</h3><p>Make connections that move you forward.</p>
+      <div class="tags"><span>Career growth</span><span>Community</span><span>Performance</span></div></div></div>
+    <div class="fl" data-d="80" style="left:-4%;top:36%"><div class="mini">Find your people<small>Grow your network</small></div></div>
+    <div class="fl" data-d="90" style="right:-6%;top:62%"><div class="mini" style="animation-delay:-3s">Join open roles<small>Made for your next move</small></div></div>
+  </div></div>
+</section>
+<section id="sports" class="sports">
+  <button class="tile" style="--g:#d7f25a"><svg><use href="#tenn"/></svg>Tennis</button>
+  <button class="tile" style="--g:#ff7a2f"><svg><use href="#bask"/></svg>Basketball</button>
+  <button class="tile" style="--g:#ffffff"><svg><use href="#foot"/></svg>Football</button>
+  <button class="tile" style="--g:#ff4f63"><svg><use href="#cric"/></svg>Cricket</button>
+  <button class="tile" style="--g:#8fb4ff"><svg><use href="#shut"/></svg>Badminton</button>
+  <button class="tile" style="--g:#ffc93c"><svg><use href="#trop"/></svg>Athletics</button>
+</section>
+<div class="marq"><div class="mt"><span>ATHLETES</span><i>✳</i><span>COACHES</span><i>✳</i><span>CLUBS</span><i>✳</i><span>SCOUTS</span><i>✳</i><span>SPORTS BUSINESS</span><i>✳</i><span>ATHLETES</span><i>✳</i><span>COACHES</span><i>✳</i><span>CLUBS</span><i>✳</i><span>SCOUTS</span><i>✳</i><span>SPORTS BUSINESS</span><i>✳</i><span>ATHLETES</span><i>✳</i><span>COACHES</span><i>✳</i><span>CLUBS</span><i>✳</i><span>SCOUTS</span><i>✳</i><span>SPORTS BUSINESS</span><i>✳</i><span>ATHLETES</span><i>✳</i><span>COACHES</span><i>✳</i><span>CLUBS</span><i>✳</i><span>SCOUTS</span><i>✳</i><span>SPORTS BUSINESS</span><i>✳</i></div></div>
+<section id="network" class="sec">
+<div class="eyebrow">One network. Every side of sport.</div>
+<h2>Build your place in the world of sport.</h2>
+<p class="lead">Everything you need to turn your passion and experience into meaningful progress.</p>
+<div class="strength">Profile strength <div class="bar"><b id="bar"></b></div><span id="pct">40%</span> Connections <strong id="cnt">0</strong></div>
+<div class="nw"><div class="gwrap"><div class="rc" id="rc"></div><svg id="graph" viewBox="0 0 600 420" role="img" aria-label="Sample sports network graph"></svg><div class="gi" id="gi">Tap a role to see who you can connect with.</div></div>
+<div class="pyk"><h4>People you may know</h4><div id="ppl"></div><p class="note">Sample people for preview.</p></div></div>
+</section>
+<section id="opps" class="sec"><div class="eyebrow">02 / Opportunity</div><h2>Your next move, closer.</h2>
+<p class="lead">Explore roles, internships, collaborations, and new pathways across the sports industry.</p>
+<div class="tabs" id="tb"></div><div class="og" id="ob"></div></section>
+<section id="comm" class="sec"><div class="eyebrow">03 / Community</div><h2>Move forward together.</h2>
+<p class="lead">Share your journey, learn from peers, and find the support to keep growing.</p><div class="fd" id="fd"></div></section>
+<section id="why" class="feat sec">
+<div class="card" data-tilt><span class="num">01 / NETWORK</span><h4>Connections that count.</h4><p>Connect with athletes, coaches, recruiters, and professionals who understand your world.</p><a href="#network">Build your network →</a></div>
+<div class="card" data-tilt><span class="num">02 / OPPORTUNITY</span><h4>Your next move, closer.</h4><p>Explore roles, internships, collaborations, and new pathways across the sports industry.</p><a href="#opps">Explore possibilities →</a></div>
+<div class="card" data-tilt><span class="num">03 / COMMUNITY</span><h4>Move forward together.</h4><p>Share your journey, learn from peers, and find the support to keep growing.</p><a href="#comm">Our mission →</a></div>
+</section>
+<section class="cta"><div class="eyebrow" style="justify-content:center">Your sporting journey, connected</div><h2>Make your next move a team effort.</h2><p>Start with a profile. Leave room for what's possible.</p><a class="btn" href="/signup">Join SPORTSLINK <span>→</span></a></section>
+<footer><span><b>SPORTSLINK</b> · Built for the people who move sport forward.</span><span>© 2026 SPORTSLINK. Connecting the world of sport.</span></footer>
+</div>
+<script>
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const c=document.getElementById('net'),x=c.getContext('2d');let W,H,N=[],m={x:-999,y:-999};
+function size(){W=c.width=innerWidth;H=c.height=innerHeight;N=Array.from({length:Math.min(70,Math.floor(W/22))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35}))}
+size();addEventListener('resize',size);
+addEventListener('pointermove',e=>{m.x=e.clientX;m.y=e.clientY});
+function draw(){x.clearRect(0,0,W,H);
+for(const a of N){if(!reduce){a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1}
+x.fillStyle='rgba(180,208,255,.8)';x.beginPath();x.arc(a.x,a.y,2,0,7);x.fill();
+for(const b of N){const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<140){x.strokeStyle='rgba(143,180,255,'+(.25*(1-d/140))+')';x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
+const dm=Math.hypot(a.x-m.x,a.y-m.y);if(dm<190){x.strokeStyle='rgba(255,201,60,'+(.5*(1-dm/190))+')';x.beginPath();x.moveTo(a.x,a.y);x.lineTo(m.x,m.y);x.stroke()}}
+if(!reduce)requestAnimationFrame(draw)}
+draw();
+const stage=document.getElementById('stage'),scene=document.getElementById('scene');
+if(!reduce){addEventListener('pointermove',e=>{const r=scene.getBoundingClientRect();const px=(e.clientX-(r.left+r.width/2))/innerWidth,py=(e.clientY-(r.top+r.height/2))/innerHeight;
+stage.style.transform='rotateY('+(px*22)+'deg) rotateX('+(-py*18)+'deg)';
+stage.querySelectorAll('.fl').forEach(f=>{const d=+f.dataset.d;f.style.transform='translate3d('+(px*d*2)+'px,'+(py*d*2)+'px,'+d+'px)'})});
+document.querySelectorAll('[data-tilt]').forEach(el=>{el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+el.style.transform='perspective(800px) rotateY('+(px*14)+'deg) rotateX('+(-py*14)+'deg) translateZ(6px)';el.style.setProperty('--mx',(px+.5)*100+'%');el.style.setProperty('--my',(py+.5)*100+'%')});
+el.addEventListener('pointerleave',()=>{el.style.transform=''})})}
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tile').forEach(o=>o.classList.remove('on'));t.classList.add('on')}));
+
+const R=['Athletes','Coaches','Clubs','Scouts','Business','Creators'],C=['#ffc93c','#2bd48a','#4f8dff','#ff7a2f','#c58bff','#ff4f63'];
+let strength=40,conn=0;
+function bump(n){strength=Math.min(100,strength+n);bar.style.width=strength+'%';pct.textContent=strength+'%'}
+bar.style.width='40%';
+const gr=document.getElementById('graph');let gh='',pts=[];
+for(let i=0;i<18;i++){const o=i>=6,a=(i%6)/6*6.283+(o?.5:0),rx=o?265:150,ry=o?170:100;pts.push([300+rx*Math.cos(a),210+ry*Math.sin(a),i%6,o])}
+pts.forEach((p,i)=>{const t=p[3]?pts[i-6]:[300,210];gh+='<line class="ln" data-r="'+p[2]+'" x1="'+t[0]+'" y1="'+t[1]+'" x2="'+p[0]+'" y2="'+p[1]+'"/>'});
+pts.forEach(p=>{gh+='<g class="nd" data-r="'+p[2]+'" transform="translate('+p[0]+' '+p[1]+')"><circle class="h" r="26" fill="'+C[p[2]]+'" opacity="0"/><circle class="c" r="'+(p[3]?11:14)+'" fill="'+C[p[2]]+'"/></g>'});
+gh+='<g class="me" transform="translate(300 210)"><circle class="h" r="46" fill="#2f6bff" opacity=".35"/><circle r="30" fill="#2f6bff" stroke="#fff" stroke-width="2"/><text y="5" text-anchor="middle" fill="#fff" font-weight="800" font-size="15" font-family="Plus Jakarta Sans,sans-serif">You</text></g>';
+gr.innerHTML=gh;
+const rc=document.getElementById('rc');
+R.forEach((r,i)=>{const b=document.createElement('button');b.textContent=r;b.style.setProperty('--c',C[i]);b.onclick=()=>{const on=b.classList.contains('on');rc.querySelectorAll('button').forEach(x=>x.classList.remove('on'));gr.querySelectorAll('.m').forEach(x=>x.classList.remove('m'));
+if(on){gr.classList.remove('act');gi.textContent='Tap a role to see who you can connect with.';return}
+b.classList.add('on');gr.classList.add('act');gr.querySelectorAll('[data-r="'+i+'"]').forEach(x=>x.classList.add('m'));gi.textContent='3 '+r+' in this sample network. Connect to grow your reach.';bump(2)};rc.appendChild(b)});
+gr.querySelectorAll('.nd').forEach(n=>n.addEventListener('click',()=>{gi.textContent='Sample '+R[n.dataset.r].toLowerCase().replace(/s$/,'')+' profile. Join to connect for real.'}));
+const people=[['Aarav M.','Cricket coach · 4 mutual',1],['Priya S.','Badminton athlete · 7 mutual',0],['Riverside FC','Football club, recruiting · 3 mutual',2],['Karan R.','Talent scout · 5 mutual',3]];
+const pl=document.getElementById('ppl');
+people.forEach(p=>{const d=document.createElement('div');d.className='pp';d.innerHTML='<div class="av" style="background:'+C[p[2]]+'">'+p[0][0]+'</div><div><b>'+p[0]+'</b><small>'+p[1]+'</small></div><button class="cn">Connect</button>';
+const b=d.querySelector('button');b.onclick=()=>{if(b.classList.contains('ok')||b.classList.contains('pe'))return;b.textContent='Pending';b.classList.add('pe');setTimeout(()=>{b.textContent='Connected ✓';b.classList.remove('pe');b.classList.add('ok');cnt.textContent=++conn;bump(10);gr.classList.add('fl2');setTimeout(()=>gr.classList.remove('fl2'),700)},1000)};pl.appendChild(d)});
+const ops=[['Assistant Coach','Roles','Youth academy · Full-time'],['Performance Analyst','Internships','Pro club · 3 months'],['Content Creator Collab','Collaborations','Sports media · Remote'],['Regional Scout','Roles','Talent network · Part-time'],['Match-day Media Intern','Internships','Club media team'],['Athlete Brand Campaign','Collaborations','Sponsorship · Short-term']];
+const tb=document.getElementById('tb'),ob=document.getElementById('ob');
+function showOps(f){ob.innerHTML='';ops.filter(o=>f==='All'||o[1]===f).forEach(o=>{const d=document.createElement('div');d.className='op';d.innerHTML='<span class="t">'+o[1]+'</span><h4>'+o[0]+'</h4><p>'+o[2]+'</p><button class="st" aria-label="Save">☆</button><a class="cn" style="text-decoration:none;display:inline-block" href="/signup">View</a>';
+const s=d.querySelector('.st');s.onclick=()=>{const on=s.classList.toggle('on');s.textContent=on?'★':'☆';if(on)bump(5)};ob.appendChild(d)})}
+['All','Roles','Internships','Collaborations'].forEach((f,i)=>{const b=document.createElement('button');b.textContent=f;if(!i)b.className='on';b.onclick=()=>{tb.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');showOps(f)};tb.appendChild(b)});showOps('All');
+const posts=[['Coach Nisha',1,'Wrapped our under-16 season: 14 wins and 3 new scholarships. So proud of this squad.',24,5],['Karan R. · Scout',3,'Holding goalkeeper trials next month. Drop your profile and let\'s talk.',18,9]];
+posts.forEach(p=>{const d=document.createElement('div');d.className='po';d.innerHTML='<header><div class="av" style="background:'+C[p[1]]+'">'+p[0][0]+'</div><b>'+p[0]+'</b></header><p>'+p[2]+'</p><div class="act"><button class="lk">♥ <span>'+p[3]+'</span></button><button>💬 '+p[4]+'</button><button>↗ Share</button></div>';
+const l=d.querySelector('.lk');l.onclick=()=>{const on=l.classList.toggle('on');l.querySelector('span').textContent=p[3]+(on?1:0);if(on)bump(3)};document.getElementById('fd').appendChild(d)});
+</script>
+</body>
+</html>
