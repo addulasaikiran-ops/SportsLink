@@ -1,0 +1,103 @@
+name: Chromium E2E
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Frontend/sportslink-frontend-js/**"
+      - "Backend/sportslink-backend/**"
+      - ".github/workflows/chromium-e2e.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "Frontend/sportslink-frontend-js/**"
+      - "Backend/sportslink-backend/**"
+      - ".github/workflows/chromium-e2e.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chromium-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromium-e2e:
+    name: SPORTSLINK Chromium E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: Frontend/sportslink-frontend-js
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: Frontend/sportslink-frontend-js/package-lock.json
+
+      - name: Regenerate lockfile for the updated manifest
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Install frontend and Playwright dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Next.js production app
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://project-ref.example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_build_placeholder
+          NEXT_PUBLIC_API_URL: http://127.0.0.1:8080
+          NEXT_PUBLIC_USE_SPRING_API: "false"
+        run: npm run build
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Start Spring Boot API
+        working-directory: Backend/sportslink-backend
+        run: |
+          nohup bash ./gradlew bootRun --no-daemon > /tmp/sportslink-backend.log 2>&1 &
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:8080/api/health > /dev/null; then
+              echo "Spring Boot health endpoint is ready."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Spring Boot did not become healthy. Backend log:"
+          cat /tmp/sportslink-backend.log
+          exit 1
+
+      - name: Install Chromium and Linux dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Run SPORTSLINK browser and API smoke tests
+        env:
+          CI: "true"
+          API_BASE_URL: http://127.0.0.1:8080
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
+        run: npm run test:e2e
+
+      - name: Upload Playwright reports, traces and backend logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sportslink-chromium-e2e-${{ github.run_number }}
+          path: |
+            Frontend/sportslink-frontend-js/playwright-report/
+            Frontend/sportslink-frontend-js/test-results/
+            /tmp/sportslink-backend.log
+          if-no-files-found: warn
+          retention-days: 14

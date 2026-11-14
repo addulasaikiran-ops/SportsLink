@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 const protectedRoots = new Set([
   '/home', '/network', '/discover', '/opportunities', '/messages',
-  '/notifications', '/profile', '/organizations', '/settings', '/events', '/onboarding', '/joined',
+  '/notifications', '/profile', '/bookmarks', '/organizations', '/settings', '/events', '/onboarding', '/joined',
 ]);
 
 function safeDestination(raw) {

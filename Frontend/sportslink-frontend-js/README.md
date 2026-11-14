@@ -60,3 +60,38 @@ The profile, Discover/My Network directory, Home feed and profile Follow buttons
 The repository contains no database migrations or trigger definitions. The signup profile trigger and deployed RLS policies must be verified in the Supabase project before diagnosing missing profile rows or changing the database.
 
 Before production deployment, test the production build, configure the deployed site's Auth redirect URLs, review RLS and grants, and verify all data access paths.
+
+## Chromium / Playwright end-to-end tests
+
+The repository uses one pinned Playwright Test version and its bundled Chromium browser for browser automation. Tests live in `e2e/`; configuration is in `playwright.config.js`.
+
+### Run locally
+
+From `Frontend/sportslink-frontend-js`:
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+Playwright starts the Next.js development server automatically at `http://127.0.0.1:3000`. Public-page and anonymous-route tests run without Supabase credentials by checking the documented setup fallback. To run the backend API checks too, start Spring Boot in another terminal:
+
+```bash
+cd ../../Backend/sportslink-backend
+bash ./gradlew bootRun
+```
+
+Then, in the frontend terminal:
+
+```bash
+API_BASE_URL=http://127.0.0.1:8080 npm run test:e2e
+```
+
+On PowerShell, set the variable with `$env:API_BASE_URL = "http://127.0.0.1:8080"` before running the test command.
+
+### GitHub Actions
+
+`.github/workflows/chromium-e2e.yml` builds the production frontend, starts the Spring Boot API, installs Chromium on the GitHub runner, and runs the browser/API smoke suite. HTML reports, JUnit output, failure screenshots, traces and backend logs are uploaded as a workflow artifact.
+
+The initial suite intentionally uses no production Supabase credentials and does not create, modify or delete real user data. It verifies public routes, the unauthenticated protection redirects for workspace routes, the public API health endpoint and anonymous rejection by `GET /api/me`. Authenticated user journeys and write-operation tests should be added only against a dedicated non-production Supabase test project and dedicated test account.
