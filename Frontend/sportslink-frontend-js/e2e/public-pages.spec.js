@@ -41,3 +41,26 @@ test('unknown workspace section returns the not-found page', async ({ page }) =>
   expect(response).not.toBeNull();
   expect(response.status()).toBe(404);
 });
+
+const protectedWorkspaceRoutes = [
+  '/home',
+  '/network',
+  '/discover',
+  '/opportunities',
+  '/messages',
+  '/notifications',
+  '/profile',
+  '/bookmarks',
+  '/organizations',
+  '/settings',
+  '/events',
+  '/onboarding',
+  '/joined',
+];
+
+for (const route of protectedWorkspaceRoutes) {
+  test(`anonymous access to ${route} redirects to setup/login`, async ({ page }) => {
+    await page.goto(route);
+    await expect(page).toHaveURL(/\\/login\\?setup=supabase/);
+  });
+}
