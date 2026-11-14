@@ -68,7 +68,7 @@ jobs:
       - name: Start Spring Boot API
         working-directory: Backend/sportslink-backend
         run: |
-          nohup ./gradlew bootRun --no-daemon > /tmp/sportslink-backend.log 2>&1 &
+          nohup bash ./gradlew bootRun --no-daemon > /tmp/sportslink-backend.log 2>&1 &
           for attempt in {1..60}; do
             if curl --fail --silent http://127.0.0.1:8080/api/health > /dev/null; then
               echo "Spring Boot health endpoint is ready."
